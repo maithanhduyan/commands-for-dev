@@ -10,7 +10,9 @@
 ~~~
 
 3. Add the Webmin GPG key using the following command:
+~~~
 	curl -fsSL https://download.webmin.com/jcameron-key.asc | sudo gpg --dearmor -o /usr/share/keyrings/webmin-archive-keyring.gpg
+~~~
 
 4. Add the Webmin repository to the list of package sources by creating a new file named webmin.list in the /etc/apt/sources.list.d/ directory with the following command:
 ~~~
