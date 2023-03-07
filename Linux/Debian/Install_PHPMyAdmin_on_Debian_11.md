@@ -29,3 +29,26 @@ Replace "your_server_ip" with the IP address of your server.
 7. You should see the phpMyAdmin login page. Log in with the username "phpmyadmin" and the password you chose during the installation.
 
 That's it! You have now installed phpMyAdmin on your Debian server and can use it to manage your MySQL or MariaDB databases.
+
+
+Note:
+
+Secure MariaDB
+Configure basic MariaDB security features by launching a built-in script:
+~~~~
+sudo mysql_secure_installation
+
+~~~~
+As you have not yet set a root password for your database, hit Enter to skip the initial query. Complete the following queries:
+
+Switch to unix_socket authentication [Y/n] - Enter n to skip.
+Set root password? [Y/n] - Type y and press Enter to create a strong root password for your database. If you already have a root password, enter n to answer the Change the root password question.
+Remove anonymous users? [Y/n] - Type y and press Enter.
+Disallow root login remotely? [Y/n] - Type y and press Enter.
+Remove test database and access to it? [Y/n] - Type y and confirm with Enter.
+Reload privilege tables now? [Y/n] - Type y and confirm with Enter.
+The output shows the MariaDB installation is now secure.
+
+
+
+[How to Install phpMyAdmin on Debian 11](https://phoenixnap.com/kb/how-to-install-phpmyadmin-on-debian)
