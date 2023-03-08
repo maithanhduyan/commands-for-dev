@@ -26,3 +26,82 @@ The apt packages were signed using this key:
 You will need to explicitly install a supported Java runtime environment (JRE), either from your distribution (as described above) or another Java vendor (e.g., Adoptium).
 
 That's all.
+
+# Installing Jenkins on Debian 11 
+
+In this tutorial, we are going to explain in step-by-step detail how to Install Jenkins on Debian 11 OS.
+
+Jenkins is a free open source continuous integration system tool written in Java, that helps developers to keep the code up to date in one place from different local machines. It is used for code automatic deployment, testing, building applications, and kind of securement that the latest code changes are always in the software.
+
+Installing Jenkins on Debian 11 should take up to 10 minutes. Let’s get to work!
+Prerequisites
+A server with Debian 11 as OS
+User privileges: root or non-root user with sudo privileges
+
+Step 1. Update the System
+Since we have a fresh installation of Debian 11, we need to update the packages to its latest versions available:
+
+~~~~
+sudo apt update -y && sudo apt upgrade -y
+~~~~
+Step 2. Install Java
+Jenkins is written in Java, and that is why we need the Java installed on our system along with some dependencies:
+~~~~
+sudo apt install openjdk-11-jdk default-jre gnupg2 apt-transport-https wget -y
+~~~~
+To check whether Java is installed execute the following command:
+~~~~
+java -version
+~~~~
+
+Step 3. Add Jenkins GPG key and PPA
+By default the repository of Debian 11, does not contain the Jenkins, so we need to add manually the key and the PPA.
+~~~~
+wget https://pkg.jenkins.io/debian-stable/jenkins.io.key
+
+sudo apt-key add jenkins.io.key
+
+~~~~
+
+Once, the GPG key is added next is to add the PPA:
+~~~~
+echo "deb https://pkg.jenkins.io/debian-stable binary/" | tee /etc/apt/sources.list.d/jenkins.list
+
+~~~~
+
+Update the repository before you install Jenkins:
+~~~~
+sudo apt update -y
+
+~~~~
+Once, the system is updated with the latest packages, install Jenkins.
+
+Step 4. Install Jenkins
+~~~~
+sudo apt-get install jenkins -y
+
+~~~~
+After the installation, start and enable the Jenkins service, in order for the service to start automatically after system reboot.
+~~~~
+sudo systemctl start jenkins && sudo systemctl enable jenkins
+
+~~~~
+To check the status of the service execute the following command:
+~~~~
+sudo systemctl status jenkins
+
+~~~~
+
+Another way to check if Jenkins, is active and running is to check port 8080
+~~~~
+netstat -tunlp | grep 8080
+
+~~~~
+Step 5. Finish Jenkins Installation
+After successful installation we can finish the installation by accessing the Jenkins Web Interface:
+
+http://127.0.0.1:8080
+
+
+# References
+[](https://www.rosehosting.com/blog/how-to-install-jenkins-on-debian-11/)
