@@ -1,0 +1,10 @@
+version: '3'
+services:
+  code-server:
+    image: codercom/code-server:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config:/home/coder/.config
+      - ./projects:/home/coder/project
+    restart: always
