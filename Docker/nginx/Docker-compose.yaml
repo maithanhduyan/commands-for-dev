@@ -1,0 +1,11 @@
+version: '3'
+services:
+  my-alpine-nginx-web-serverweb-server:
+    image: alpine-nginx-web-server:latest
+    user: root
+    ports:
+      - "80:80"
+    volumes:
+      - ./conf:/etc/nginx/nginx.d
+      - ./www:/var/www/html
+    restart: always
