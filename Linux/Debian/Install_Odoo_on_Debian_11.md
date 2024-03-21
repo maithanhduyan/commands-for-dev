@@ -1,3 +1,5 @@
+
+
 ### Install Odoo on Debian 11
 1. Update the system packages:
 ~~~
@@ -14,7 +16,8 @@
 ~~~
 	sudo su - postgres
 	createuser --createdb --username postgres --no-createrole --no-superuser openpg
-	createdb --username postgres --owner odoo --encoding UTF8 --template template0 odoo_db
+	createuser --createdb --username odoo --no-createrole --no-superuser openpg
+	createdb --username postgres --owner postgres --encoding UTF8 --template template0 odoo_db
 	exit
 ~~~
 
