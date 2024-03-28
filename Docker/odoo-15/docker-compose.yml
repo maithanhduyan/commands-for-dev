@@ -1,0 +1,92 @@
+version: "3.9"
+services:
+  postgresql_db:
+    image: postgres:latest
+    user: root
+    networks:
+      - internal_network
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo15@2024
+      - POSTGRES_DB=postgres
+      # - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      # - odoo-postgresql_db-data:/var/lib/postgresql/data/pgdata
+      - ./postgresql/data:/var/lib/postgresql/data
+    restart: always # run as a service
+
+  odoo:
+    container_name: odoo-15.0
+    image: odoo:15.0
+    user: root
+    volumes:
+      - ./odoo/addons:/mnt/extra-addons # contain odoo dev modules
+      - ./odoo:/etc/odoo # contain config and log
+      - ./odoo/web-data:/var/lib/odoo # contain odoo web data
+    networks:
+      - internal_network
+    ports:
+      - "8069:8069" # web
+      - "8072:8072" # live chat
+    depends_on:
+      - postgresql_db
+    environment:
+      - HOST=postgresql_db
+      - USER=odoo
+      - PASSWORD=odoo15@2024
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    user: root
+    networks:
+      - internal_network
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
+      PGADMIN_DEFAULT_PASSWORD: pgadminpwd
+    ports:
+      - "5050:80"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+      # - ./pgadmin/pgadmin4:/pgadmin4
+    depends_on:
+      - postgresql_db
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    user: root
+    restart: unless-stopped
+    networks:
+      - internal_network
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d # configuration in default.conf
+      - ./nginx/ssl:/etc/nginx/ssl # Secure Sockets Layer (SSL) file: server-sample.crt, server-sample.key
+      - ./nginx/html:/usr/share/nginx/html # static html web for example
+      - ./nginx/log:/var/log/nginx/
+      - ./certbot/letsencrypt:/etc/letsencrypt
+      - ./certbot/data:/var/www/html
+
+  certbot:
+    container_name: certbot
+    image: certbot/certbot:latest
+    # command: certonly --webroot --webroot-path=/var/www/html --email youremail@mail.com --agree-tos --no-eff-email -d domain.com -d www.domain.com
+    networks:
+      - internal_network
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/logs:/var/log/letsencrypt
+      - ./certbot/data:/var/www/html
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    restart: unless-stopped
+
+networks:
+  internal_network:
+    driver: bridge
+volumes:
+  odoo-web-data:
+  odoo-db-data:
