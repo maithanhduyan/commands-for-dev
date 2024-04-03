@@ -24,7 +24,7 @@ services:
     volumes:
       - ./odoo/addons:/mnt/extra-addons # contain odoo dev modules
       - ./odoo:/etc/odoo # contain config and log
-      - ./odoo/web-data:/var/lib/odoo # contain odoo web data
+      - ./odoo/web-data:/root/.local/share/Odoo # contain odoo web data
     networks:
       - internal_network
     ports:
@@ -74,7 +74,8 @@ services:
   certbot:
     container_name: certbot
     image: certbot/certbot:latest
-    # command: certonly --webroot --webroot-path=/var/www/html --email youremail@mail.com --agree-tos --no-eff-email -d domain.com -d www.domain.com
+    user: root
+    command: certbot certonly –webroot -w /var/www/html --email admin@example.com --agree-tos --no-eff-email -d example.com 
     networks:
       - internal_network
     volumes:
