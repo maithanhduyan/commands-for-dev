@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  backup-odoo:
+    container_name: odoo-backup
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./backup:/odoobackup/

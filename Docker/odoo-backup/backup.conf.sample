@@ -1,0 +1,9 @@
+[odoo]
+url = http://192.168.1.1:8069
+db = odoo_db
+user = odoo
+password = odoopwd
+
+[backup]
+master_password = admin
+format = zip
