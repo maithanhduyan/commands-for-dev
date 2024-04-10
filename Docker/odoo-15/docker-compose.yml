@@ -66,10 +66,10 @@ services:
     volumes:
       - ./nginx/conf:/etc/nginx/conf.d # configuration in default.conf
       - ./nginx/ssl:/etc/nginx/ssl # Secure Sockets Layer (SSL) file: server-sample.crt, server-sample.key
-      - ./nginx/html:/usr/share/nginx/html # static html web for example
+      - ./nginx/html:/var/www/html # static html web for example
       - ./nginx/log:/var/log/nginx/
       - ./certbot/letsencrypt:/etc/letsencrypt
-      - ./certbot/data:/var/www/html
+      # - ./certbot/data:/var/www/html
 
   certbot:
     container_name: certbot
@@ -79,9 +79,9 @@ services:
     networks:
       - internal_network
     volumes:
-      - ./certbot/conf:/etc/letsencrypt
+      - ./nginx/ssl/letsencrypt:/etc/letsencrypt
       - ./certbot/logs:/var/log/letsencrypt
-      - ./certbot/data:/var/www/html
+      - ./nginx/html:/var/www/html # static html web for example      
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     restart: unless-stopped
 

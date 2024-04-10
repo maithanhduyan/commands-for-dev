@@ -5,3 +5,6 @@
 
 - stop
 > docker compose -f "Docker\odoo-15\docker-compose.yml" down 
+
+- restart
+> docker compose -f "Docker\odoo-15\docker-compose.yml" restart 
