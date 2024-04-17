@@ -2,8 +2,14 @@ version: "3.9"
 services:
   backup-odoo:
     container_name: odoo-backup
+    networks:
+      - internal_network
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     volumes:
       - ./backup:/odoobackup/
+
+networks:
+  internal_network:
+    driver: bridge

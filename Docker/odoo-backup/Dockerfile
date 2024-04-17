@@ -1,7 +1,9 @@
 # Sử dụng image Python 3.9
 FROM python:3.9-slim
 
-# Cài đặt thư viện requests
+# Update pip
+RUN python -m pip install --upgrade pip
+# Cài đặt thư viện requests, schedule
 RUN pip install requests
 RUN pip install schedule
 

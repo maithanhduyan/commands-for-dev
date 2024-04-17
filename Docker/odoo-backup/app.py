@@ -40,9 +40,17 @@ def backup():
         print("Failed to send backup request.")
 
 schedule.every().sunday.at("00:00").do(backup)
+
 # test
 # backup()
 
-while True:
-    schedule.run_pending()
-    time.sleep(100)
+if __name__ == "__main__":
+    print(datetime.now(), "Running Odoo backup ...")
+    # Tạo công việc chạy backup mỗi tuần vào Chủ nhật lúc 0 giờ
+    # schedule.every().sunday.at("00:00").do(backup)
+    backup()
+    
+    # Loop : Vòng lặp chạy tác vụ
+    while True:
+        schedule.run_pending()
+        time.sleep(5)
