@@ -1,0 +1,61 @@
+version: "3.9"
+services:
+  postgresql_db:
+    image: postgres:latest
+    container_name: postgresql
+    # networks:
+    #   - internal_network
+    # command: ls
+    # ports:
+    #   - "5432:5432"
+    environment:
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo17@2024
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    restart: always # run as a service
+
+  odoo:
+    image: odoo:17.0
+    container_name: odoo-17
+    # networks:
+    #   - internal_network
+    # build:
+    #   context: .
+    #   dockerfile: ./odoo/Dockerfile
+    volumes:
+      - ./odoo/addons:/mnt/extra-addons # contain odoo dev modules
+      - ./odoo/conf:/etc/odoo # contain config and log
+      - ./odoo/web-data:/var/lib/odoo # contain odoo web data
+      - ./odoo/log:/var/log/odoo # contain odoo log data
+    ports:
+      - "8069:8069" # web
+      - "8072:8072" # live chat
+    depends_on:
+      - postgresql_db
+    environment:
+      - HOST=postgresql_db
+      - PORT=5432
+      - USER=odoo
+      - PASSWORD=odoo17@2024
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    # networks:
+    #   - internal_network
+    restart: unless-stopped
+    ports:
+      - "80:80" # public port
+      - "127.0.0.1:443:443" # public port
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d # configuration in default.conf
+      - ./nginx/ssl:/etc/nginx/ssl # Secure Sockets Layer (SSL) file: server-sample.crt, server-sample.key
+      - ./nginx/html:/var/www/html # static html web for example
+      - ./nginx/log:/var/log/nginx/
+      - ./certbot/letsencrypt:/etc/nginx/ssl/letsencrypt
+
+# networks:
+#   internal_network:
+#     driver: bridge
