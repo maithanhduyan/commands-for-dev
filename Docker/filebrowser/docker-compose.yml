@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:v2
+    container_name: filebrowser
+    user: root
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./data:/srv # data
+    # command: filebrowser -r /srv
+    environment:
+      - PUID=admin
+      - PGID=password
