@@ -48,7 +48,7 @@ if __name__ == "__main__":
     print(datetime.now(), "Running Odoo backup ...")
     # Tạo công việc chạy backup mỗi tuần vào Chủ nhật lúc 0 giờ
     # schedule.every().sunday.at("00:00").do(backup)
-    backup()
+    # backup()
     
     # Loop : Vòng lặp chạy tác vụ
     while True:

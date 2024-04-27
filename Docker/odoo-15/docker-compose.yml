@@ -21,13 +21,13 @@ services:
     restart: always # run as a service
 
   odoo:
-    container_name: odoo-15.0
+    container_name: odoo-15
     image: odoo:15.0
     user: root
     volumes:
       - ./odoo/addons:/mnt/extra-addons # contain odoo dev modules
       - ./odoo:/etc/odoo # contain config and log
-      - ./odoo/web-data:/root/.local/share/Odoo # contain odoo web data
+      - ./odoo/web-data:/var/lib/odoo # contain odoo web data
     networks:
       - internal_network
     ports:

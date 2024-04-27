@@ -1,0 +1,29 @@
+version: "3.0"
+services:
+  postgresql_db:
+    image: postgres:latest
+    container_name: postgresql_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=memos
+      - POSTGRES_PASSWORD=memospwd2024
+      - POSTGRES_DB=memos
+      # - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      # - odoo-postgresql_db-data:/var/lib/postgresql/data/pgdata
+      - ./postgresql/data:/var/lib/postgresql/data
+    restart: always # run as a service
+
+  memos:
+    image: neosmemo/memos:stable
+    container_name: memos-postgresql
+    ports:
+      - 5230:5230
+    depends_on:
+      - postgresql_db
+    volumes:
+      - ./data/:/var/opt/memos
+    environment:
+      - MEMOS_DRIVER=postgres
+      - MEMOS_DSN=postgresql://memos:memospwd2024@localhost:5432/memos

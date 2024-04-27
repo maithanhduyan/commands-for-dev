@@ -20,3 +20,10 @@
 
 - restart
 > docker compose -f "/home/odoo-17/Docker-compose.yml" restart 
+
+
+### Deploy
+- Create new user non root
+> adduser odoo-17
+> usermod -aG sudo odoo-17
+

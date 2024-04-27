@@ -29,9 +29,9 @@ services:
       - ./odoo/conf:/etc/odoo # contain config and log
       - ./odoo/web-data:/var/lib/odoo # contain odoo web data
       - ./odoo/log:/var/log/odoo # contain odoo log data
-    ports:
-      - "8069:8069" # web
-      - "8072:8072" # live chat
+    # ports:
+      # - "8069:8069" # web
+      # - "8072:8072" # live chat
     depends_on:
       - postgresql_db
     environment:
@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
     ports:
       - "80:80" # public port
-      - "127.0.0.1:443:443" # public port
+      - "443:443" # public port
     volumes:
       - ./nginx/conf:/etc/nginx/conf.d # configuration in default.conf
       - ./nginx/ssl:/etc/nginx/ssl # Secure Sockets Layer (SSL) file: server-sample.crt, server-sample.key
