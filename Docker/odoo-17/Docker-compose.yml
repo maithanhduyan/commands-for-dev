@@ -3,9 +3,8 @@ services:
   postgresql_db:
     image: postgres:latest
     container_name: postgresql
-    # networks:
-    #   - internal_network
-    # command: ls
+    networks:
+      - internal_network
     # ports:
     #   - "5432:5432"
     environment:
@@ -19,8 +18,8 @@ services:
   odoo:
     image: odoo:17.0
     container_name: odoo-17
-    # networks:
-    #   - internal_network
+    networks:
+      - internal_network
     # build:
     #   context: .
     #   dockerfile: ./odoo/Dockerfile
@@ -29,9 +28,9 @@ services:
       - ./odoo/conf:/etc/odoo # contain config and log
       - ./odoo/web-data:/var/lib/odoo # contain odoo web data
       - ./odoo/log:/var/log/odoo # contain odoo log data
-    # ports:
-      # - "8069:8069" # web
-      # - "8072:8072" # live chat
+    ports:
+      - "8069:8069" # web
+      - "8072:8072" # live chat
     depends_on:
       - postgresql_db
     environment:
@@ -43,8 +42,8 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    # networks:
-    #   - internal_network
+    networks:
+      - internal_network
     restart: unless-stopped
     ports:
       - "80:80" # public port
@@ -56,6 +55,20 @@ services:
       - ./nginx/log:/var/log/nginx/
       - ./certbot/letsencrypt:/etc/nginx/ssl/letsencrypt
 
-# networks:
-#   internal_network:
-#     driver: bridge
+  backup-odoo:
+    image: odoo-backup:latest
+    container_name: odoo-backup
+    networks:
+      - internal_network
+    # build:
+    #   context: .
+    #   dockerfile: ./backup/Dockerfile
+    volumes:
+      - ./backup/storage:/odoo-backup/storage
+    depends_on:
+      - odoo
+    restart: always # run as a service
+
+networks:
+  internal_network:
+    driver: bridge
