@@ -97,6 +97,31 @@ EOF
 
 echo "Tạo 2 file: /home/coder/ssl/fullchain.pem và /home/coder/ssl/privkey.pem hoàn tất." 
 
+## Tạo service cho code-server - Create code-server as a service.
+# nano /root/.config/code-server/config.yaml
+# sudo nano /lib/systemd/system/code-server.service
+# systemctl daemon-reload
+# sudo systemctl start code-server
+# 
+cat <<EOF > /lib/systemd/system/code-server.service
+[Unit]
+Description=code-server
+After=nginx.service
+
+[Service]
+Type=simple
+Environment=PASSWORD=dc7119311305b3f10166bd5c
+ExecStart=code-server --bind-addr 0.0.0.0:8443 --cert /home/coder/ssl/fullchain.pem --cert-key /home/coder/ssl/privkey.pem
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+
+systemctl daemon-reload
+systemctl start code-server
+
 # chạy code-server dưới https port: 8443
 # certbot 
 # code-server --bind-addr 0.0.0.0:8443 --cert /etc/letsencrypt/live/example.com/fullchain.pem --cert-key /etc/letsencrypt/live/example.com/privkey.pem
@@ -104,3 +129,7 @@ echo "Tạo 2 file: /home/coder/ssl/fullchain.pem và /home/coder/ssl/privkey.pe
 # WARNING : Không an toàn
 # chạy code-server dưới https với 2 file vừa tạo 
 # code-server --bind-addr 0.0.0.0:8443 --cert /home/coder/ssl/fullchain.pem --cert-key /home/coder/ssl/privkey.pem
+
+
+
+
