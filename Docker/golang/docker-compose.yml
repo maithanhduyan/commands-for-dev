@@ -1,0 +1,8 @@
+version: "3"
+services:
+  golang-app:
+    # image: golang-app:lastest
+    build: .
+    container_name: golang-app
+    ports:
+        - "8080:8080"
