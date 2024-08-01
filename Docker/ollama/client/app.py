@@ -3,7 +3,7 @@ import requests
 
 # NOTE: ollama must be running for this to work, start the ollama app or run `ollama serve`
 model = "llama3.1"  # TODO: update this for whatever model you wish to use
-sales ="sales"
+sales = "sales"
 
 def chat(messages):
     r = requests.post(
