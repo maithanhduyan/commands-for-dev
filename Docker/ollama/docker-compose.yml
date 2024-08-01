@@ -1,0 +1,12 @@
+version: "3"
+services:
+  ollama:
+    container_name: ollama
+    image: ollama/ollama:latest
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./models:/root/.ollama/
+      - ./customize:/home/ollama/customize
+    # command: ["ollama", "--version"]
