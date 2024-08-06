@@ -172,7 +172,7 @@ msgstr ""
 #. module: om_fiscal_year
 #: model:ir.ui.menu,name:om_fiscal_year.menu_action_change_lock_date
 msgid "Lock Dates"
-msgstr ""
+msgstr "Khóa ngày"
 
 #. module: om_fiscal_year
 #: model:ir.actions.act_window,name:om_fiscal_year.action_view_change_lock_date
@@ -200,8 +200,7 @@ msgid ""
 "No users can edit journal entries related to a tax prior and inclusive of "
 "this date."
 msgstr ""
-"Aucun utilisateur ne peut modifier des pièces comptables relatives à une "
-"taxe avant et au jour de cette date."
+
 
 #. module: om_fiscal_year
 #: model:ir.model.fields,help:om_fiscal_year.field_res_config_settings__fiscalyear_lock_date
@@ -209,9 +208,7 @@ msgid ""
 "No users, including Advisers, can edit accounts prior to and inclusive of "
 "this date. Use it for fiscal year locking for example."
 msgstr ""
-"Aucun utilisateur, y compris les conseillers, ne peuvent modifier les "
-"comptes comptables avant cette date inclusivement. Utilisez cela pour "
-"verrouiller l'exercice fiscal par exemple."
+
 
 #. module: om_fiscal_year
 #: model:ir.model.fields,help:om_fiscal_year.field_change_lock_date__fiscalyear_lock_date
@@ -219,9 +216,7 @@ msgid ""
 "No users, including Advisers, can edit accounts prior to and inclusive of "
 "this date. Use it for fiscal year locking."
 msgstr ""
-"Aucun utilisateur, y compris les conseillers, ne peuvent modifier les "
-"comptes comptables avant cette date inclusivement. Utilisez cela pour "
-"verrouiller l'exercice fiscal par exemple."
+
 
 #. module: om_fiscal_year
 #: model:ir.model.fields,help:om_fiscal_year.field_res_config_settings__period_lock_date
@@ -230,9 +225,7 @@ msgid ""
 "of this date. Use it for period locking inside an open fiscal year, for "
 "example."
 msgstr ""
-"Seuls les utilisateurs avec le rôle 'Conseiller' peuvent modifier les "
-"comptes comptables avant cette date inclusivement. Utilisez cela pour "
-"verrouiller des périodes pendant l'exercice fiscal par exemple."
+
 
 #. module: om_fiscal_year
 #: model:ir.model.fields,help:om_fiscal_year.field_change_lock_date__period_lock_date
@@ -278,8 +271,7 @@ msgid ""
 "There are still unposted entries in the period you want to lock. You should "
 "either post or delete them."
 msgstr ""
-"Il y a toujours des entrées non comptabilisées dans la période que vous "
-"souhaitez verrouiller. Vous devez les comptabiliser ou les supprimer."
+
 
 #. module: om_fiscal_year
 #: code:addons/om_fiscal_year/models/res_company.py:0
@@ -288,9 +280,7 @@ msgid ""
 "There are still unreconciled bank statement lines in the period you want to "
 "lock.You should either reconcile or delete them."
 msgstr ""
-"Il reste des lignes de relevé bancaire non rapprochées dans la période que "
-"vous souhaitez verrouiller. Vous devez soit les rapprocher, soit les "
-"supprimer."
+
 
 #. module: om_fiscal_year
 #: code:addons/om_fiscal_year/wizard/change_lock_date.py:0
@@ -305,5 +295,4 @@ msgid ""
 "You can not have an overlap between two fiscal years, please correct the "
 "start and/or end dates of your fiscal years."
 msgstr ""
-"Vous ne pouvez pas avoir de chevauchement entre deux exercices, veuillez "
-"corriger les dates de début et/ou de fin de vos exercices."
+

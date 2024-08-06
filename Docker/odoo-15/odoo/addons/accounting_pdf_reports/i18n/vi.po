@@ -267,7 +267,7 @@ msgstr ""
 #. module: accounting_pdf_reports
 #: model:account.financial.report,name:accounting_pdf_reports.account_financial_report_assets0
 msgid "Assets"
-msgstr ""
+msgstr "Tài sản"
 
 #. module: accounting_pdf_reports
 #: model:ir.ui.menu,name:accounting_pdf_reports.menu_finance_audit_reports
@@ -888,8 +888,7 @@ msgid ""
 "Print Report with the currency column if the currency differs from the "
 "company currency."
 msgstr ""
-"Стовпець валюти, якщо валюта відрізняється від валюти компанії при друку "
-"звіту."
+
 
 #. module: accounting_pdf_reports
 #: model:account.financial.report,name:accounting_pdf_reports.account_financial_report_profitloss_toreport0

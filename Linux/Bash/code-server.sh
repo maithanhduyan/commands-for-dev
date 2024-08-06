@@ -130,6 +130,6 @@ systemctl start code-server
 # chạy code-server dưới https với 2 file vừa tạo 
 # code-server --bind-addr 0.0.0.0:8443 --cert /home/coder/ssl/fullchain.pem --cert-key /home/coder/ssl/privkey.pem
 
-
+ufw allow 8443
 
 

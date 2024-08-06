@@ -1,15 +1,13 @@
-version: "3.9"
+version: "3"
 services:
   postgresql_db:
     container_name: postgresql
     image: postgres:latest
     user: root
-    networks:
-      - internal_network
+    # networks:
+    #   - internal_network
     # ports:
     #   - "5432:5432"
-    expose:
-      - "5432"
     environment:
       - POSTGRES_USER=odoo
       - POSTGRES_PASSWORD=odoo15@2024
@@ -24,15 +22,17 @@ services:
     container_name: odoo-15
     image: odoo:15.0
     user: root
+    restart: unless-stopped
     volumes:
       - ./odoo/addons:/mnt/extra-addons # contain odoo dev modules
       - ./odoo:/etc/odoo # contain config and log
       - ./odoo/web-data:/var/lib/odoo # contain odoo web data
-    networks:
-      - internal_network
-    ports:
-      - "8069:8069" # web
-      - "8072:8072" # live chat
+      - ./odoo/log:/var/log/odoo
+    # networks:
+    #   - internal_network
+    # ports:
+    #   - "8069:8069" # web
+    #   - "8072:8072" # live chat
     depends_on:
       - postgresql_db
     environment:
@@ -40,29 +40,30 @@ services:
       - USER=odoo
       - PASSWORD=odoo15@2024
 
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    user: root
-    networks:
-      - internal_network
-    environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
-      PGADMIN_DEFAULT_PASSWORD: pgadminpwd
-    ports:
-      - "5050:80"
-    volumes:
-      - ./pgadmin:/var/lib/pgadmin
-      # - ./pgadmin/pgadmin4:/pgadmin4
-    depends_on:
-      - postgresql_db
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: pgadmin
+  #   user: root
+  #   networks:
+  #     - internal_network
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
+  #     PGADMIN_DEFAULT_PASSWORD: pgadminpwd
+  #   ports:
+  #     - "5050:80"
+  #   volumes:
+  #     - ./pgadmin:/var/lib/pgadmin
+  #     # - ./pgadmin/pgadmin4:/pgadmin4
+  #   depends_on:
+  #     - postgresql_db
 
   nginx:
     container_name: nginx
     image: nginx:latest
-    user: root
+    # user: root
     restart: unless-stopped
-    networks:
-      - internal_network
+    # networks:
+    #   - internal_network
     ports:
       - "80:80"
       - "443:443"
@@ -72,40 +73,50 @@ services:
       - ./nginx/html:/var/www/html # static html web for example
       - ./nginx/log:/var/log/nginx/
       - ./certbot/letsencrypt:/etc/letsencrypt
+      # - ./nginx/run:/var/run
       # - ./certbot/data:/var/www/html
 
-  certbot:
-    container_name: certbot
-    image: certbot/certbot:latest
-    user: root
-    command: certbot certonly –webroot -w /var/www/html --email admin@example.com --agree-tos --no-eff-email -d example.com 
-    networks:
-      - internal_network
-    volumes:
-      - ./nginx/ssl/letsencrypt:/etc/letsencrypt
-      - ./certbot/logs:/var/log/letsencrypt
-      - ./nginx/html:/var/www/html # static html web for example      
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    restart: unless-stopped
-    depends_on:
-      - nginx
+  # logrotate:
+  #   container_name: logrotate
+  #   image: alpine:3.13
+  #   # user: root
+  #   restart: always
+  #   volumes:
+  #     - ./nginx/log:/var/log/nginx/
+  #     - ./nginx/run:/var/run
+  #     - ./nginx/cron/cron.d:/etc/periodic/daily
+  #   pid: service:nginx
+  #   command: ["crond", "-f", "-L", "/dev/stdout"]
 
-  backup-odoo:
-    container_name: odoo-backup
-    networks:
-      - internal_network
-    build:
-      context: .
-      dockerfile: ./backup/Dockerfile
-    volumes:
-      - ./backup/storage:/odoobackup/
-    depends_on:
-      - odoo
-    restart: always # run as a service
+  # certbot:
+  #   container_name: certbot
+  #   image: certbot/certbot:latest
+  #   user: root
+  #   command: certbot certonly –webroot -w /var/www/html --email admin@example.com --agree-tos --no-eff-email -d example.com 
+  #   networks:
+  #     - internal_network
+  #   volumes:
+  #     - ./nginx/ssl/letsencrypt:/etc/letsencrypt
+  #     - ./certbot/logs:/var/log/letsencrypt
+  #     - ./nginx/html:/var/www/html # static html web for example      
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - nginx
 
-networks:
-  internal_network:
-    driver: bridge
-volumes:
-  odoo-web-data:
-  odoo-db-data:
+  # backup-odoo:
+  #   container_name: odoo-backup
+  #   networks:
+  #     - internal_network
+  #   build:
+  #     context: .
+  #     dockerfile: ./backup/Dockerfile
+  #   volumes:
+  #     - ./backup/storage:/odoobackup/
+  #   depends_on:
+  #     - odoo
+  #   restart: always # run as a service
+
+# networks:
+#   internal_network:
+#     driver: bridge

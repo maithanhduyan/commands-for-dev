@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 14.0\n"
+"Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-07-07 07:13+0000\n"
 "PO-Revision-Date: 2022-07-07 07:13+0000\n"
@@ -189,8 +189,6 @@ msgid ""
 "Comparison between practical and theoretical amount. This measure tells you "
 "if you are below or over budget."
 msgstr ""
-"Порівняння практичної та теоритичної сум. Цей захід сповістить Вас при "
-"недовикористанні або превищенні бюджету."
 
 #. module: om_account_budget
 #: model_terms:ir.ui.view,arch_db:om_account_budget.crossovered_budget_view_form

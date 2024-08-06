@@ -23,8 +23,7 @@ msgid ""
 "&amp;nbsp;<i class=\"fa fa-info-circle\" role=\"img\" title=\"This is the "
 "default (company) credit limit.\"/>"
 msgstr ""
-"&amp;nbsp;<i class=\"fa fa-info-circle\" role=\"img\" title=\"This is the "
-"default (company) credit limit.\"/>"
+
 
 #. module: om_credit_limit
 #: model_terms:ir.ui.view,arch_db:om_credit_limit.view_move_form
@@ -41,9 +40,7 @@ msgid ""
 "specific.\" aria-label=\"Values set here are company-specific.\" role=\"img"
 "\"/>"
 msgstr ""
-"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
-"specific.\" aria-label=\"Values set here are company-specific.\" role=\"img"
-"\"/>"
+
 
 #. module: om_credit_limit
 #: model:ir.model.fields,help:om_credit_limit.field_res_config_settings__account_default_credit_limit
@@ -61,8 +58,7 @@ msgid ""
 "A limit of zero means no limit. A limit of -1 will use the default (company) "
 "limit."
 msgstr ""
-"Une limite de zéro signifie pas de limite. Une limite de -1 utilisera la "
-"limite par défaut (entreprise)."
+
 
 #. module: om_credit_limit
 #: model:ir.model.fields,field_description:om_credit_limit.field_res_company__account_credit_limit
@@ -178,6 +174,4 @@ msgid ""
 "Trigger alerts when creating Invoices and Sales Orders for Partners with a "
 "Total Receivable amount exceeding a limit."
 msgstr ""
-"Déclenchez des alertes lors de la création de factures et de commandes "
-"client pour les partenaires dont le montant total des créances dépasse une "
-"limite."
+

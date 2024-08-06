@@ -225,8 +225,6 @@ msgstr ""
 #, python-format
 msgid "Form content is missing, this report cannot be printed."
 msgstr ""
-"Le contenu du formulaire est manquant, le rapport ne peut pas être "
-"imprimé."
 
 #. module: om_account_daily_reports
 #: model:ir.model.fields,field_description:om_account_daily_reports.field_account_bankbook_report__id
@@ -242,9 +240,6 @@ msgid ""
 "If you selected date, this field allow you to add a row to display the "
 "amount of debit/credit/balance that precedes the filter you've set."
 msgstr ""
-"Si vous avez sélectionné la date, ce champ vous permet d'ajouter une "
-"ligne pour afficher le montant de débit / crédit / solde qui précède "
-"le filtre que vous avez défini."
 
 #. module: om_account_daily_reports
 #: model:ir.model.fields,field_description:om_account_daily_reports.field_account_bankbook_report__initial_balance

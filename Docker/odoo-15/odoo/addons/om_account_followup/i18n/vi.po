@@ -133,25 +133,6 @@ msgid ""
 "</div>\n"
 "            "
 msgstr ""
-"\n"
-"<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-"
-"serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, "
-"255, 255); \">\n"
-"\n"
-"    <p>Cher ${object.name},</p>\n"
-"    <p>Exception faite en cas d’erreur de la nôtre, il semble que le montant "
-"suivant reste impayé. S’ll vous plaît, prenez\n"
-"mesures appropriées pour effectuer ce paiement dans les 8 prochains jours.\n"
-"\n"
-"Votre paiement aurait-il été effectué après l’envoi de ce courrier, veuillez "
-"ignorer ce message. N’hésitez pas à\n"
-"contactez notre service de comptabilité.    </p>\n"
-"<br/>Sinceres salutations<br/>\n"
-"   <br/>${user.name}<br/>\n"
-"<br/>${object.get_followup_table_html() | coffre-fort}    <br/>\n"
-"\n"
-"</div>\n"
-"            "
 
 #. module: om_account_followup
 #: model:mail.template,body_html:om_account_followup.email_template_om_account_followup_level2
@@ -188,26 +169,6 @@ msgid ""
 "</div>\n"
 "            "
 msgstr ""
-"\n"
-"<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-"
-"serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, "
-"255, 255); \">\n"
-"    \n"
-"    <p>Cher ${object.name},</p>\n"
-"    <p>Malgré plusieurs rappels, votre compte n’est toujours pas réglé.\n"
-"À moins que le paiement intégral ne soit effectué dans les 8 prochains "
-"jours, une action en justice pour le recouvrement de la dette sera\n"
-"avis supplémentaire.\n"
-"J’espère que cette action s’avérera inutile et les détails des paiements dus "
-"sont imprimés ci-dessous.\n"
-"En cas de questions à ce sujet, n’hésitez pas à contacter notre service "
-"comptable.</p>\n"
-"<br/>Sinceres salutations<br/>\n"
-"<br/>${user.name}<br/>\n"
-"<br/>${object.get_followup_table_html() | coffre-fort}    <br/>\n"
-"\n"
-"</div>\n"
-"            "
 
 #. module: om_account_followup
 #: model:mail.template,body_html:om_account_followup.email_template_om_account_followup_default
@@ -240,23 +201,7 @@ msgid ""
 "</div>\n"
 "            "
 msgstr ""
-"\n"
-"<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-"
-"serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, "
-"255, 255); \">\n"
-"    \n"
-"    <p>Cher ${object.name},</p>\n"
-"    <p>Exception faite en cas d’erreur de la nôtre, il semble que le montant "
-"suivant reste impayé. S’ll vous plaît, prenez\n"
-"mesures appropriées pour effectuer ce paiement dans les 8 prochains jours.\n"
-"Votre paiement aurait-il été effectué après l’envoi de ce courrier, veuillez "
-"ignorer ce message. N’hésitez pas à\n"
-"contactez notre service de comptabilité.    </p>\n"
-"<br/>Sinceres salutations<br/>\n"
-"<br/>${user.name}<br/>\n"
-"<br/>${object.get_followup_table_html() | coffre-fort}<br/>\n"
-"</div>\n"
-"            "
+
 
 #. module: om_account_followup
 #: model:mail.template,body_html:om_account_followup.email_template_om_account_followup_level1
@@ -298,30 +243,6 @@ msgid ""
 "</div>\n"
 "            "
 msgstr ""
-"\n"
-"<div style=\"font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-"
-"serif; font-size: 12px; color: rgb(34, 34, 34); background-color: rgb(255, "
-"255, 255); \">\n"
-"    \n"
-"    <p>Cher ${object.name},</p>\n"
-"   <p>Nous sommes déçus de voir que, malgré l’envoi d’un rappel, que votre "
-"compte est maintenant sérieusement en retard.\n"
-"Il est essentiel que le paiement immédiat soit effectué, sinon nous devrons "
-"envisager de mettre un arrêt sur votre compte\n"
-"ce qui signifie que nous ne serons plus en mesure de fournir à votre "
-"entreprise (biens/services).\n"
-"Veuillez prendre les mesures appropriées pour effectuer ce paiement dans les "
-"8 prochains jours.\n"
-"S’il y a un problème avec le paiement de la facture que nous ne connaissons "
-"pas, n’hésitez pas à contacter notre\n"
-"Département. afin que nous puissions résoudre la question rapidement.\n"
-"Les détails des paiements dus sont imprimés ci-dessous. </p>\n"
-"<br/>Sinceres salutations<br/>\n"
-"<br/>${user.name}<br/>\n"
-"<br/>${object.get_followup_table_html() | coffre-fort}    <br/>\n"
-"\n"
-"</div>\n"
-"            "
 
 #. module: om_account_followup
 #: code:addons/om_account_followup/wizard/followup_print.py:0
@@ -372,8 +293,6 @@ msgstr ""
 #, python-format
 msgid "%s partners have no credits and as such the action is cleared"
 msgstr ""
-"%s partenaires n’ont pas de crédits et, en tant que tels, l’action est "
-"autorisée"
 
 #. module: om_account_followup
 #: model_terms:ir.ui.view,arch_db:om_account_followup.view_partner_inherit_followup_form
@@ -431,8 +350,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:om_account_followup.view_partner_inherit_followup_form
 msgid "Action to be taken e.g. Give a phonecall, Check if it's paid, ..."
 msgstr ""
-"Mesures à prendre, par exemple Donner un appel téléphonique, Vérifier si "
-"c’est payé, ..."
+
 
 #. module: om_account_followup
 #: model_terms:ir.ui.view,arch_db:om_account_followup.view_om_account_followup_followup_line_form
@@ -499,10 +417,7 @@ msgid ""
 "                            order to exclude it from the next follow-up\n"
 "                            actions."
 msgstr ""
-"Vous trouverez ci-dessous l’historique des transactions de ce\n"
-"                            client. Vous pouvez cocher « Aucun suivi » dans\n"
-"                            afin de l’exclure du prochain suivi\n"
-"                            Actions."
+
 
 #. module: om_account_followup
 #: model:ir.model.fields,field_description:om_account_followup.field_followup_stat__blocked
@@ -518,8 +433,7 @@ msgstr ""
 #: model:ir.model.fields,help:om_account_followup.field_followup_print__test_print
 msgid "Check if you want to print follow-ups without changing follow-up level."
 msgstr ""
-"Vérifiez si vous souhaitez imprimer des suivis sans changer de niveau de "
-"relance."
+
 
 #. module: om_account_followup
 #: model_terms:ir.actions.act_window,help:om_account_followup.action_om_account_followup_definition_form
@@ -631,8 +545,7 @@ msgid ""
 "Do not change message text, if you want to send email in partner language, "
 "or configure from company"
 msgstr ""
-"Ne modifiez pas le texte du message si vous souhaitez envoyer un e-mail dans "
-"la langue du partenaire ou configurer à partir de l’entreprise"
+
 
 #. module: om_account_followup
 #: model_terms:ir.ui.view,arch_db:om_account_followup.report_followup
@@ -641,9 +554,7 @@ msgid ""
 "                                <br/>\n"
 "                                Date:"
 msgstr ""
-"Document : Relevé de compte client\n"
-"                                <br/>\n"
-"                                Date:"
+
 
 #. module: om_account_followup
 #: model_terms:ir.ui.view,arch_db:om_account_followup.view_om_account_followup_sending_results
@@ -686,7 +597,7 @@ msgstr ""
 #, python-format
 msgid "Email not sent because of email address of partner not filled in"
 msgstr ""
-"E-mail non envoyé en raison de l’adresse e-mail du partenaire non renseignée"
+
 
 #. module: om_account_followup
 #: model:ir.model.fields,field_description:om_account_followup.field_followup_stat__date_move
@@ -821,12 +732,7 @@ msgid ""
 "                    messages to\n"
 "                    the customer."
 msgstr ""
-"Pour chaque étape, spécifiez les actions à entreprendre et le délai de\n"
-"                    Jours. C’est vrai\n"
-"                    possibilité d’utiliser des modèles d’impression et d’e-"
-"mail pour envoyer des modèles spécifiques\n"
-"                    messages à\n"
-"                    le client."
+
 
 #. module: om_account_followup
 #: model:ir.model.fields,help:om_account_followup.field_followup_line__sequence
@@ -834,7 +740,6 @@ msgstr ""
 #: model:ir.model.fields,help:om_account_followup.field_res_users__latest_followup_sequence
 msgid "Gives the sequence order when displaying a list of follow-up lines."
 msgstr ""
-"Donne l’ordre de séquence lors de l’affichage d’une liste de lignes de suivi."
 
 #. module: om_account_followup
 #: model_terms:ir.ui.view,arch_db:om_account_followup.view_om_account_followup_stat_search
@@ -847,8 +752,6 @@ msgid ""
 "He said the problem was temporary and promised to pay 50% before 15th of "
 "May, balance before 1st of July."
 msgstr ""
-"Il a déclaré que le problème était temporaire et a promis de payer 50% avant "
-"le 15 mai, le solde avant le 1er juillet."
 
 #. module: om_account_followup
 #: model:ir.model.fields,field_description:om_account_followup.field_followup_followup__id
@@ -866,8 +769,7 @@ msgid ""
 "If not specified by the latest follow-up level, it will send from the "
 "default email template"
 msgstr ""
-"S’il n’est pas spécifié par le dernier niveau de suivi, il sera envoyé à "
-"partir du modèle d’e-mail par défaut"
+
 
 #. module: om_account_followup
 #: model_terms:ir.ui.view,arch_db:om_account_followup.view_om_account_followup_stat_search
@@ -1071,8 +973,7 @@ msgid ""
 "Optionally you can assign a user to this field, which will make him "
 "responsible for the action."
 msgstr ""
-"Si besoin, vous pouvez assigner un utilisateur à ce champ, ce qui en fera le "
-"responsable de cette action."
+
 
 #. module: om_account_followup
 #: code:addons/om_account_followup/models/partner.py:0
@@ -1133,8 +1034,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:om_account_followup.view_partner_inherit_followup_form
 msgid "Print overdue payments report independent of follow-up line"
 msgstr ""
-"Imprimer le rapport sur les paiements en retard indépendamment de la ligne "
-"de suivi"
+
 
 #. module: om_account_followup
 #: model:ir.model.fields,field_description:om_account_followup.field_followup_line__description
@@ -1269,8 +1169,7 @@ msgid ""
 "The followup plan defined for the current company does not have any followup "
 "action."
 msgstr ""
-"Le plan de suivi défini pour l’entreprise actuelle n’a aucune action de "
-"suivi."
+
 
 #. module: om_account_followup
 #: model:ir.model.fields,help:om_account_followup.field_res_partner__latest_followup_level_id
@@ -1285,8 +1184,7 @@ msgid ""
 "The maximum follow-up level without taking into account the account move "
 "lines with litigation"
 msgstr ""
-"Le niveau de suivi maximal sans tenir compte des lignes de déplacement de "
-"compte avec litige"
+
 
 #. module: om_account_followup
 #: model:ir.model.fields,help:om_account_followup.field_followup_line__delay
@@ -1295,9 +1193,6 @@ msgid ""
 "the reminder. Could be negative if you want to send a polite alert "
 "beforehand."
 msgstr ""
-"Nombre de jours à attendre après la date d'échéance de la facture avant "
-"d'envoyer la relance. Il peut être négatif si vous souhaitez envoyer une "
-"simple invitation avant l'échéance."
 
 #. module: om_account_followup
 #: code:addons/om_account_followup/models/partner.py:0
@@ -1306,8 +1201,6 @@ msgid ""
 "The partner does not have any accounting entries to print in the overdue "
 "report for the current company."
 msgstr ""
-"Le partenaire n’a pas d’écritures comptables à imprimer dans le rapport en "
-"retard de l’entreprise actuelle."
 
 #. module: om_account_followup
 #: code:addons/om_account_followup/models/partner.py:0
@@ -1324,18 +1217,12 @@ msgid ""
 "the\n"
 "                        follow-up levels defined."
 msgstr ""
-"Cette action enverra des e-mails de suivi, imprimera le\n"
-"                        lettres et\n"
-"                        définir les actions manuelles par client, en "
-"fonction de la\n"
-"                        niveaux de suivi définis."
+
 
 #. module: om_account_followup
 #: model:ir.model.fields,help:om_account_followup.field_followup_print__date
 msgid "This field allow you to select a forecast date to plan your follow-ups"
 msgstr ""
-"Ce champ vous permet de sélectionner une date de prévision pour planifier "
-"vos relances"
 
 #. module: om_account_followup
 #: model:ir.model.fields,help:om_account_followup.field_res_partner__payment_next_action
@@ -1344,8 +1231,6 @@ msgid ""
 "This is the next action to be taken.  It will automatically be set when the "
 "partner gets a follow-up level that requires a manual action. "
 msgstr ""
-"C’est la prochaine mesure à prendre.  Il sera automatiquement défini lorsque "
-"le partenaire obtiendra un niveau de suivi nécessitant une action manuelle. "
 
 #. module: om_account_followup
 #: model:ir.model.fields,help:om_account_followup.field_res_partner__payment_next_action_date
@@ -1356,10 +1241,6 @@ msgid ""
 "action. Can be practical to set manually e.g. to see if he keeps his "
 "promises."
 msgstr ""
-"C’est à ce moment-là que le suivi manuel est nécessaire. La date sera "
-"définie sur la date actuelle à laquelle le partenaire obtient un niveau de "
-"suivi qui nécessite une action manuelle. Peut être pratique à régler "
-"manuellement, par exemple pour voir s’il tient ses promesses."
 
 #. module: om_account_followup
 #: model_terms:ir.ui.view,arch_db:om_account_followup.view_om_account_followup_followup_form
@@ -1376,19 +1257,7 @@ msgid ""
 "                        same customer, the actions of the most\n"
 "                        overdue invoice will be executed."
 msgstr ""
-"Pour rappeler aux clients de payer leurs factures, vous pouvez\n"
-"                        définir différentes actions en fonction de la "
-"gravité\n"
-"                        en retard le client est. Ces actions sont "
-"regroupées\n"
-"                        dans les niveaux de suivi qui sont déclenchés "
-"lorsque le\n"
-"                        date d’une facture passée un certain\n"
-"                        nombre de jours. S’il y a d’autres factures en "
-"souffrance pour\n"
-"                        le\n"
-"                        même client, les actions du plus\n"
-"                        la facture en souffrance sera exécutée."
+
 
 #. module: om_account_followup
 #: model_terms:ir.ui.view,arch_db:om_account_followup.account_move_line_partner_tree
@@ -1434,7 +1303,6 @@ msgid ""
 "When processing, it will set the manual action to be taken for that "
 "customer. "
 msgstr ""
-"Lors du traitement, Odoo indiquera l'action manuelle à faire pour ce client."
 
 #. module: om_account_followup
 #: model:ir.model.fields,field_description:om_account_followup.field_res_partner__payment_earliest_due_date
@@ -1453,13 +1321,6 @@ msgid ""
 "installed\n"
 "                            using to top right icon."
 msgstr ""
-"Écrivez ici l’introduction dans la lettre,\n"
-"                            selon le niveau du suivi. Vous pouvez\n"
-"                            utilisez les mots-clés suivants dans le texte. "
-"Ne pas\n"
-"                            oubliez de traduire dans toutes les langues que "
-"vous avez installées\n"
-"                            en utilisant l’icône en haut à droite."
 
 #. module: om_account_followup
 #: code:addons/om_account_followup/models/partner.py:0
@@ -1467,8 +1328,7 @@ msgstr ""
 msgid ""
 "You became responsible to do the next action for the payment follow-up of"
 msgstr ""
-"Vous êtes devenu responsable de faire l’action suivante pour le suivi du "
-"paiement de"
+
 
 #. module: om_account_followup
 #: code:addons/om_account_followup/models/followup.py:0
@@ -1477,8 +1337,7 @@ msgid ""
 "Your description is invalid, use the right legend or %% if you want to use "
 "the percent character."
 msgstr ""
-"Votre description n'est pas correcte, utilisez une légende exacte  ou %% si "
-"vous souhaitez utiliser le caractère pour cent."
+
 
 #. module: om_account_followup
 #: model_terms:ir.ui.view,arch_db:om_account_followup.view_om_account_followup_followup_line_form

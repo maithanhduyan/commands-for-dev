@@ -9,4 +9,3 @@ services:
     volumes:
       - ./models:/root/.ollama/
       - ./customize:/home/ollama/customize
-    # command: ["ollama", "--version"]

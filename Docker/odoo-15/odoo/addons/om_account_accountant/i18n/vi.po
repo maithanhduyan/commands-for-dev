@@ -51,12 +51,12 @@ msgstr ""
 #. module: om_account_accountant
 #: model:ir.ui.menu,name:om_account_accountant.menu_accounting_statement_bank
 msgid "Bank Statements"
-msgstr ""
+msgstr "Báo cáo của Ngân hàng"
 
 #. module: om_account_accountant
 #: model:ir.ui.menu,name:om_account_accountant.menu_accounting_bank_and_cash
 msgid "Bank and Cash"
-msgstr ""
+msgstr "Ngân hàng và Tiền mặt"
 
 #. module: om_account_accountant
 #: model_terms:ir.ui.view,arch_db:om_account_accountant.view_change_lock_date
@@ -66,7 +66,7 @@ msgstr ""
 #. module: om_account_accountant
 #: model:ir.ui.menu,name:om_account_accountant.menu_accounting_statement_cash
 msgid "Cash Registers"
-msgstr ""
+msgstr "Máy tính tiền"
 
 #. module: om_account_accountant
 #: model:ir.model,name:om_account_accountant.model_change_lock_date
