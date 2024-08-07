@@ -1,0 +1,50 @@
+services:
+
+  webui:
+    container_name: webui
+    image: ghcr.io/open-webui/open-webui:main
+    expose:
+     - 8080/tcp
+    ports:
+     - 8080:8080/tcp
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    volumes:
+      - ./open-webui:/app/backend/data
+    depends_on:
+     - ollama
+
+  ollama:
+    container_name: ollama
+    image: ollama/ollama:latest
+    expose:
+     - 11434/tcp
+    ports:
+     - 11434:11434/tcp
+    healthcheck:
+      test: ollama --version || exit 1
+    command: serve
+    volumes:
+      # - ./ollama:/root/.ollama
+      - ./ollama:/root/.ollama/
+      - ./customize:/home/ollama/customize
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['all']
+              capabilities: [gpu]
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    environment:
+      - TUNNEL_URL=http://webui:8080
+    command: tunnel --no-autoupdate
+    depends_on:
+      - webui
+
+volumes:
+  ollama:
+  open-webui:
