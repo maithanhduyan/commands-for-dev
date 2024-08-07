@@ -65,6 +65,7 @@ services:
     #   dockerfile: ./backup/Dockerfile
     volumes:
       - ./backup/storage:/odoo-backup/storage
+      - ./backup/logs:/odoo-backup/logs
     depends_on:
       - odoo
     restart: always # run as a service

@@ -17,12 +17,13 @@ RUN python3.9 -m pip install --no-cache-dir --upgrade \
     pip \
     setuptools \
     wheel
+
 # Cài đặt thư viện requests, schedule
 RUN python3.9 -m pip install --no-cache-dir \
     requests \
     schedule
 
-    COPY . .
+COPY . .
 
 #EXPOSE 5000
 

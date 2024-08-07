@@ -1,5 +1,4 @@
 FROM ubuntu:jammy
-LABEL Odoo S.A.="info@odoo.com"
 
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
 
@@ -80,6 +79,7 @@ RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/od
     && apt-get update \
     && apt-get -y install --no-install-recommends ./odoo.deb \
     && rm -rf /var/lib/apt/lists/* odoo.deb
+
 
 VOLUME ["/var/lib/odoo", "/mnt/extra-addons"]
 
