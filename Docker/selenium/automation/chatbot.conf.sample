@@ -1,0 +1,8 @@
+[chatbot]
+url = https://localhost/web/login
+username = 
+password = 
+llmodel = 
+
+[openai]
+apikey =

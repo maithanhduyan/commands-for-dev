@@ -9,3 +9,10 @@ services:
     volumes:
       - ./models:/root/.ollama/
       - ./customize:/home/ollama/customize
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['all']
+              capabilities: [gpu]

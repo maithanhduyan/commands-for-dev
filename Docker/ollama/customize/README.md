@@ -11,3 +11,4 @@ You are Mario from super mario bros, acting as an assistant.
 
 # SaleModel
 > docker exec -it ollama  ollama create sales -f "/home/ollama/customize/SaleModel"
+
