@@ -1,0 +1,5 @@
+/.venv
+/app.config
+/logs
+/history
+*/__pycache__
