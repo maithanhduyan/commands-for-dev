@@ -1,0 +1,28 @@
+services:
+  selenium:
+    container_name: selenium
+    image: selenium/standalone-chrome
+    ports:
+      - "4444:4444"
+      - "7900:7900" 
+    restart : unless-stopped
+    environment:
+      SE_VNC_NO_PASSWORD: 1
+      SE_NO_VNC_PORT: 7900
+      VNC_PASSWORD: secret  # Mật khẩu noVNC
+
+  chatbot:
+    image: chatbot
+    restart : unless-stopped
+    depends_on:
+      - tunnel
+
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    environment:
+      - TUNNEL_URL=http://localhost:4444
+    command: tunnel --no-autoupdate
+    depends_on:
+      - selenium

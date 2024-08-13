@@ -3,8 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import google.generativeai as genai
 
-async def send_message_to_ai(message, html_tg, driver, LLMODEL , API_KEY):
-    __chat_id__ = html_tg
+async def send_message_to_gemini(message, API_KEY):
 
     # Gửi tin nhắn đến gemini
     genai.configure(api_key=f'{API_KEY}')
@@ -30,25 +29,8 @@ async def send_message_to_ai(message, html_tg, driver, LLMODEL , API_KEY):
 
     # Trả lời cho khách hàng
     if response:
-        # Nếu nhận tin từ gemini thì tìm chat_id và click vào
-        driver.find_element(By.XPATH, f"//span[contains(@class, 'o_DiscussSidebarCategoryItem_name') and contains(text(), '{__chat_id__}')]").click()
-
         print(response.text)
-
-        # Tìm chatbox
-        textarea = driver.find_element(By.XPATH, "//textarea[contains(@class, 'o_ComposerTextInput_textarea')]")
-
-        # Sử dụng JavaScript để đặt nội dung trực tiếp vào chat box
-        driver.execute_script(f"arguments[0].value = `{response.text}`;", textarea)
-
-        # Focus vào chatbox
-        textarea.click()
-
-        # Gửi tin nhắn bằng cách nhấn phím Enter
-        textarea.send_keys(Keys.RETURN)
-
-        # Chuyển focus sang hộp thư đến và chờ tin nhắn tiếp theo
-        driver.find_element(By.XPATH, '//div[@class="o_DiscussSidebarMailbox_item o_DiscussSidebarMailbox_name"]').click()
+        return response.text
 
 def ai_startup(API_KEY):
     genai.configure(api_key=f'{API_KEY}')
