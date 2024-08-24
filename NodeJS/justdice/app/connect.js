@@ -1,3 +1,12 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+// Truy cập biến môi trường
+const dbHost = process.env.DB_HOST;
+const dbName = process.env.DB_NAME;
+const dbPort = process.env.DB_PORT || 3306;
+const dbUser = process.env.DB_USER;
+const dbPass = process.env.DB_PASSWORD;
 
 // import mysql from 'mysql2/promise';
 
@@ -22,10 +31,10 @@
 import mysql from 'mysql2';
 
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'admin',
-    password: 'admin@2024',
-    database: 'justdice'
+    host: dbHost,
+    database: dbName,
+    user: dbUser,
+    password: dbPass,
 });
 
 connection.connect(function(err) {

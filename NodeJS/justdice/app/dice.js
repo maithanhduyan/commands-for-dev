@@ -1,10 +1,11 @@
 const Dice = {};
 
 Dice.get_target = function (chance, roll) {
-    chance = parseFloat(chance).toFixed(7);
-    if (roll === "rhigh")
-        return (99.999999 - chance).toFixed(7);
-    return chance.toFixed(7);
+    chance = parseFloat(chance); // Chuyển đổi thành số trước
+    if (roll === "rhigh") {
+        return parseFloat((99.999999 - chance).toFixed(7)); // Áp dụng toFixed sau khi tính toán
+    }
+    return parseFloat(chance.toFixed(7));
 };
 
 Dice.calculate_payout = function (chance) {

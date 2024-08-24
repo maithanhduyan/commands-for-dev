@@ -1,6 +1,11 @@
+# You are an intelligent programming assistant.
+# This is nodejs project
+
 # Directory tree of C:\Users\tiach\Downloads\commands-for-dev\NodeJS\justdice\app
 
 ├── app/
+│   ├── .dockerignore
+│   ├── .env
 │   ├── admin.js
 │   ├── analytic.py
 │   ├── app.js
@@ -9,7 +14,9 @@
 │   ├── chat.js
 │   ├── client.js
 │   ├── connect.js
+│   ├── connection_pool.js
 │   ├── dice.js
+│   ├── Dockerfile
 │   ├── error_code.js
 │   ├── invest.js
 │   ├── justdice.sql
@@ -19,6 +26,9 @@
 │   ├── seed.js
 │   ├── seed_detail.js
 │   └── users.js
+│   ├── .vscode/
+│   │   ├── launch.json
+│   │   └── settings.json
 │   ├── public/
 │   │   ├── admin.jpg
 │   │   ├── bootstrap-responsive.css
@@ -48,6 +58,7 @@
 import db from "./connect.js";
 import SeedDetail from "./seed_detail.js";
 import User from "./users.js";
+import pool from './connection_pool.js';
 
 const Admin = {};
 
@@ -55,8 +66,27 @@ Admin.initialize = function(app) {
 
     app.get('/admin/users', function(request, response) {
         User.page(1, function(data) {
-            response.render("users", { data: data });
+            response.render("users", { users: data });
         });
+    });
+
+    app.get('/users', async (req, res) => {
+        try {
+            // Lấy kết nối từ pool
+            const connection = await pool.getConnection();
+
+            // Thực hiện truy vấn
+            const [rows] = await connection.query('SELECT id, username, points, gid FROM users');
+
+            // Giải phóng kết nối về pool 
+            connection.release();
+
+            console.log('Data from users:', rows);
+            res.render('users', { users: rows }); // Sửa lại thành 'users' thay vì 'index'
+        } catch (error) {
+            console.error('Error executing query:', error);
+            res.status(500).send('Internal Server Error'); // Trả về lỗi server
+        }
     });
 
     app.post('/admin/user/edit', function(request, response) {
@@ -79,28 +109,30 @@ export default Admin;
 ## C:\Users\tiach\Downloads\commands-for-dev\NodeJS\justdice\app\app.js
 ```
 import express from 'express';
-import http from 'http';
 import Seed from './seed.js';
 import Bet from './bet.js';
-import dice from './dice.js';
 import User from './users.js';
 import SeedDetail from './seed_detail.js';
 import err_code from "./error_code.js";
 import Chat from "./chat.js";
 import Pool from "./client.js";
 import Invest from "./invest.js";
-import path from "path";
 import crypto from 'crypto';
 import Admin from './admin.js';
 import { Server as SocketIOServer } from 'socket.io';
 import { createServer } from 'http';
-import connectDB from './connect.js'; // Import module kết nối MySQL
+import connection from "./connect.js";
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import methodOverride from 'method-override'; // Import method-override
+import dotenv from 'dotenv';
+import pool from './connection_pool.js';
+import path from 'path';
+
+dotenv.config();
 
 var ipaddr = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var port = process.env.OPENSHIFT_NODEJS_PORT || 1337;
+var port = process.env.SERVER_PORT || 3000;
 
 const app = express();
 const httpServer = createServer(app);
@@ -142,44 +174,41 @@ if (app.get('env') === 'development') {
     });
 }
 
-// Kết nối MySQL
-let db;
-const connectDatabase = async () => {
-    db = await connectDB();
-};
-
-connectDatabase().catch(err => console.error('Failed to connect to MySQL:', err));
+// Initialize Admin
+Admin.initialize(app);
 
 // Route 
-app.get('/users', async (req, res) => {
-    const [rows] = await db.execute('SELECT * FROM users');
-    res.render('index', { users: rows });
-});
-
-app.get("/", async (req, res) => {
+app.get("/", function (req, res) {
     console.log("\n\n\n\n\nCookies");
     console.log(req.cookies);
     if (!(req.cookies.gambit_guid)) {
         var gid = crypto.createHash('md5').update(Seed.create_client_seed()).digest('hex');
         res.cookie('gambit_guid', gid);
         User.create(gid, function (err, success) {
-            res.redirect("/index.html");
+            if (err) {
+                // Xử lý lỗi nếu có
+                console.error(err);
+                res.status(500).send("Lỗi server");
+                return;
+            }
+            res.send('<script>window.location.href = "/index.html";</script>');
         });
-    } else
+    } else {
         res.redirect("/index.html");
+    }
 });
 
 // Socket.IO 
-// io.on('connection', (socket) => {
-//     console.log('A user connected');
-//     socket.on('message', (msg) => {
-//         console.log('Message received:', msg);
-//     });
+io.on('connection', (socket) => {
+    console.log('A user connected');
+    socket.on('message', (msg) => {
+        console.log('Message received:', msg);
+    });
 
-//     socket.on('disconnect', () => {
-//         console.log('User disconnected');
-//     });
-// });
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+    });
+});
 
 app.post("/login", function (req, res) {
     User.find_by_name(req.body.username, function (err, data) {
@@ -533,28 +562,80 @@ export default Pool;
 
 ## C:\Users\tiach\Downloads\commands-for-dev\NodeJS\justdice\app\connect.js
 ```
+import dotenv from 'dotenv';
+dotenv.config();
 
-import mysql from 'mysql2/promise';
+// Truy cập biến môi trường
+const dbHost = process.env.DB_HOST;
+const dbName = process.env.DB_NAME;
+const dbPort = process.env.DB_PORT || 3306;
+const dbUser = process.env.DB_USER;
+const dbPass = process.env.DB_PASSWORD;
 
-const connectDB = async () => {
-  try {
-    const connection = await mysql.createConnection({
-      host: 'localhost',
-      user: 'admin',
-      password: 'admin@2024', // Thay thế bằng mật khẩu MySQL của bạn
-      database: 'justdice'
-    });
+// import mysql from 'mysql2/promise';
 
-    console.log('Connected to MySQL Database');
-    return connection;
-  } catch (error) {
-    console.error('Error connecting to MySQL Database:', error);
-    throw error;
-  }
-};
+// const connectDB = async () => {
+//   try {
+//     const connection = await mysql.createConnection({
+//       host: 'localhost',
+//       user: 'admin',
+//       password: 'admin@2024', // Thay thế bằng mật khẩu MySQL của bạn
+//       database: 'justdice'
+//     });
 
-export default connectDB;
+//     console.log('Connected to MySQL Database');
+//     return connection;
+//   } catch (error) {
+//     console.error('Error connecting to MySQL Database:', error);
+//     throw error;
+//   }
+// };
+// 
 
+import mysql from 'mysql2';
+
+const connection = mysql.createConnection({
+    host: dbHost,
+    database: dbName,
+    user: dbUser,
+    password: dbPass,
+});
+
+connection.connect(function(err) {
+    if (err) throw err;
+    console.log('Connected to the database!');
+});
+
+export default connection;
+
+
+
+```
+
+## C:\Users\tiach\Downloads\commands-for-dev\NodeJS\justdice\app\connection_pool.js
+```
+import mysql from 'mysql2/promise'; // Nhớ cài đặt package mysql2/promise
+import dotenv from 'dotenv';
+dotenv.config();
+
+// Truy cập biến môi trường
+const dbHost = process.env.DB_HOST;
+const dbName = process.env.DB_NAME;
+const dbPort = process.env.DB_PORT || 3306;
+const dbUser = process.env.DB_USER;
+const dbPass = process.env.DB_PASSWORD;
+// Tạo pool kết nối MySQL
+const pool = mysql.createPool({
+    host: dbHost,
+    user: dbUser,
+    password: dbPass,
+    database: dbName,
+    waitForConnections: true,
+    connectionLimit: 10, // Giới hạn số lượng kết nối trong pool
+    queueLimit: 0
+});
+
+export default pool;
 ```
 
 ## C:\Users\tiach\Downloads\commands-for-dev\NodeJS\justdice\app\dice.js
@@ -886,6 +967,7 @@ import Dice from './dice.js';
 import SeedDetail from './seed_detail.js';
 import Seed from './seed.js';
 import crypto from 'crypto';
+import pool from "./connection_pool.js";
 
 const User = {};
 
@@ -1093,9 +1175,20 @@ User.setup_user_by = function (data, callback) {
     });
 };
 
+// User.create = function (gid, callback) {
+//     db.query('INSERT INTO users (points,gid) VALUES (100,?);', [gid], function (err, rows) {
+//         callback(err, rows);
+//     });
+// };
+
 User.create = function (gid, callback) {
     db.query('INSERT INTO users (points,gid) VALUES (100,?);', [gid], function (err, rows) {
-        callback(err, rows);
+        if (err) {
+            console.log('Error creating user:', err); // Consider adding this for better error visibility
+            callback(err, null);
+        } else {
+            callback(null, rows);
+        }
     });
 };
 
@@ -1110,7 +1203,7 @@ User.get_balance = function (id, callback) {
 };
 
 User.page = function (pgno, callback) {
-    db.query("SELECT * FROM users;", function (err, rows) {
+    db.query("SELECT id, username, points, gid FROM users;", function (err, rows) {
         callback(rows);
     });
 };
@@ -1130,7 +1223,7 @@ export default User;
  */
 $(function () {
     $('#randomize').click(function (event) {
-
+        console.log('randomize')
     });
 
     $('#invest_few').click(function (event) {
@@ -1311,9 +1404,12 @@ $(function () {
 
 ## C:\Users\tiach\Downloads\commands-for-dev\NodeJS\justdice\app\views\users.ejs
 ```
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gambit: User Details</title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
@@ -1330,40 +1426,42 @@ $(function () {
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <td style='width:10px'>S.No</td>
-                    <td style='width:10px'>Id</td>
-                    <td>Name</td>
-                    <td>points</td>
-                    <d>
-                        <td>
-                <tr>
+                    <th style='width:10px'>S.No</th>
+                    <th style='width:10px'>ID</th>
+                    <th>Name</th>
+                    <th>Points</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
-                <% for (i=0;i<data.length;i++){ %>
+                <% users.forEach((user, index)=> { %>
                     <tr>
                         <td>
-                            <%= i %>
+                            <%= index + 1 %>
                         </td>
                         <td>
-                            <%= data[i].id %>
+                            <%= user.id %>
                         </td>
                         <td>
-                            <% if(data[i].username) {%>
-                                <%= data[i].username %>
-                                    <% }else { %>
+                            <% if(user.username) { %>
+                                <%= user.username %>
+                                    <% } else { %>
                                         <span style='color:#aaaaaa'>NULL</span>
                                         <% } %>
                         </td>
-                        <td><a href="#" id="points" data-type="text" data-pk="<%= data[i].id %>"
-                                data-title="Enter username" class="editable editable-click points">
-                                <%= data[i].points %>
-                            </a></td>
+                        <td>
+                            <a href="#" id="points" data-type="text" data-pk="<%= user.id %>" data-title="Enter points"
+                                class="editable editable-click points">
+                                <%= user.points %>
+                            </a>
+                        </td>
                         <td>edit</td>
-                    <tr>
-                        <% } %>
+                    </tr>
+                    <% }); %>
             </tbody>
         </table>
     </div>
+
     <script>
         function getCookieValue(key) {
             var cookies = document.cookie.split('; ');
@@ -1383,9 +1481,12 @@ $(function () {
         $(document).ready(function () {
             $('.points').editable({
                 type: 'text',
-                pk: 1,
                 url: '/admin/user/edit',
-                title: 'Enter username',
+                title: 'Enter new points',
+                success: function (response, newValue) {
+                    // Xử lý sau khi cập nhật thành công (nếu cần)
+                    console.log('Points updated!');
+                }
             });
         });
     </script>

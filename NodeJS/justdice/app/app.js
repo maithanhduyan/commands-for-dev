@@ -11,13 +11,16 @@ import crypto from 'crypto';
 import Admin from './admin.js';
 import { Server as SocketIOServer } from 'socket.io';
 import { createServer } from 'http';
-import db from "./connect.js";
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import methodOverride from 'method-override'; // Import method-override
+import dotenv from 'dotenv';
+import { checkAndSetCookie } from './middleware.js';
+
+dotenv.config();
 
 var ipaddr = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var port = process.env.OPENSHIFT_NODEJS_PORT || 1337;
+var port = process.env.SERVER_PORT || 3000;
 
 const app = express();
 const httpServer = createServer(app);
@@ -31,6 +34,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Sử dụng cookie-parser để phân tích cookies
+app.use(checkAndSetCookie);
 app.use(methodOverride('_method')); // Sử dụng methodOverride để hỗ trợ PUT/DELETE trong form HTML
 
 // Cấu hình thư mục public để phục vụ các tệp tĩnh
@@ -62,20 +66,13 @@ if (app.get('env') === 'development') {
 // Initialize Admin
 Admin.initialize(app);
 
-// Kết nối MySQL
-// let db;
-// const connectDatabase = async () => {
-//     db = await connectDB();
-// };
-
-// connectDatabase().catch(err => console.error('Failed to connect to MySQL:', err));
+// API Route
+app.get('/api/gid', (req, res) => {
+    const gid = req.cookies.gambit_guid;
+    res.json({ gid: gid });
+});
 
 // Route 
-// app.get('/users', async (req, res) => {
-//     const [rows] = await db.execute('SELECT * FROM users');
-//     res.render('index', { users: rows });
-// });
-
 app.get("/", function (req, res) {
     console.log("\n\n\n\n\nCookies");
     console.log(req.cookies);

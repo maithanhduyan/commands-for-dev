@@ -4,6 +4,7 @@ import Dice from './dice.js';
 import SeedDetail from './seed_detail.js';
 import Seed from './seed.js';
 import crypto from 'crypto';
+import pool from "./connection_pool.js";
 
 const User = {};
 
@@ -239,7 +240,7 @@ User.get_balance = function (id, callback) {
 };
 
 User.page = function (pgno, callback) {
-    db.query("SELECT * FROM users;", function (err, rows) {
+    db.query("SELECT id, username, points, gid FROM users;", function (err, rows) {
         callback(rows);
     });
 };

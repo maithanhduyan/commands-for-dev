@@ -87,13 +87,18 @@ current_directory = current_dir = os.getcwd()  # Lấy đường dẫn thư mụ
 exclude_dirs = ['.git', 'node_modules']
 exclude_files = ['.gitignore', '.exe','.md']
 
+def generate_header( markdown_file):
+    with open(markdown_file, 'w', encoding='utf-8') as f:
+        f.write(f"# You are an intelligent programming assistant.\n")
+        f.write(f"# This is nodejs project\n\n")
+
 def generate_tree(root_dir, markdown_file, exclude_dirs=None, exclude_files=None):
     if exclude_dirs is None:
         exclude_dirs = []
     if exclude_files is None:
         exclude_files = []
 
-    with open(markdown_file, 'w', encoding='utf-8') as f:
+    with open(markdown_file, 'a', encoding='utf-8') as f:
         f.write(f"# Directory tree of {root_dir}\n\n")
         for dirpath, dirnames, filenames in os.walk(root_dir):
             # Bỏ qua các thư mục trong danh sách exclude_dirs
@@ -159,7 +164,7 @@ def generate_content(root_dir, output_markdown):
 
 def main():
     markdown_file = 'project_structure.md'
-    
+    generate_header(markdown_file)
     # root_dir = pathlib.Path(current_directory)
     # if not root_dir.is_dir():
     #     print("The specified root directory doesn't exist")

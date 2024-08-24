@@ -7,7 +7,7 @@
  */
 $(function () {
     $('#randomize').click(function (event) {
-
+        console.log('randomize')
     });
 
     $('#invest_few').click(function (event) {
