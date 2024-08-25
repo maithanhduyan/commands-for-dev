@@ -1,5 +1,6 @@
-import mysql from 'mysql2/promise'; // Nhớ cài đặt package mysql2/promise
+import mysql from 'mysql2/promise'; 
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 // Truy cập biến môi trường

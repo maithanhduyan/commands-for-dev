@@ -1,5 +1,4 @@
 import db from "./connect.js";
-import SeedDetail from "./seed_detail.js";
 import User from "./users.js";
 
 const Bet = {};

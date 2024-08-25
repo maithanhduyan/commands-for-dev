@@ -181,20 +181,20 @@
                         <label class="span1">Chance:</label>
 
                         <div class="controls btn-group" style="margin: 0px">
-                            <button class="btn btn-success">min</button>
+                            <button class="btn btn-success setMinChance">min</button>
                             <button class="btn minus">-1</button>
                             <button class="btn plus">+1</button>
-                            <button class="btn btn-danger">max</button>
+                            <button class="btn btn-danger setMaxChance">max</button>
                         </div>
                     </div>
                     <div class="span4">
                         <label class="span1">Bet:</label>
 
                         <div class="controls btn-group" style="margin: 0px">
-                            <button class="btn btn-success">min</button>
+                            <button class="btn btn-success setMinBet">min</button>
                             <button class="btn by2">/2</button>
                             <button class="btn mul2">*2</button>
-                            <button class="btn btn-danger">max</button>
+                            <button class="btn btn-danger setMaxBet">max</button>
                         </div>
                     </div>
                     <!--</div>-->
@@ -688,6 +688,16 @@
             recalculate('chanceToWin');
         });
 
+        $('.setMaxChance').mousedown(function () {
+            $('#chanceToWin').val(parseFloat(95));
+            recalculate('chanceToWin');
+        });
+
+        $('.setMinChance').mousedown(function () {
+            $('#chanceToWin').val(parseFloat(1));
+            recalculate('chanceToWin');
+        });
+
         $('.by2').mousedown(function () {
             $('#betSize').val(parseFloat($('#betSize').val()) / 2);
             recalculate('betSize');
@@ -697,6 +707,17 @@
             $('#betSize').val(parseFloat($('#betSize').val()) * 2);
             recalculate('betSize');
         });
+
+        $('.setMaxBet').mousedown(function () {
+            $('#betSize').val(parseFloat($("#my_balance").text()).toFixed(7));
+            recalculate('betSize');
+        });
+
+        $('.setMinBet').mousedown(function () {
+            $('#betSize').val(parseFloat(0.01));
+            recalculate('betSize');
+        });
+
 
         $('#chanceToWin').val(49.5);
         $('#betSize').val("1");
@@ -762,8 +783,8 @@
             });
 
             set_bal = function (val) {
-                $('#my_balance').html((val).toFixed(7));
-                $('#inv_balance').html((val).toFixed(7));
+                $('#my_balance').html(parseFloat(val).toFixed(7));
+                $('#inv_balance').html(parseFloat(val).toFixed(7));
             }
 
             // Ready

@@ -14,7 +14,7 @@ RUN npm install --production
 COPY . .
 
 # Expose cổng mà ứng dụng của bạn sẽ chạy
-EXPOSE 1337
+EXPOSE 3000
 
 # Lệnh để chạy ứng dụng khi container khởi động
 CMD ["node", "app.js"]

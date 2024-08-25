@@ -91,7 +91,7 @@ User.bet = function (message, callback) {
                 SeedDetail.find(data.seed_detail_id, function (err, seed_data) {
                     const roll = (message.roll === "rhigh") ? "high" : "low";
                     const target = Dice.get_target(message.chance, message.roll);
-                    console.log("target:", target, "\n\n\n\n\n\n");
+                    console.log("target:", target, "\n");
                     const ssh = Seed.get_server_hash_by_seed(seed_data.server_seed);
                     const ss = seed_data.server_seed;
                     const cs = seed_data.client_seed;
@@ -194,14 +194,14 @@ User.login = function (name, password, callback) {
             console.log(err);
             callback(0);
         } else {
-            const pass = crypto.createHash('md5').update(rows[0].gid + password).digest('hex');
+            const pass = crypto.createHash('sha256').update(rows[0].gid + password).digest('hex');
             (pass === rows[0].password) ? callback(1) : callback(0);
         }
     });
 };
 
 User.setup_user_by = function (data, callback) {
-    const pass = crypto.createHash('md5').update(data.gid + data.password).digest('hex');
+    const pass = crypto.createHash('sha256').update(data.gid + data.password).digest('hex');
     db.query('UPDATE users SET username = ?, password = ? WHERE gid = ?', [data.username, pass, data.gid], function (err, rows) {
         if (err) {
             console.log(err);
@@ -211,12 +211,6 @@ User.setup_user_by = function (data, callback) {
         }
     });
 };
-
-// User.create = function (gid, callback) {
-//     db.query('INSERT INTO users (points,gid) VALUES (100,?);', [gid], function (err, rows) {
-//         callback(err, rows);
-//     });
-// };
 
 User.create = function (gid, callback) {
     db.query('INSERT INTO users (points,gid) VALUES (100,?);', [gid], function (err, rows) {

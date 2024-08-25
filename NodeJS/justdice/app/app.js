@@ -2,7 +2,7 @@ import express from 'express';
 import Seed from './seed.js';
 import Bet from './bet.js';
 import User from './users.js';
-import SeedDetail from './seed_detail.js';
+import SeedDetail from './seed_detail.js'; // Thiết lập cổng cho ứng dụng.js';
 import err_code from "./error_code.js";
 import Chat from "./chat.js";
 import Pool from "./client.js";
@@ -15,18 +15,21 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import methodOverride from 'method-override'; // Import method-override
 import dotenv from 'dotenv';
-import { checkAndSetCookie } from './middleware.js';
+import ServerAPI from './api.js';
+import { v4 as uuidv4 } from 'uuid';
+import { setCookieMiddleware } from './middleware.js' ;
+
 
 dotenv.config();
 
-var ipaddr = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var ipaddr = process.env.SERVER_NAME || "127.0.0.1";
 var port = process.env.SERVER_PORT || 3000;
 
 const app = express();
 const httpServer = createServer(app);
 const io = new SocketIOServer(httpServer);
 
-// Thiết lập cổng cho ứng dụng
+
 app.set('port', process.env.PORT || port);
 
 // Thiết lập các middleware
@@ -34,8 +37,8 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Sử dụng cookie-parser để phân tích cookies
-app.use(checkAndSetCookie);
 app.use(methodOverride('_method')); // Sử dụng methodOverride để hỗ trợ PUT/DELETE trong form HTML
+// app.use(setCookieMiddleware);
 
 // Cấu hình thư mục public để phục vụ các tệp tĩnh
 app.use(express.static('public'));
@@ -63,32 +66,36 @@ if (app.get('env') === 'development') {
     });
 }
 
+
+// Tạo route cho trang chủ "/"
+app.get('/', (req, res) => {
+    const appCookieName = 'gambit_guid';
+    // Setting a cookie
+    if (!req.cookies[appCookieName]) {
+        let gid = uuidv4();
+        res.cookie(appCookieName, gid, {
+            maxAge: 900000,
+            httpOnly: false, //  True: Chỉ cho phép truy cập cookie từ server
+            secure: process.env.NODE_ENV === 'production', // Chỉ sử dụng cookie qua HTTPS khi ở môi trường production
+            sameStie: 'None',
+        });
+        User.create(gid, function (err, success) {
+            console.log(`Tạo gid: ${gid} mới và points: ${points}`)
+        })
+    }
+    res.render('index');
+});
+
 // Initialize Admin
 Admin.initialize(app);
 
 // API Route
-app.get('/api/gid', (req, res) => {
-    const gid = req.cookies.gambit_guid;
-    res.json({ gid: gid });
-});
-
-// Route 
-app.get("/", function (req, res) {
-    console.log("\n\n\n\n\nCookies");
-    console.log(req.cookies);
-    if (!(req.cookies.gambit_guid)) {
-        var gid = crypto.createHash('md5').update(Seed.create_client_seed()).digest('hex');
-        res.cookie('gambit_guid', gid);
-        User.create(gid, function (err, success) {
-            res.redirect("/index.html");
-        });
-    } else
-        res.redirect("/index.html");
-});
+ServerAPI.initialize(app);
 
 // Socket.IO 
 io.on('connection', (socket) => {
     console.log('A user connected');
+
     socket.on('message', (msg) => {
         console.log('Message received:', msg);
     });
@@ -191,7 +198,9 @@ io.sockets.on('connection', function (socket) {
     }
 
     socket.on('justnow', function (message) {
+        console.log(message);
         if (!message.gid) {
+            console.log(`error`);
             socket.emit("error", handle_error(1));
         } else {
             User.find_by_gid(message.gid, function (err, data) {
@@ -243,6 +252,7 @@ io.sockets.on('connection', function (socket) {
             });
         }
     });
+
 });
 
 function handle_error(err) {
@@ -291,5 +301,5 @@ function process_randomize_seed(message) {
 
 // Bắt đầu server
 httpServer.listen(app.get('port'), ipaddr, () => {
-    console.log(`Server running at http://${ipaddr}:${app.get('port')}/`);
+    console.log(`[${Date.now().toString()}][${app.get('env')}]: Server running at http://${ipaddr}:${app.get('port')}/`);
 });
