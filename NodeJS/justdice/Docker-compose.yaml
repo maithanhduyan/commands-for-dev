@@ -1,7 +1,6 @@
-version: '3.7'
-
+version: "3.8"
 services:
-  db:
+  mysqldb:
     image: mysql:latest
     container_name: mysql_db
     restart: always
@@ -12,20 +11,21 @@ services:
       MYSQL_PASSWORD: admin@2024
     volumes:
       - ./mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+    # ports:
+    #   - "3306:3306"
+    expose:
+      - 3306
     networks:
       - mysql-phpmyadmin
-
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
     restart: always
     depends_on:
-      - db
+      - mysqldb
     environment:
-      PMA_HOST: db
+      PMA_HOST: mysqldb
       MYSQL_ROOT_PASSWORD: admin@2024
     ports:
       - "8080:80"
@@ -36,13 +36,18 @@ services:
     image: justdice:latest
     container_name: justdice
     restart: unless-stopped
-    depends_on:
-      - db
     ports:
-      - "1337:1337"
+      - "3000:3000"
     networks:
       - mysql-phpmyadmin
-      
+    environment:
+      DB_HOST: mysqldb 
+      DB_PORT: 3306
+    volumes:
+      - ./config/.env:/app/.env:ro
+    depends_on:
+      - mysqldb
+
 networks:
   mysql-phpmyadmin:
 

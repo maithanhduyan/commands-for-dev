@@ -1,7 +1,6 @@
 import User from './users.js';
 
 const Pool = {};
-
 const client_sockets = {};
 const client_sockets_name = {};
 

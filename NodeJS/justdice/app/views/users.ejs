@@ -23,6 +23,7 @@
                     <th style='width:10px'>S.No</th>
                     <th style='width:10px'>ID</th>
                     <th>Name</th>
+                    <th>GID</th>
                     <th>Points</th>
                     <th>Actions</th>
                 </tr>
@@ -42,6 +43,9 @@
                                     <% } else { %>
                                         <span style='color:#aaaaaa'>NULL</span>
                                         <% } %>
+                        </td>
+                        <td>
+                            <%= user.gid %>
                         </td>
                         <td>
                             <a href="#" id="points" data-type="text" data-pk="<%= user.id %>" data-title="Enter points"

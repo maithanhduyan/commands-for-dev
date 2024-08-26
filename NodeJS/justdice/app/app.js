@@ -74,7 +74,7 @@ app.get('/', (req, res) => {
     if (!req.cookies[appCookieName]) {
         let gid = uuidv4();
         res.cookie(appCookieName, gid, {
-            maxAge: 900000,
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 ngày tính bằng mili giây
             httpOnly: false, //  True: Chỉ cho phép truy cập cookie từ server
             secure: process.env.NODE_ENV === 'production', // Chỉ sử dụng cookie qua HTTPS khi ở môi trường production
             sameStie: 'None',

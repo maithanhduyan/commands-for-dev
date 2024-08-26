@@ -23,7 +23,7 @@ Admin.initialize = function(app) {
             // Giải phóng kết nối về pool 
             connection.release();
 
-            console.log('Data from users:', rows);
+            // console.log('Data from users:', rows);
             res.render('users', { users: rows }); // Sửa lại thành 'users' thay vì 'index'
         } catch (error) {
             console.error('Error executing query:', error);
