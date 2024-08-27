@@ -1,5 +1,5 @@
-# Sử dụng node:16 làm image cơ sở
-FROM node:lts-bookworm
+# Sử dụng node image
+FROM node:lts-bookworm AS base
 
 # Cài đặt mysql-client
 RUN apt-get update && \
@@ -24,8 +24,20 @@ COPY . .
 COPY wait-for-mysql.sh /app/wait-for-mysql.sh
 RUN chmod +x /app/wait-for-mysql.sh
 
+FROM base AS development 
 # NODE EVIRONMENT 
 ENV NODE_ENV=development
+
+# Mở cổng 3000 để ứng dụng lắng nghe
+EXPOSE 3000
+
+# Chạy ứng dụng khi container được khởi động, kiểm tra MySQL trước
+ENTRYPOINT [ "./wait-for-mysql.sh" ]
+CMD ["node", "app.js"]
+
+FROM base AS final
+# NODE EVIRONMENT 
+ENV NODE_ENV=production
 
 # Mở cổng 3000 để ứng dụng lắng nghe
 EXPOSE 3000
