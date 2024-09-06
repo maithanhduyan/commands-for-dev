@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="tracking_page_template" name="Tracking Page">
+        <t t-call="website.layout">
+            <div class="container">
+                <form action="/tracking/search" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="text" name="tracking_code" placeholder="Enter tracking code" required="true"/>
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="tracking_results_template" name="Tracking Results">
+        <t t-call="website.layout">
+            <div class="container">
+                <h2>Kết quả tìm kiếm</h2>
+                <t t-if="tracking_record">
+                    <h3>Tracking Code: <t t-esc="tracking_record.code"/></h3>
+                    <h4>Stations:</h4>
+                    <ul>
+                        <t t-foreach="tracking_record.station_ids" t-as="station">
+                            <li><t t-esc="station.name"/> - <t t-esc="station.code"/></li>
+                        </t>
+                    </ul>
+                </t>
+                <t t-if="error_message">
+                    <div class="alert alert-warning" role="alert">
+                        <t t-esc="error_message"/>
+                    </div>
+                </t>
+            </div>
+        </t>
+        <t t-if="not stations">
+            <p>No stations found for this tracking code.</p>
+        </t>
+    </template>
+
+</odoo>

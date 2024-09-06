@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Stations for TR0001 -->
+        <record id="station_01" model="tracking.station">
+            <field name="name">Station01</field>
+            <field name="code">ST01</field>
+        </record>
+        <record id="station_02" model="tracking.station">
+            <field name="name">Station02</field>
+            <field name="code">ST02</field>
+        </record>
+        <record id="station_03" model="tracking.station">
+            <field name="name">Station03</field>
+            <field name="code">ST03</field>
+        </record>
+        <record id="station_04" model="tracking.station">
+            <field name="name">Station04</field>
+            <field name="code">ST04</field>
+        </record>
+
+        <!-- Stations for TR0002 -->
+        <record id="station_789" model="tracking.station">
+            <field name="name">St789</field>
+            <field name="code">ST789</field>
+        </record>
+        <record id="station_456" model="tracking.station">
+            <field name="name">St456</field>
+            <field name="code">ST456</field>
+        </record>
+        <record id="station_123" model="tracking.station">
+            <field name="name">St123</field>
+            <field name="code">ST123</field>
+        </record>
+        <record id="station_753" model="tracking.station">
+            <field name="name">St753</field>
+            <field name="code">ST753</field>
+        </record>
+        <record id="station_159" model="tracking.station">
+            <field name="name">St159</field>
+            <field name="code">ST159</field>
+        </record>
+
+        <!-- Tracking Records -->
+        <record id="tracking_TR0001" model="tracking.record">
+            <field name="code">TR0001</field>
+            <field name="station_ids" eval="[(6, 0, [
+                ref('station_01'),
+                ref('station_02'),
+                ref('station_03'),
+                ref('station_04')
+            ])]"/>
+        </record>
+
+        <record id="tracking_TR0002" model="tracking.record">
+            <field name="code">TR0002</field>
+            <field name="station_ids" eval="[(6, 0, [
+                ref('station_789'),
+                ref('station_456'),
+                ref('station_123'),
+                ref('station_753'),
+                ref('station_159')
+            ])]"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,19 @@
+#. module: pacel_tracking
+#: model_terms:ir.ui.view,arch_db:pacel_tracking.tracking_page_template
+msgid "Search"
+msgstr "Tìm kiếm"
+
+#. module: pacel_tracking
+#: model_terms:ir.ui.view,arch_db:pacel_tracking.tracking_page_template
+msgid "Tracking Code"
+msgstr "Mã Tracking"
+
+#. module: pacel_tracking
+#: model_terms:ir.ui.view,arch_db:pacel_tracking.tracking_page_template
+msgid "Stations"
+msgstr "Các trạm"
+
+#. module: pacel_tracking
+#: model_terms:ir.ui.view,arch_db:pacel_tracking.tracking_results_template
+msgid "No stations found for this tracking code."
+msgstr "Không tìm thấy trạm nào cho mã theo dõi này."

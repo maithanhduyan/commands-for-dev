@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="chatgpt_bot_template" name="ChatGPT Bot Template">
+            <div class="container">
+                <h1>ChatGPT Bot</h1>
+                <form action="/chatgpt_bot" method="post">
+                    <input type="text" name="message" placeholder="Nhập câu hỏi của bạn" />
+                    <button type="submit">Gửi</button>
+                </form>
+                <div id="chatgpt_bot_response"></div>
+            </div>
+        </template>
+    </data>
+</odoo>

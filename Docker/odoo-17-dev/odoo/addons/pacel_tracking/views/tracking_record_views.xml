@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="view_tracking_record_tree" model="ir.ui.view">
+            <field name="name">tracking.record.tree</field>
+            <field name="model">tracking.record</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="code"/>
+                    <field name="station_ids" widget="many2many_tags"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_tracking_record_form" model="ir.ui.view">
+            <field name="name">tracking.record.form</field>
+            <field name="model">tracking.record</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="code"/>
+                            <field name="station_ids" widget="many2many_tags"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_tracking_record_search" model="ir.ui.view">
+            <field name="name">tracking.record.search</field>
+            <field name="model">tracking.record</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="code"/>
+                    <field name="station_ids"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_tracking_record" model="ir.actions.act_window">
+            <field name="name">Tracking Records</field>
+            <field name="res_model">tracking.record</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tracking_record_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new tracking record
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="menu_tracking_root" name="Tracking" sequence="10"/>
+        <menuitem id="menu_tracking_record" name="Tracking Records" parent="menu_tracking_root" action="action_tracking_record" sequence="10"/>
+    </data>
+</odoo>

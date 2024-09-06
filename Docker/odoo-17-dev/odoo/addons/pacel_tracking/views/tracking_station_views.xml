@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="view_tracking_station_tree" model="ir.ui.view">
+            <field name="name">tracking.station.tree</field>
+            <field name="model">tracking.station</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="address"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_tracking_station_form" model="ir.ui.view">
+            <field name="name">tracking.station.form</field>
+            <field name="model">tracking.station</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="address"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_tracking_station" model="ir.actions.act_window">
+            <field name="name">Tracking Stations</field>
+            <field name="res_model">tracking.station</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new tracking station
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Items -->
+        <!-- Root menu for Tracking -->
+        <menuitem id="menu_tracking_root" name="Tracking" sequence="10"/>
+
+        <!-- Tracking Stations submenu -->
+        <menuitem id="menu_tracking_station" name="Tracking Stations" parent="menu_tracking_root" action="action_tracking_station" sequence="10"/>
+
+        <!-- Tracking Records submenu -->
+        <menuitem id="menu_tracking_record" name="Tracking Records" parent="menu_tracking_root" action="action_tracking_record" sequence="20"/>
+    </data>
+</odoo>
