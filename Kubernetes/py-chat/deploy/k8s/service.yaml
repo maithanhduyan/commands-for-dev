@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-chat-service
+spec:
+  type: NodePort  # Sử dụng NodePort để truy cập từ local machine
+  ports:
+  - port: 5000
+    targetPort: 5000  # Chỉ định cổng chạy của ứng dụng bên trong container
+    nodePort: 30007   # NodePort mà bạn sẽ truy cập trên local machine (ví dụ http://localhost:30007)
+  selector:
+    app: python-chat

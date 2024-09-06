@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-chat-deployment
+  labels:
+    app: python-chat
+spec:
+  replicas: 2  # Số lượng Pod sẽ chạy
+  selector:
+    matchLabels:
+      app: python-chat
+  template:
+    metadata:
+      labels:
+        app: python-chat
+    spec:
+      containers:
+      - name: python-chat-app
+        # image: python-chat-app:latest  # Đảm bảo bạn đã push image lên Docker Hub hoặc local registry
+        image: python-chat-app:local  # Sử dụng image cục bộ
+        ports:
+        - containerPort: 5000  # Cổng chạy của ứng dụng bên trong container
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #chat-container {
+            width: 500px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        #messages {
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        #messages p {
+            padding: 8px;
+            margin: 0;
+            border-radius: 4px;
+        }
+        #messages p.client {
+            background-color: #e1ffc7;
+            align-self: flex-end;
+        }
+        #messages p.server {
+            background-color: #f4f4f4;
+            align-self: flex-start;
+        }
+        #message-form {
+            display: flex;
+            padding: 10px;
+        }
+        #message-input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #send-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+            border-radius: 4px;
+        }
+        #send-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="messages"></div>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Type your message here..." autocomplete="off" />
+            <button id="send-button" type="submit">Send</button>
+        </form>
+    </div>
+
+    <!-- Socket.IO client script -->
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        const socket = io();  // Kết nối tới server
+
+        const messages = document.getElementById('messages');
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+
+        // Xử lý sự kiện gửi tin nhắn
+        messageForm.addEventListener('submit', (e) => {
+            e.preventDefault();  // Ngăn việc tải lại trang khi submit form
+            const message = messageInput.value;
+
+            // Gửi tin nhắn tới server
+            socket.emit('message', message);
+
+            // Hiển thị tin nhắn trên giao diện của client
+            const msgElem = document.createElement('p');
+            msgElem.classList.add('client');
+            msgElem.innerText = message;
+            messages.appendChild(msgElem);
+
+            // Xóa nội dung ô input sau khi gửi
+            messageInput.value = '';
+            messages.scrollTop = messages.scrollHeight;  // Tự động cuộn xuống dưới cùng
+        });
+
+        // Xử lý sự kiện nhận tin nhắn từ server
+        socket.on('message', (message) => {
+            const msgElem = document.createElement('p');
+            msgElem.classList.add('server');
+            msgElem.innerText = message;
+            messages.appendChild(msgElem);
+            messages.scrollTop = messages.scrollHeight;  // Tự động cuộn xuống dưới cùng
+        });
+    </script>
+</body>
+</html>
