@@ -1,0 +1,31 @@
+# values.yaml
+
+replicaCount: 2
+
+image:
+  repository: <dockerhub-username>/python-chat-app
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30007
+
+ingress:
+  enabled: false
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+
+tolerations: []
+
+affinity: {}
