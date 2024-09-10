@@ -1,0 +1,68 @@
+version: '3'
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"  # Cổng mặc định cho Ollama
+    healthcheck:
+      test: ollama --version || exit 1
+    command: serve
+    volumes:
+      # - ./ollama:/root/.ollama
+      - ./ollama:/root/.ollama/
+      - ./customize:/home/ollama/customize
+      - ./ollama:/data  # Nơi lưu trữ dữ liệu nếu cần
+    networks:
+      - ai_network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['all']
+              capabilities: [gpu]
+
+  llama:
+    image: ghcr.io/ggerganov/llama.cpp:server-cuda--b1-a5b5d9a  # Thay thế bằng image llama.cpp của bạn
+    container_name: llama-cpp
+    ports:
+      - "11435:11435"  # Cổng API cho llama.cpp
+    networks:
+      - ai_network
+    environment:
+      - MODEL_PATH=/models/llama  # Đường dẫn đến mô hình llama
+    volumes:
+      - ./models:/models  # Thư mục chứa mô hình llama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['all']
+              capabilities: [gpu]
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"  # Mở cổng mặc định của MongoDB
+    volumes:
+      - ./mongodb:/data/db  # Volume để lưu trữ dữ liệu MongoDB
+    networks:
+      - ai_network
+
+  chat-ui:
+    image: huggingface/chat-ui:latest
+    container_name: chat-ui
+    ports:
+      - "3000:3000"  # Cổng cho giao diện chat
+    environment:
+      - REACT_APP_API_URL=http://llama:11434  # Đường dẫn API tới ollama hoặc llama.cpp
+      - MONGODB_URL=mongodb://mongodb:27017/chat  # Kết nối đến MongoDB
+    networks:
+      - ai_network
+
+networks:
+  ai_network:
+    driver: bridge
