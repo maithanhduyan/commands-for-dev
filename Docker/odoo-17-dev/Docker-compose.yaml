@@ -1,0 +1,98 @@
+version: "3"
+services:
+  postgresql_db:
+    image: postgres:latest
+    container_name: postgresql
+    networks:
+      - internal_network
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=odoo
+      - POSTGRES_PASSWORD=odoo17@2024
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    restart: always # run as a service
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    user: root
+    networks:
+      - internal_network
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
+      PGADMIN_DEFAULT_PASSWORD: pgadminpwd
+    ports:
+      - "5050:80"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+      # - ./pgadmin/pgadmin4:/pgadmin4
+    depends_on:
+      - postgresql_db
+
+  odoo:
+    image: odoo17dev:latest
+    container_name: odoo-17
+    networks:
+      - internal_network
+    # build:
+    #   context: .
+    #   dockerfile: ./odoo/Dockerfile
+    volumes:
+      - ./odoo/addons:/mnt/extra-addons # contain odoo dev modules
+      - ./odoo/conf:/etc/odoo # contain config and log
+      - ./odoo/web-data:/var/lib/odoo # contain odoo web data
+      - ./odoo/log:/var/log/odoo # contain odoo log data
+    ports:
+      - "8069:8069" # web
+      - "8072:8072" # live chat
+    expose:
+      - 8069
+      - 8072
+    depends_on:
+      - postgresql_db
+    environment:
+      - HOST=postgresql_db
+      - PORT=5432
+      - USER=odoo
+      - PASSWORD=odoo17@2024
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    networks:
+      - internal_network
+    restart: unless-stopped
+    ports:
+      - "80:80" # public port
+      - "443:443" # public port
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d # configuration in default.conf
+      - ./nginx/ssl:/etc/nginx/ssl # Secure Sockets Layer (SSL) file: server-sample.crt, server-sample.key
+      - ./nginx/html:/var/www/html # static html web for example
+      - ./nginx/log:/var/log/nginx/
+      - ./certbot/letsencrypt:/etc/nginx/ssl/letsencrypt
+
+  backup-odoo:
+    image: odoo-backup:latest
+    container_name: odoo-backup
+    networks:
+      - internal_network
+    # build:
+    #   context: .
+    #   dockerfile: ./backup/Dockerfile
+    volumes:
+      - ./backup/storage:/odoo-backup/storage
+      - ./backup/logs:/odoo-backup/logs
+    depends_on:
+      - odoo
+      # - postgresql_db
+    restart: always # run as a service
+
+networks:
+  internal_network:
+    driver: bridge

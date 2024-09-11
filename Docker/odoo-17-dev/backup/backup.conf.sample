@@ -1,0 +1,17 @@
+[odoo]
+url = http://odoo:8069
+db = 
+user = 
+password = 
+
+[backup]
+master_password = 
+format = zip
+
+[email]
+smtp_port = 
+smtp_server =  
+smtp_username = 
+smtp_password = 
+to_address = 
+subject = Backup Data Completed

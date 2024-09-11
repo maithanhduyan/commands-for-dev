@@ -1,0 +1,8 @@
+/postgresql/data
+/pgadmin
+/odoo/web-data
+/odoo/log
+/nginx/log
+/certbot
+/__pycache__
+*.pyc

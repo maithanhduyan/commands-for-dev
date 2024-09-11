@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_website_template" inherit_id="website.layout">
+        <xpath expr="//header" position="replace">
+            <header>
+                <div class="custom-header">
+                    <h1>My Custom Website</h1>
+                </div>
+            </header>
+        </xpath>
+    </template>
+</odoo>

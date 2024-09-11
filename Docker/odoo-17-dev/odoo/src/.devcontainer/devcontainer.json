@@ -1,0 +1,10 @@
+{
+  "name": "Ubuntu Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "settings": {},
+  "extensions": [],
+  "remoteUser": "vscode"
+}
