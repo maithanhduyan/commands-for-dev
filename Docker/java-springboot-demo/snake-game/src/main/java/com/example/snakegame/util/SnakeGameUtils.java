@@ -23,8 +23,8 @@ public class SnakeGameUtils {
     }
 
     public static Location getRandomLocation() {
-        int x = roundByGridSize(random.nextInt(PLAYFIELD_WIDTH));
-        int y = roundByGridSize(random.nextInt(PLAYFIELD_HEIGHT));
+        int x = roundByGridSize(random.nextInt(PLAYFIELD_WIDTH - 10 ));
+        int y = roundByGridSize(random.nextInt(PLAYFIELD_HEIGHT -10 ));
         return new Location(x, y);
     }
 

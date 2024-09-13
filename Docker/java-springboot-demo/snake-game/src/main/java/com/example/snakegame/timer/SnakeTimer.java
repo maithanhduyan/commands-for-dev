@@ -18,13 +18,21 @@ public class SnakeTimer {
 
     private final Map<Integer, Snake> snakes = new ConcurrentHashMap<>();
 
-    private Food food;
+    // Change to a list to hold multiple Food items
+    private final List<Food> foods = new ArrayList<>();
+
+    private static final int NUM_FOOD_ITEMS = 5; // Number of food items
+
     private ScheduledExecutorService scheduler;
     private ScheduledFuture<?> gameLoop;
 
     public SnakeTimer() {
         scheduler = Executors.newSingleThreadScheduledExecutor();
-        this.food = new Food();
+
+        // Initialize multiple food items
+        for (int i = 0; i < NUM_FOOD_ITEMS; i++) {
+            foods.add(new Food());
+        }
     }
 
     public synchronized void addSnake(Snake snake) {
@@ -62,22 +70,31 @@ public class SnakeTimer {
     }
 
     private void tick() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sbSnakes = new StringBuilder();
         Iterator<Snake> iterator = getSnakes().iterator();
         while (iterator.hasNext()) {
             Snake snake = iterator.next();
-            snake.update(getSnakes(), food);
-            sb.append(snake.getLocationsJson());
+            snake.update(getSnakes(), foods);
+            sbSnakes.append(snake.getLocationsJson());
             if (iterator.hasNext()) {
-                sb.append(',');
+                sbSnakes.append(',');
             }
         }
-        // Include food location in the broadcast message
+        // Prepare food data
+        StringBuilder sbFoods = new StringBuilder();
+        for (int i = 0; i < foods.size(); i++) {
+            Food food = foods.get(i);
+            sbFoods.append(String.format("{\"x\": %d, \"y\": %d}", food.getLocation().x, food.getLocation().y));
+            if (i < foods.size() - 1) {
+                sbFoods.append(',');
+            }
+        }
+
+        // Include foods in the broadcast message
         String message = String.format(
-                "{\"type\": \"update\", \"data\" : [%s], \"food\": {\"x\": %d, \"y\": %d}}",
-                sb.toString(),
-                food.getLocation().x,
-                food.getLocation().y);
+                "{\"type\": \"update\", \"data\" : [%s], \"foods\": [%s]}",
+                sbSnakes.toString(),
+                sbFoods.toString());
 
         broadcast(message);
     }
@@ -92,7 +109,7 @@ public class SnakeTimer {
         }
     }
 
-    public Food getFood() {
-        return food;
+    public List<Food> getFoods() {
+        return Collections.unmodifiableList(foods);
     }
 }

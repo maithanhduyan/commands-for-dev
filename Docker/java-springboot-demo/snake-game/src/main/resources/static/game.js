@@ -25,11 +25,7 @@ Snake.prototype.draw = function (context) {
 };
 
 // Add Food to the Game object
-Game.food = {
-    x: 0,
-    y: 0,
-    color: '#FF0000' // Red color
-};
+Game.foods = [];
 
 Game.initialize = function () {
     this.entities = [];
@@ -98,9 +94,12 @@ Game.stopGameLoop = function () {
 Game.draw = function () {
     this.context.clearRect(0, 0, 640, 480);
 
-    // Draw the food
-    this.context.fillStyle = Game.food.color;
-    this.context.fillRect(Game.food.x, Game.food.y, Game.gridSize, Game.gridSize);
+    // Draw all the food items
+    for (let i = 0; i < Game.foods.length; i++) {
+        let food = Game.foods[i];
+        this.context.fillStyle = food.color;
+        this.context.fillRect(food.x, food.y, Game.gridSize, Game.gridSize);
+    }
 
     // Draw the snake
     for (let id in this.entities) {
@@ -176,16 +175,34 @@ Game.connect = (function (host) {
                     Game.updateSnake(packet.data[i].id, packet.data[i].body);
                 }
 
-                // Update the food location
-                if (packet.food) {
-                    Game.food.x = packet.food.x;
-                    Game.food.y = packet.food.y;
+                // Update the food locations
+                if (packet.foods) {
+                    Game.foods = []; // Clear existing foods
+                    for (var i = 0; i < packet.foods.length; i++) {
+                        var foodData = packet.foods[i];
+                        Game.foods.push({
+                            x: foodData.x,
+                            y: foodData.y,
+                            color: '#FF0000' // Red color
+                        });
+                    }
                 }
 
                 break;
+            case 'foods':
+                // Initial food data when a client connects
+                Game.foods = []; // Clear existing foods
+                for (var i = 0; i < packet.data.length; i++) {
+                    var foodData = packet.data[i];
+                    Game.foods.push({
+                        x: foodData.x,
+                        y: foodData.y,
+                        color: '#FF0000' // Red color
+                    });
+                }
+                break;
             case 'food':
-                Game.food.x = packet.data.x;
-                Game.food.y = packet.data.y;
+                // Single food update (if needed)
                 break;
             case 'eat':
                 Console.log('Info: You ate food! Snake length increased.');

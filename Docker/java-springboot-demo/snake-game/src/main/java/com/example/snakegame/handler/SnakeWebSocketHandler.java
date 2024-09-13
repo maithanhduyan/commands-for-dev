@@ -9,6 +9,7 @@ import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -45,12 +46,20 @@ public class SnakeWebSocketHandler extends TextWebSocketHandler {
         String message = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
         snakeTimer.broadcast(message);
 
-        // Send the initial food location to the new client
-        Food food = snakeTimer.getFood();
+        // Send the initial food locations to the new client
+        List<Food> foods = snakeTimer.getFoods();
+        StringBuilder sbFoods = new StringBuilder();
+        for (int i = 0; i < foods.size(); i++) {
+            Food food = foods.get(i);
+            sbFoods.append(String.format("{\"x\": %d, \"y\": %d}", food.getLocation().x, food.getLocation().y));
+            if (i < foods.size() - 1) {
+                sbFoods.append(',');
+            }
+        }
         String foodMessage = String.format(
-                "{\"type\": \"food\", \"data\": {\"x\": %d, \"y\": %d}}",
-                food.getLocation().x,
-                food.getLocation().y);
+                "{\"type\": \"foods\", \"data\": [%s]}",
+                sbFoods.toString()
+        );
         snake.sendMessage(foodMessage);
     }
 

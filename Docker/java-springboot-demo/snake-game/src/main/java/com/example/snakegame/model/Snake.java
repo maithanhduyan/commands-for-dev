@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.List;
 
 public class Snake {
 
@@ -46,7 +47,7 @@ public class Snake {
         sendMessage("{\"type\": \"kill\"}");
     }
 
-    public synchronized void update(Collection<Snake> snakes, Food food) {
+    public synchronized void update(Collection<Snake> snakes, List<Food> foods) {
         Location nextLocation = head.getAdjacentLocation(direction);
         if (nextLocation.x >= SnakeGameUtils.PLAYFIELD_WIDTH) {
             nextLocation.x = 0;
@@ -68,13 +69,17 @@ public class Snake {
             head = nextLocation;
         }
 
+        // Check for collisions with other snakes
         handleCollisions(snakes);
 
-        // Check for collision with food
-        if (head.equals(food.getLocation())) {
-            length++; // Increase snake's length
-            food.relocate(); // Relocate the food
-            sendMessage("{\"type\": \"eat\"}"); // Notify the client
+        // Check for collision with any food item
+        for (Food food : foods) {
+            if (head.equals(food.getLocation())) {
+                length++; // Increase snake's length
+                food.relocate(); // Relocate the food
+                sendMessage("{\"type\": \"eat\"}"); // Notify the client
+                break; // Only one food can be eaten at a time
+            }
         }
     }
 
