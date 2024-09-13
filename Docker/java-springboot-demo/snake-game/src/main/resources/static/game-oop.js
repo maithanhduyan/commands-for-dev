@@ -25,12 +25,34 @@ class Food {
         this.x = x;
         this.y = y;
         this.color = color;
+        this.angle = 0; // New property to track rotation angle
     }
 
     draw(context, gridSize) {
+        context.save(); // Save the current context state
+        // Move the context to the food's center
+        context.translate(this.x, this.y);
+
+        // Apply the rotation based on the current angle
+        context.rotate(this.angle);
+
+        // Draw the food (rotated rectangle)
         context.fillStyle = this.color;
-        context.fillRect(this.x, this.y, gridSize, gridSize);
+        context.fillRect(-gridSize / 2, -gridSize / 2, gridSize, gridSize);
+
+        context.restore(); // Restore the context to its original state
+
+        this.updateRotation();
     }
+
+    // Increment the rotation angle for continuous spinning
+    updateRotation() {
+        this.angle += 1;
+        if (this.angle >= 360) {
+            this.angle = 0; // Reset rotation after a full circle
+        }
+    }
+    
 }
 
 // Define the Game class
@@ -220,6 +242,7 @@ class Game {
     // Sound playing functions
     playPowerUpSound() {
         const sound = new Audio('/sounds/powerUp.wav');
+        sound.volume = 0.5; // Set volume to 50%
         sound.play().catch(error => {
             Console.log('Error: Unable to play sound. ' + error);
         });
