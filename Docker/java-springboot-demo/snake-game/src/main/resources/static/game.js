@@ -8,6 +8,8 @@ Game.nextFrame = null;
 Game.interval = null;
 Game.direction = 'none';
 Game.gridSize = 10;
+Game.score = 0; // Current score
+Game.highestScore = 0; // Highest score
 
 function Snake() {
     this.snakeBody = [];
@@ -140,6 +142,18 @@ Game.run = (function () {
     };
 })();
 
+// Update the score on the UI
+Game.updateScore = function (score) {
+    Game.score = score;
+    document.getElementById('score').innerText = score;
+
+    // Update the highest score if current score is higher
+    if (score > Game.highestScore) {
+        Game.highestScore = score;
+        document.getElementById('highestScore').innerText = Game.highestScore;
+    }
+};
+
 Game.connect = (function (host) {
     if ('WebSocket' in window) {
         Game.socket = new WebSocket(host);
@@ -206,10 +220,23 @@ Game.connect = (function (host) {
                 break;
             case 'eat':
                 Console.log('Info: You ate food! Snake length increased.');
+
+                // Play the power-up sound
+                Game.playPowerUpSound();
+
+                // Update the score
+                if (packet.score !== undefined) {
+                    Game.updateScore(packet.score);
+                }
                 break;
             case 'join':
                 for (let j = 0; j < packet.data.length; j++) {
                     Game.addSnake(packet.data[j].id, packet.data[j].color);
+                }
+
+                // Handle initial score
+                if (packet.score !== undefined) {
+                    Game.updateScore(packet.score);
                 }
                 break;
             case 'leave':
@@ -218,6 +245,9 @@ Game.connect = (function (host) {
             case 'dead':
                 Console.log('Info: Your snake is dead, bad luck!');
                 Game.direction = 'none';
+
+                // Play the explosion sound
+                Game.playExplosionSound();
                 break;
             case 'kill':
                 Console.log('Info: Head shot!');
@@ -225,6 +255,37 @@ Game.connect = (function (host) {
         }
     };
 });
+
+// Load the power-up sound
+Game.powerUpSound = new Audio('/sounds/powerUp.wav');
+// Ensure the sound is allowed to play (user interaction may be required)
+Game.powerUpSound.load();
+
+// Load the explosion sound
+Game.explosionSound = new Audio('/sounds/explosion.wav');
+Game.explosionSound.load();
+
+Game.playPowerUpSound = function () {
+    // Check if the audio can be played
+    if (Game.powerUpSound) {
+        // Play the sound
+        Game.powerUpSound.currentTime = 0; // Reset to start
+        Game.powerUpSound.play().catch(function (error) {
+            // Handle any errors (e.g., due to browser policies)
+            Console.log('Error: Unable to play sound. ' + error);
+        });
+    }
+};
+
+// Function to play the explosion sound
+Game.playExplosionSound = function () {
+    if (Game.explosionSound) {
+        Game.explosionSound.currentTime = 0; // Reset to start
+        Game.explosionSound.play().catch(function (error) {
+            Console.log('Error: Unable to play explosion sound. ' + error);
+        });
+    }
+};
 
 let Console = {};
 

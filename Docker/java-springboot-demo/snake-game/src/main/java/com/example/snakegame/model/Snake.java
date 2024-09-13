@@ -19,6 +19,7 @@ public class Snake {
 
     private Direction direction;
     private int length = DEFAULT_LENGTH;
+    private int score = 0; // Track player's score
     private Location head;
     private final Deque<Location> tail = new ArrayDeque<>();
     private final String hexColor;
@@ -35,6 +36,7 @@ public class Snake {
         this.head = SnakeGameUtils.getRandomLocation();
         this.tail.clear();
         this.length = DEFAULT_LENGTH;
+        this.score = 0; // Reset score when snake resets
     }
 
     private synchronized void kill() {
@@ -76,8 +78,9 @@ public class Snake {
         for (Food food : foods) {
             if (head.equals(food.getLocation())) {
                 length++; // Increase snake's length
+                score++; // Increase player's score
                 food.relocate(); // Relocate the food
-                sendMessage("{\"type\": \"eat\"}"); // Notify the client
+                sendMessage("{\"type\": \"eat\", \"score\": " + score + "}"); // Notify the client with the updated score
                 break; // Only one food can be eaten at a time
             }
         }
@@ -124,6 +127,10 @@ public class Snake {
 
     public String getHexColor() {
         return hexColor;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public void sendMessage(String msg) {

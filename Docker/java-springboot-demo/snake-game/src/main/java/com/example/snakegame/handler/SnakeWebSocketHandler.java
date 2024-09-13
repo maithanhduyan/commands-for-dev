@@ -43,7 +43,7 @@ public class SnakeWebSocketHandler extends TextWebSocketHandler {
                 sb.append(',');
             }
         }
-        String message = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
+        String message = String.format("{\"type\": \"join\",\"data\":[%s], \"score\": %d}", sb.toString(), snake.getScore());
         snakeTimer.broadcast(message);
 
         // Send the initial food locations to the new client
