@@ -1,1 +1,56 @@
 services:
+  mysqldb:
+    image: mysql:latest
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: snakegame
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin@2024
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    expose:
+      - 3306
+    networks:
+      - game-net
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - mysqldb
+    environment:
+      PMA_HOST: mysqldb
+      MYSQL_ROOT_PASSWORD: admin@2024
+    ports:
+      - "8081:80"
+    networks:
+      - game-net
+
+  game-server:
+    # image: snakegame:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: snakegame
+    restart: always
+    depends_on:
+      - mysqldb
+    ports:
+      - "8080:8080"
+    expose:
+      - 8080
+    volumes:
+      - ./game-server:/tmp
+    networks:
+      - game-net
+
+networks:
+  game-net:
+
+volumes:
+  mysql_data:
