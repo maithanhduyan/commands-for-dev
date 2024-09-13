@@ -16,6 +16,8 @@ interface Packet {
     id?: string;
     score?: number;
 }
+const explosion_sound = './assets/sounds/explosion.wav';
+const powerUp_sound = './assets/sounds/powerUp.wav';
 
 export class Game {
     fps: number;
@@ -208,7 +210,7 @@ export class Game {
     }
 
     playPowerUpSound() {
-        const sound = new Audio('/src/assets/powerUp.wav');
+        const sound = new Audio(powerUp_sound);
         sound.volume = 0.5;
         sound.play().catch((error) => {
             Console.log('Error: Unable to play sound. ' + error);
@@ -216,7 +218,7 @@ export class Game {
     }
 
     playExplosionSound() {
-        const sound = new Audio('/src/assets/explosion.wav');
+        const sound = new Audio(explosion_sound);
         sound.play().catch((error) => {
             Console.log('Error: Unable to play sound. ' + error);
         });
