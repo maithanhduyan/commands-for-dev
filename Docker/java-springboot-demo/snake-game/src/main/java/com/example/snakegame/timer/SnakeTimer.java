@@ -1,5 +1,6 @@
 package com.example.snakegame.timer;
 
+import com.example.snakegame.model.Food;
 import com.example.snakegame.model.Snake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +18,13 @@ public class SnakeTimer {
 
     private final Map<Integer, Snake> snakes = new ConcurrentHashMap<>();
 
+    private Food food;
     private ScheduledExecutorService scheduler;
     private ScheduledFuture<?> gameLoop;
 
     public SnakeTimer() {
         scheduler = Executors.newSingleThreadScheduledExecutor();
+        this.food = new Food();
     }
 
     public synchronized void addSnake(Snake snake) {
@@ -63,13 +66,20 @@ public class SnakeTimer {
         Iterator<Snake> iterator = getSnakes().iterator();
         while (iterator.hasNext()) {
             Snake snake = iterator.next();
-            snake.update(getSnakes());
+            snake.update(getSnakes(), food);
             sb.append(snake.getLocationsJson());
             if (iterator.hasNext()) {
                 sb.append(',');
             }
         }
-        broadcast(String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString()));
+        // Include food location in the broadcast message
+        String message = String.format(
+                "{\"type\": \"update\", \"data\" : [%s], \"food\": {\"x\": %d, \"y\": %d}}",
+                sb.toString(),
+                food.getLocation().x,
+                food.getLocation().y);
+
+        broadcast(message);
     }
 
     public void broadcast(String message) {
@@ -80,5 +90,9 @@ public class SnakeTimer {
                 // Ignore
             }
         }
+    }
+
+    public Food getFood() {
+        return food;
     }
 }

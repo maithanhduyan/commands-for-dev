@@ -14,6 +14,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         this.snakeWebSocketHandler = snakeWebSocketHandler;
     }
 
+    @SuppressWarnings("null")
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(snakeWebSocketHandler, "/examples/websocket/snake").setAllowedOrigins("*");

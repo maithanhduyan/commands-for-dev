@@ -1,6 +1,7 @@
 package com.example.snakegame.handler;
 
 import com.example.snakegame.model.Direction;
+import com.example.snakegame.model.Food;
 import com.example.snakegame.model.Snake;
 import com.example.snakegame.timer.SnakeTimer;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ public class SnakeWebSocketHandler extends TextWebSocketHandler {
         this.snakeTimer = snakeTimer;
     }
 
+    @SuppressWarnings("null")
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         int id = snakeIds.incrementAndGet();
@@ -42,8 +44,17 @@ public class SnakeWebSocketHandler extends TextWebSocketHandler {
         }
         String message = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
         snakeTimer.broadcast(message);
+
+        // Send the initial food location to the new client
+        Food food = snakeTimer.getFood();
+        String foodMessage = String.format(
+                "{\"type\": \"food\", \"data\": {\"x\": %d, \"y\": %d}}",
+                food.getLocation().x,
+                food.getLocation().y);
+        snake.sendMessage(foodMessage);
     }
 
+    @SuppressWarnings("null")
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
@@ -68,6 +79,7 @@ public class SnakeWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    @SuppressWarnings("null")
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         Snake snake = sessions.remove(session);
@@ -78,6 +90,7 @@ public class SnakeWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    @SuppressWarnings("null")
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         exception.printStackTrace();
