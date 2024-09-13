@@ -11,7 +11,7 @@ Game.gridSize = 10;
 Game.score = 0; // Current score
 Game.highestScore = 0; // Highest score
 
-function Snake() {
+Snake = function Snake() {
     this.snakeBody = [];
     this.color = null;
 }
@@ -300,9 +300,6 @@ Console.log = (function (message) {
     }
     console.scrollTop = console.scrollHeight;
 });
-
-
-
 
 document.addEventListener("DOMContentLoaded", function () {
     // Remove elements with "noscript" class - <noscript> is not allowed in XHTML
