@@ -1,7 +1,8 @@
 const gridSize = 10;
 class Snake {
 
-    constructor(context) {
+    constructor(id, context) {
+        this.id = id;
         this.snakeBody = [
             { x: 320, y: 240 },
             { x: 330, y: 240 },
@@ -91,39 +92,60 @@ class Snake {
                 break;
         }
         this.snakeBody.unshift(head);
-        this.snakeBody.pop();
+
+        // Nếu rắn không ăn thức ăn, loại bỏ phần cuối
+        if (!this.justAteFood) {
+            this.snakeBody.pop();
+        } else {
+            this.justAteFood = false; // Reset trạng thái
+        }
 
     }
 
     eat(food) {
         let head = this.snakeBody[0];
         if (head.x === food.position.x || head.y === food.position.y) {
+            this.justAteFood = true;
             this.snakeBody.push({ x: food.position.x, y: food.position.y });
             return true;
         }
         return false;
     }
 
-    checkColision() {
+    // Kiểm tra va chạm với viền màn hình
+    checkCollision() {
         let head = this.snakeBody[0];
-        // console.log(`Head.X ${head.x} Head.Y ${head.y}`);
         if (head.x < 0 || head.x >= 640 || head.y < 0 || head.y >= 480) {
-            console.log('Colision')
+            this.alive = false;
+            this.speed = 0;
+            return true;
         }
-        // this.alive = false;
-        // this.speed = 0;
-        // return false;
+        return false;
+    }
+
+    // Kiểm tra va chạm với thân
+    checkSelfCollision() {
+        let head = this.snakeBody[0];
+        for (let i = 1; i < this.snakeBody.length; i++) {
+            if (head.x === this.snakeBody[i].x && head.y === this.snakeBody[i].y) {
+                this.alive = false;
+                return true;
+            }
+        }
+        return false;
     }
 
     update() {
         this.draw();
-        this.checkColision();
+        this.checkCollision();
+        this.checkSelfCollision();
         this.move();
     }
 
     getSpeed() {
         return this.speed;
     }
+
     setSpeed(speed) {
         this.speed = speed;
     }
@@ -174,7 +196,7 @@ class Food {
 
 class Game {
     constructor() {
-        this.fps = 30;
+        this.desiredFPS = 60;
         this.nextFrame = null;
         this.interval = null;
         this.direction = 'none';
@@ -201,6 +223,7 @@ class Game {
 
         window.addEventListener('keydown', (e) => {
             let key = e.key;
+            console.log(key)
             switch (key) {
                 case 'ArrowLeft':
                     if (this.snake.direction != 'east') this.snake.setDirection('west');
@@ -214,21 +237,20 @@ class Game {
                 case 'ArrowDown':
                     if (this.snake.direction != 'north') this.snake.setDirection('south');
                     break;
-                case 'Backspace':
-                    console.log('Highspeed');
+                case ' ': // Backspace
+                    this.snake.setSpeed(5);
                     break
                 default: console.log('Key Not Available.');
             }
         }, false);
 
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace') {
-                console.log('Highspeed');
-            }
-        }, false);
-
         window.addEventListener('keyup', (e) => {
-            console.log('Normal speed');
+            let key = e.key;
+            switch (key) {
+                case ' ':
+                    this.snake.setSpeed(1);
+                    break;
+            }
         }, false);
 
         this.addSnake('1', '#00ff00');
@@ -237,34 +259,45 @@ class Game {
     }
 
     addSnake(id, color) {
-        Console.log(`Snake ID: ${id}`);
-        this.snake = new Snake(this.context);
+        this.snake = new Snake(id, this.context);
         this.snake.color = color;
         this.entities.push(this.snake);
     }
 
-    setDirection(direction) {
-        this.snake.direction = direction;
-        Console.log('Direction: ' + direction);
-    }
-
     start() {
+        let lastTime = 0;
+        let fpsInterval = 1000; // 1 giây
+        let fpsTimer = 0; // Thời gian tích lũy để tính FPS
+
+        // Create game loop
         const gameLoop = (timestamp) => {
-            if (!this.lastFrameTime) {
-                this.lastFrameTime = timestamp;
+            if (!lastTime) {
+                lastTime = timestamp;
             }
-            const delta = timestamp - this.lastFrameTime;
+            const deltaTime = timestamp - lastTime;
+            lastTime = timestamp;
+
+            // Tăng bộ đếm khung hình
             this.frameCount++;
-            if (delta >= 1000) {
+
+            // Cộng dồn fpsTimer để tính FPS
+            fpsTimer += deltaTime;
+
+            // Nếu đã trôi qua 1 giây, cập nhật currentFPS
+            if (fpsTimer >= fpsInterval) {
                 this.currentFPS = this.frameCount;
                 this.frameCount = 0;
-                this.lastFrameTime = timestamp;
+                fpsTimer -= fpsInterval;
             }
 
-            this.update();
+            // Gọi hàm cập nhật game với deltaTime
+            this.update(deltaTime);
+
+            // Tiếp tục vòng lặp
             this.nextFrame = requestAnimationFrame(gameLoop);
         };
-        this.nextFrame = requestAnimationFrame(gameLoop);
+
+        this.nextFrame = requestAnimationFrame(gameLoop); // Bắt đầu vòng lặp game
     }
 
     stop() {
@@ -275,16 +308,20 @@ class Game {
         }
     }
 
-    update() {
+    update(deltaTime) {
         this.draw();
         this.food.update();
         for (let id in this.entities) {
             if (this.entities.hasOwnProperty(id)) {
                 this.entities[id].update();
                 // Kiểm tra va chạm với tường
-                if (this.entities[id].checkColision()) {
+                if (this.entities[id].checkCollision()) {
                     this.stop();
+                    // Reset game
+                    this.showGameOver();
+                    // Show Menu
                 }
+
                 // Kiểm tra và xử lý ăn thức ăn
                 if (this.entities[id].eat(this.food)) {
                     console.log(`snake length: ${this.snake.snakeBody.length}`);
@@ -333,6 +370,21 @@ class Game {
         }
     }
 
+    showGameOver() {
+        this.context.fillStyle = '#ff0000';
+        this.context.font = '48px Arial';
+        this.context.fillText('Game Over', 200, 240);
+
+        // Add event listener for click to reset game
+        this.context.canvas.addEventListener('click', this.resetGame.bind(this), { once: true });
+    }
+
+    resetGame() {
+        // Reset game state
+        this.entities = [];
+        this.initialize();
+    }
+
     run() {
         let skipTicks = 1000 / this.fps,
             nextGameTick = new Date().getTime();
@@ -354,27 +406,13 @@ class Game {
     }
 }
 
-class Console {
-    static log(message) {
-        let console = document.getElementById('console');
-        let p = document.createElement('p');
-        p.style.overflowWrap = 'break-word';
-        p.innerHTML = message;
-        console.appendChild(p);
-        while (console.childNodes.length > 25) {
-            console.removeChild(console.firstChild);
-        }
-        console.scrollTop = console.scrollHeight;
-    }
-}
-
-const game = new Game();
-game.initialize();
 
 document.addEventListener('DOMContentLoaded', function () {
     let noscripts = document.getElementsByClassName('noscript');
     for (let i = 0; i < noscripts.length; i++) {
         noscripts[i].parentNode.removeChild(noscripts[i]);
     }
+    const game = new Game();
+    game.initialize();
     console.log('Game Ready!');
 }, false);

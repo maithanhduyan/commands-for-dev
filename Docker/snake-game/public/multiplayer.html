@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiplayer Snake Game</title>
+  <style type="text/css">
+    #playground {
+      width: 640px;
+      height: 480px;
+      background-color: #000;
+    }
+
+    #console-container {
+      float: left;
+      margin-left: 15px;
+      width: 300px;
+    }
+
+    #console {
+      border: 1px solid #CCCCCC;
+      border-right-color: #999999;
+      border-bottom-color: #999999;
+      height: 480px;
+      overflow-y: scroll;
+      padding-left: 5px;
+      padding-right: 5px;
+      width: 100%;
+    }
+
+    #console p {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="noscript">
+    <h2 style="color: #ff0000">
+      Seems your browser doesn't support JavaScript! Websockets rely on JavaScript being enabled. Please enable
+      JavaScript and reload this page!
+    </h2>
+  </div>
+  <div style="float: left">
+    <canvas id="playground" width="640" height="480"></canvas>
+  </div>
+  <div id="console-container">
+    <div id="console"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+
+    let Game = {};
+    Game.fps = 30;
+    Game.socket = null;
+    Game.nextFrame = null;
+    Game.interval = null;
+    Game.direction = 'none';
+    Game.gridSize = 10;
+
+    function Snake() {
+      this.snakeBody = [];
+      this.color = null;
+    }
+
+    Snake.prototype.draw = function (context) {
+      context.clearRect(0, 0, 640, 480);
+      for (let id in this.snakeBody) {
+        context.fillStyle = '#00ff00'; 
+        context.fillRect(this.snakeBody[id].x, this.snakeBody[id].y, Game.gridSize, Game.gridSize);
+      }
+    };
+
+    Game.initialize = function () {
+      this.entities = [];
+      let canvas = document.getElementById('playground');
+      if (!canvas.getContext) {
+        Console.log('Error: 2d canvas not supported by this browser.');
+        return;
+      }
+      this.context = canvas.getContext('2d');
+
+      window.addEventListener(
+        'keydown',
+        function (e) {
+          let code = e.keyCode;
+          if (code > 36 && code < 41) {
+            switch (code) {
+              case 37:
+                if (Game.direction != 'east') Game.setDirection('west');
+                break;
+              case 38:
+                if (Game.direction != 'south') Game.setDirection('north');
+                break;
+              case 39:
+                if (Game.direction != 'west') Game.setDirection('east');
+                break;
+              case 40:
+                if (Game.direction != 'north') Game.setDirection('south');
+                break;
+            }
+          }
+        },
+        false
+      );
+
+      Game.connect();
+
+    }
+
+    Game.setDirection = function (direction) {
+      Game.direction = direction;
+      if (Game.socket) {
+        Game.socket.emit('move', direction);
+        Console.log('Sent: Direction ' + direction);
+      }
+    };
+
+    Game.startGameLoop = function () {
+      if (window.requestAnimationFrame) {
+        Game.nextFrame = function () {
+          requestAnimationFrame(Game.run);
+        };
+      } else {
+        Game.interval = setInterval(Game.run, 1000 / Game.fps);
+      }
+      if (Game.nextFrame != null) {
+        Game.nextFrame();
+      }
+    };
+
+    Game.stopGameLoop = function () {
+      Game.nextFrame = null;
+      if (Game.interval != null) {
+        clearInterval(Game.interval);
+      }
+    };
+
+    Game.draw = function () {
+      this.context.clearRect(0, 0, 640, 480);
+      for (var id in this.entities) {
+        if (this.entities.hasOwnProperty(id)) {
+          console.log('Drawing entity:', id); // Debug log
+          this.entities[id].draw(this.context);
+        }
+      }
+    };
+
+    Game.addSnake = function (id, color) {
+      Game.entities[id] = new Snake();
+      Game.entities[id].color = color;
+      console.log('Added snake:', id, Game.entities[id]); // Debug log
+    };
+
+    Game.updateSnake = function (id, snakeBody) {
+      if (typeof Game.entities[id] != 'undefined') {
+        Game.entities[id].snakeBody = snakeBody;
+        console.log('Updated snake:', id, snakeBody); // Debug log
+      }
+    };
+
+    Game.removeSnake = function (id) {
+      if (Game.entities[id]) {
+        Game.entities[id] = null;
+        // Force GC.
+        delete Game.entities[id];
+      }
+    };
+
+    Game.run = (function () {
+      var skipTicks = 1000 / Game.fps,
+        nextGameTick = new Date().getTime();
+
+      return function () {
+        while (new Date().getTime() > nextGameTick) {
+          nextGameTick += skipTicks;
+        }
+        Game.draw();
+        if (Game.nextFrame != null) {
+          Game.nextFrame();
+        }
+      };
+    })();
+
+    Game.connect = function () {
+      Game.socket = io();
+
+      Game.socket.on('connect', function () {
+        Console.log('Info: WebSocket connection opened.');
+        Console.log('Info: Press an arrow key to begin.');
+        Game.startGameLoop();
+        setInterval(function () {
+          // Prevent server read timeout.
+          Game.socket.emit('ping');
+        }, 5000);
+      });
+
+      Game.socket.on('disconnect', function () {
+        Console.log('Info: WebSocket closed.');
+        Game.stopGameLoop();
+      });
+
+      Game.socket.on('update', (data) =>  {
+        console.log(`Update Data ${data[0].id} ${data[0].body}`);
+        for (let i = 0; i < data.length; i++) {
+          Game.updateSnake(data[i].id, data[i].body);
+        }
+      });
+
+      Game.socket.on('join', (data) =>  {
+        Console.log('Info: WebSocket join new player.');
+        console.log(`Update Data ${data}`);
+        for (let j = 0; j < data.length; j++) {
+          Game.addSnake(data[j].id, data[j].color);
+        }
+
+      });
+
+      Game.socket.on('leave', function (id) {
+        Game.removeSnake(id);
+      });
+
+      Game.socket.on('dead', function () {
+        Console.log('Info: Your snake is dead, bad luck!');
+        Game.direction = 'none';
+      });
+
+      Game.socket.on('kill', function () {
+        Console.log('Info: Head shot!');
+      });
+
+      Game.socket.on('error', function (error) {
+        Console.log('Error: WebSocket error', error);
+      });
+    };
+
+    let Console = {};
+
+    Console.log = function (message) {
+      let console = document.getElementById('console');
+      let p = document.createElement('p');
+      p.style.wordWrap = 'break-word';
+      p.innerHTML = message;
+      console.appendChild(p);
+      while (console.childNodes.length > 25) {
+        console.removeChild(console.firstChild);
+      }
+      console.scrollTop = console.scrollHeight;
+    };
+
+    Game.initialize();
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Remove elements with "noscript" class - <noscript> is not allowed in XHTML
+      let noscripts = document.getElementsByClassName('noscript');
+      for (let i = 0; i < noscripts.length; i++) {
+        noscripts[i].parentNode.removeChild(noscripts[i]);
+      }
+      console.log('Web Ready!');
+    }, false);
+
+  </script>
+</body>
+
+</html>
