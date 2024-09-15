@@ -33,10 +33,42 @@
             padding: 0;
             margin: 0;
         }
+
+        #auth-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #auth-container input {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 200px;
+        }
+
+        #auth-container button {
+            padding: 10px 20px;
+        }
     </style>
 </head>
 
 <body>
+
+    <div id="auth-container">
+        <div id="register-form">
+            <h2>Đăng ký</h2>
+            <input type="text" id="register-username" placeholder="Tên đăng nhập">
+            <input type="password" id="register-password" placeholder="Mật khẩu">
+            <button id="register-button">Đăng ký</button>
+        </div>
+        <div id="login-form">
+            <h2>Đăng nhập</h2>
+            <input type="text" id="login-username" placeholder="Tên đăng nhập">
+            <input type="password" id="login-password" placeholder="Mật khẩu">
+            <button id="login-button">Đăng nhập</button>
+        </div>
+    </div>
+
     <div class="noscript">
         <h2 style="color: #ff0000">Seems your browser doesn't support JavaScript! Websockets rely on JavaScript being
             enabled.

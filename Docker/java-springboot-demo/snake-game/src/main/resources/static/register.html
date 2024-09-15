@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký - Snake Game</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #register-form {
+            display: inline-block;
+            text-align: left;
+        }
+
+        #register-form input {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 300px;
+        }
+
+        #register-form button {
+            padding: 10px 20px;
+            width: 100%;
+        }
+
+        .message {
+            color: red;
+            margin-top: 20px;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Đăng ký tài khoản</h1>
+    <div id="register-form">
+        <input type="text" id="register-username" placeholder="Tên đăng nhập">
+        <input type="password" id="register-password" placeholder="Mật khẩu">
+        <input type="password" id="register-confirm-password" placeholder="Xác nhận mật khẩu">
+        <button id="register-button">Đăng ký</button>
+    </div>
+    <div class="message" id="message"></div>
+    <a href="index.html">Đã có tài khoản? Đăng nhập tại đây</a>
+
+    <script type="text/javascript">
+        document.getElementById('register-button').addEventListener('click', function() {
+            var username = document.getElementById('register-username').value;
+            var password = document.getElementById('register-password').value;
+            var confirmPassword = document.getElementById('register-confirm-password').value;
+            var messageDiv = document.getElementById('message');
+
+            if (password !== confirmPassword) {
+                messageDiv.textContent = 'Mật khẩu và xác nhận mật khẩu không khớp.';
+                return;
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/auth/register', true);
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        messageDiv.style.color = 'green';
+                        messageDiv.textContent = 'Đăng ký thành công! Chuyển đến trang đăng nhập...';
+                        // Chuyển đến trang đăng nhập sau vài giây
+                        setTimeout(function() {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    } else {
+                        messageDiv.style.color = 'red';
+                        messageDiv.textContent = xhr.responseText || 'Đăng ký thất bại. Vui lòng thử lại.';
+                    }
+                }
+            };
+
+            var data = {
+                username: username,
+                password: password
+            };
+
+            xhr.send(JSON.stringify(data));
+        });
+    </script>
+</body>
+</html>

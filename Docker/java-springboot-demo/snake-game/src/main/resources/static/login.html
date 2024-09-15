@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập - Snake Game</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #login-form {
+            display: inline-block;
+            text-align: left;
+        }
+
+        #login-form input {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 300px;
+        }
+
+        #login-form button {
+            padding: 10px 20px;
+            width: 100%;
+        }
+
+        .message {
+            color: red;
+            margin-top: 20px;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Đăng nhập</h1>
+    <div id="login-form">
+        <input type="text" id="login-username" placeholder="Tên đăng nhập">
+        <input type="password" id="login-password" placeholder="Mật khẩu">
+        <button id="login-button">Đăng nhập</button>
+    </div>
+    <div class="message" id="message"></div>
+    <a href="register.html">Chưa có tài khoản? Đăng ký tại đây</a>
+
+    <script type="text/javascript">
+        document.getElementById('login-button').addEventListener('click', function() {
+            var username = document.getElementById('login-username').value;
+            var password = document.getElementById('login-password').value;
+            var messageDiv = document.getElementById('message');
+
+            // Kiểm tra nếu tên đăng nhập hoặc mật khẩu trống
+            if (username.trim() === '' || password.trim() === '') {
+                messageDiv.textContent = 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.';
+                return;
+            }
+
+            fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    // Đăng nhập thành công
+                    window.location.href = 'index.html';
+                } else {
+                    return response.text().then(function(text) {
+                        messageDiv.style.color = 'red';
+                        messageDiv.textContent = text || 'Đăng nhập thất bại. Vui lòng thử lại.';
+                    });
+                }
+            })
+            .catch(function(error) {
+                messageDiv.style.color = 'red';
+                messageDiv.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -57,6 +57,7 @@ class Food {
 
 // Define the Game class
 class Game {
+
     constructor() {
         this.fps = 30;
         this.socket = null;
@@ -97,6 +98,62 @@ class Game {
         const protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
         this.connect(`${protocol}${window.location.host}/examples/websocket/snake`);
         // Console.log(`${protocol}${window.location.host}/examples/websocket/snake`);
+
+        this.bindAuthActions();
+    }
+
+    bindAuthActions() {
+        document.getElementById('register-button').addEventListener('click', () => {
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            this.register(username, password);
+        });
+
+        document.getElementById('login-button').addEventListener('click', () => {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            this.login(username, password);
+        });
+    }
+
+    register(username, password) {
+        fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => response.text())
+        .then(message => {
+            Console.log(message);
+        })
+        .catch(error => {
+            Console.log('Error: ' + error);
+        });
+    }
+
+    login(username, password) {
+        fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error('Sai tên đăng nhập hoặc mật khẩu');
+            }
+        })
+        .then(message => {
+            Console.log(message);
+            // Hiển thị game sau khi đăng nhập thành công
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            this.connectWebSocket();
+        })
+        .catch(error => {
+            Console.log('Error: ' + error);
+        });
     }
 
     setDirection(direction) {
@@ -134,10 +191,8 @@ class Game {
     draw() {
         this.context.clearRect(0, 0, 640, 480);
 
-        // Draw all food items
         this.foods.forEach(food => food.draw(this.context, this.gridSize));
 
-        // Draw all snakes
         for (let id in this.snakes) {
             this.snakes[id].draw(this.context, this.gridSize);
         }
@@ -162,14 +217,12 @@ class Game {
         this.score = score;
         document.getElementById('score').innerText = score;
 
-        // Update highest score
         if (score > this.highestScore) {
             this.highestScore = score;
             document.getElementById('highestScore').innerText = this.highestScore;
         }
     }
 
-    // WebSocket connection
     connect(host) {
         this.socket = 'WebSocket' in window ? new WebSocket(host) : new MozWebSocket(host);
         if (!this.socket) {
@@ -239,10 +292,9 @@ class Game {
         };
     }
 
-    // Sound playing functions
     playPowerUpSound() {
         const sound = new Audio('/sounds/powerUp.wav');
-        sound.volume = 0.5; // Set volume to 50%
+        sound.volume = 0.5; 
         sound.play().catch(error => {
             Console.log('Error: Unable to play sound. ' + error);
         });
@@ -256,7 +308,6 @@ class Game {
     }
 }
 
-// Console utility
 class Console {
     static log(message) {
         let console = document.getElementById('console');
@@ -271,9 +322,7 @@ class Console {
     }
 }
 
-// Initialize the game on document load
 document.addEventListener("DOMContentLoaded", function () {
-    // Remove elements with "noscript" class - <noscript> is not allowed in XHTML
     let noscripts = document.getElementsByClassName("noscript");
     for (let i = 0; i < noscripts.length; i++) {
         noscripts[i].parentNode.removeChild(noscripts[i]);

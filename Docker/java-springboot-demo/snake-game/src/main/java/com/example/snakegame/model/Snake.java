@@ -12,6 +12,8 @@ import java.util.List;
 
 public class Snake {
 
+    private final String username;
+
     private static final int DEFAULT_LENGTH = 5;
 
     private final int id;
@@ -24,9 +26,10 @@ public class Snake {
     private final Deque<Location> tail = new ArrayDeque<>();
     private final String hexColor;
 
-    public Snake(int id, WebSocketSession session) {
+    public Snake(int id, WebSocketSession session, String username) {
         this.id = id;
         this.session = session;
+        this.username = username;
         this.hexColor = SnakeGameUtils.getRandomHexColor();
         resetState();
     }
@@ -80,7 +83,8 @@ public class Snake {
                 length++; // Increase snake's length
                 score++; // Increase player's score
                 food.relocate(); // Relocate the food
-                sendMessage("{\"type\": \"eat\", \"score\": " + score + "}"); // Notify the client with the updated score
+                sendMessage("{\"type\": \"eat\", \"score\": " + score + "}"); // Notify the client with the updated
+                                                                              // score
                 break; // Only one food can be eaten at a time
             }
         }
@@ -119,6 +123,10 @@ public class Snake {
             sb.append(String.format("{\"x\": %d, \"y\": %d}", location.x, location.y));
         }
         return String.format("{\"id\":%d,\"body\":[%s]}", id, sb.toString());
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public int getId() {

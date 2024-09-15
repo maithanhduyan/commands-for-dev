@@ -3,6 +3,7 @@ package com.example.snakegame.handler;
 import com.example.snakegame.model.Direction;
 import com.example.snakegame.model.Food;
 import com.example.snakegame.model.Snake;
+import com.example.snakegame.model.User;
 import com.example.snakegame.timer.SnakeTimer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
@@ -10,6 +11,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,8 +30,19 @@ public class SnakeWebSocketHandler extends TextWebSocketHandler {
     @SuppressWarnings("null")
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+
+        // Lấy thông tin người dùng từ session
+        Map<String, Object> attributes = session.getAttributes();
+        User user = (User) attributes.get("user");
+
+        if (user == null) {
+            session.close(CloseStatus.NOT_ACCEPTABLE.withReason("Không xác định được người dùng"));
+            return;
+
+        }
+
         int id = snakeIds.incrementAndGet();
-        Snake snake = new Snake(id, session);
+        Snake snake = new Snake(id, session,  user.getUsername());
         sessions.put(session, snake);
         snakeTimer.addSnake(snake);
 
@@ -43,7 +56,8 @@ public class SnakeWebSocketHandler extends TextWebSocketHandler {
                 sb.append(',');
             }
         }
-        String message = String.format("{\"type\": \"join\",\"data\":[%s], \"score\": %d}", sb.toString(), snake.getScore());
+        String message = String.format("{\"type\": \"join\",\"data\":[%s], \"score\": %d}", sb.toString(),
+                snake.getScore());
         snakeTimer.broadcast(message);
 
         // Send the initial food locations to the new client
@@ -58,8 +72,7 @@ public class SnakeWebSocketHandler extends TextWebSocketHandler {
         }
         String foodMessage = String.format(
                 "{\"type\": \"foods\", \"data\": [%s]}",
-                sbFoods.toString()
-        );
+                sbFoods.toString());
         snake.sendMessage(foodMessage);
     }
 
