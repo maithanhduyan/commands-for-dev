@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaHeart, FaShoppingCart, FaStar } from 'react-icons/fa';
+import { FaSearch, FaHeart, FaShoppingCart, FaStar, FaTimes } from 'react-icons/fa';
+import { IoMdAdd, IoMdRemove } from 'react-icons/io';
 import { motion } from 'framer-motion';
 
 import Edamame_Img from './assets/images/Steamed soybeans with sea salt.jpg';
@@ -65,6 +66,7 @@ const SushiMenu = () => {
   const [sortBy, setSortBy] = useState('name');
   const [cart, setCart] = useState([]);
   const [favorites, setFavorites] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   useEffect(() => {
     let result = menuItems;
@@ -86,7 +88,35 @@ const SushiMenu = () => {
   }, [activeFilter, searchTerm, sortBy]);
 
   const addToCart = (item) => {
-    setCart([...cart, item]);
+    const existingItem = cart.find(cartItem => cartItem.id === item.id);
+    if (existingItem) {
+      setCart(cart.map(cartItem =>
+        cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
+      ));
+    } else {
+      setCart([...cart, { ...item, quantity: 1 }]);
+    }
+  };
+
+  const removeFromCart = (itemId) => {
+    const updatedCart = cart.map(item =>
+      item.id === itemId ? { ...item, quantity: item.quantity - 1 } : item
+    ).filter(item => item.quantity > 0);
+    setCart(updatedCart);
+  };
+
+  const getTotalCost = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+  };
+
+  const clearCart = () => {
+    setCart([]);
+  };
+
+  const placeOrder = () => {
+    alert('Your order has been placed!');
+    clearCart();
+    setIsCartOpen(false);
   };
 
   const toggleFavorite = (item) => {
@@ -100,7 +130,7 @@ const SushiMenu = () => {
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-100 min-h-screen">
       <h1 className="text-4xl font-bold text-center text-red-600 mb-8">Meta Sushi Menu</h1>
-      
+
       <div className="flex flex-col md:flex-row justify-between items-center mb-8">
         <div className="relative w-full md:w-1/3 mb-4 md:mb-0">
           <input
@@ -112,7 +142,7 @@ const SushiMenu = () => {
           />
           <FaSearch className="absolute left-3 top-3 text-gray-400" />
         </div>
-        
+
         <div className="flex space-x-2">
           <select
             className="p-2 rounded-md border-2 border-red-300 focus:outline-none focus:border-red-500"
@@ -128,7 +158,7 @@ const SushiMenu = () => {
             <option value="gluten-free">Gluten-Free</option>
             <option value="chef special">Chef's Special</option>
           </select>
-          
+
           <select
             className="p-2 rounded-md border-2 border-red-300 focus:outline-none focus:border-red-500"
             value={sortBy}
@@ -187,9 +217,11 @@ const SushiMenu = () => {
         <p className="text-center text-gray-500 mt-8">No items found. Try adjusting your search or filters.</p>
       )}
 
+      {/* Cart and Favorites Buttons */}
       <div className="fixed bottom-4 right-4 flex space-x-4">
         <button
-          className="bg-red-500 text-white p-3 rounded-full shadow-lg hover:bg-red-600"
+          onClick={() => setIsCartOpen(true)}
+          className="bg-red-500 text-white p-3 rounded-full shadow-lg hover:bg-red-600 relative"
           aria-label="View cart"
         >
           <FaShoppingCart />
@@ -200,7 +232,7 @@ const SushiMenu = () => {
           )}
         </button>
         <button
-          className="bg-red-500 text-white p-3 rounded-full shadow-lg hover:bg-red-600"
+          className="bg-red-500 text-white p-3 rounded-full shadow-lg hover:bg-red-600 relative"
           aria-label="View favorites"
         >
           <FaHeart />
@@ -211,6 +243,67 @@ const SushiMenu = () => {
           )}
         </button>
       </div>
+
+      {/* Cart Component */}
+      {isCartOpen && (
+        <div className="fixed top-0 right-0 w-full sm:w-96 h-full bg-white shadow-lg z-50 overflow-y-auto">
+          <div className="p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Your Cart</h2>
+              <button
+                onClick={() => setIsCartOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+                aria-label="Close cart"
+              >
+                <FaTimes />
+              </button>
+            </div>
+            {cart.length === 0 ? (
+              <p>Your cart is empty</p>
+            ) : (
+              <>
+                {cart.map((item) => (
+                  <div key={item.id} className="flex justify-between items-center mb-2">
+                    <span>{item.name}</span>
+                    <div className="flex items-center">
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-red-500 mr-2"
+                        aria-label={`Remove ${item.name} from cart`}
+                      >
+                        <IoMdRemove />
+                      </button>
+                      <span>{item.quantity}</span>
+                      <button
+                        onClick={() => addToCart(item)}
+                        className="text-green-500 ml-2"
+                        aria-label={`Add another ${item.name} to cart`}
+                      >
+                        <IoMdAdd />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <div className="mt-4">
+                  <p className="text-xl font-bold">Total: ${getTotalCost()}</p>
+                  <button
+                    onClick={placeOrder}
+                    className="w-full bg-green-500 text-white py-2 rounded mt-4 hover:bg-green-600 transition-colors"
+                  >
+                    Place Order
+                  </button>
+                  <button
+                    onClick={clearCart}
+                    className="w-full bg-red-500 text-white py-2 rounded mt-4 hover:bg-red-600 transition-colors"
+                  >
+                    Clear Cart
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
