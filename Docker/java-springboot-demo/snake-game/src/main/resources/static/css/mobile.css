@@ -1,0 +1,15 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.message {
+    color: red;
+    margin-top: 20px;
+}
+
+a {
+    display: block;
+    margin-top: 20px;
+}

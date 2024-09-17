@@ -3,17 +3,16 @@ package com.example.snakegame.handler;
 import com.example.snakegame.model.Direction;
 import com.example.snakegame.model.Food;
 import com.example.snakegame.model.Snake;
-import com.example.snakegame.model.User;
 import com.example.snakegame.timer.SnakeTimer;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.springframework.security.core.Authentication;
 
 @Component
 public class SnakeWebSocketHandler extends TextWebSocketHandler {
@@ -32,17 +31,11 @@ public class SnakeWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 
         // Lấy thông tin người dùng từ session
-        Map<String, Object> attributes = session.getAttributes();
-        User user = (User) attributes.get("user");
-
-        if (user == null) {
-            session.close(CloseStatus.NOT_ACCEPTABLE.withReason("Không xác định được người dùng"));
-            return;
-
-        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
 
         int id = snakeIds.incrementAndGet();
-        Snake snake = new Snake(id, session,  user.getUsername());
+        Snake snake = new Snake(id, session,  username);
         sessions.put(session, snake);
         snakeTimer.addSnake(snake);
 

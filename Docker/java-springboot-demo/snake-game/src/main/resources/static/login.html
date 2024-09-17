@@ -1,30 +1,25 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>Đăng nhập - Snake Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Liên kết tới các tệp CSS của jQuery Mobile -->
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.5.0-rc1/jquery.mobile-1.5.0-rc1.min.css">
+    <!-- Liên kết tới tệp CSS tùy chỉnh nếu cần -->
+    <link rel="stylesheet" href="css/mobile.css">
+
+    <!-- Liên kết tới jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Liên kết tới jQuery Mobile -->
+    <script src="https://code.jquery.com/mobile/1.5.0-rc1/jquery.mobile-1.5.0-rc1.min.js"></script>
     <style type="text/css">
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
-        }
-
-        #login-form {
-            display: inline-block;
-            text-align: left;
-        }
-
-        #login-form input {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            width: 300px;
-        }
-
-        #login-form button {
-            padding: 10px 20px;
-            width: 100%;
         }
 
         .message {
@@ -38,54 +33,78 @@
         }
     </style>
 </head>
+
 <body>
-    <h1>Đăng nhập</h1>
-    <div id="login-form">
-        <input type="text" id="login-username" placeholder="Tên đăng nhập">
-        <input type="password" id="login-password" placeholder="Mật khẩu">
-        <button id="login-button">Đăng nhập</button>
-    </div>
-    <div class="message" id="message"></div>
-    <a href="register.html">Chưa có tài khoản? Đăng ký tại đây</a>
+
+    <div data-role="page" id="loginPage">
+        <div data-role="header">
+            <h1>Snake Game</h1>
+        </div><!-- /header -->
+
+        <div role="main" class="ui-content">
+            <form id="login-form">
+                <div class="ui-field-contain">
+                    <label for="login-username">Tên đăng nhập:</label>
+                    <input type="text" name="username" id="login-username" placeholder="Tên đăng nhập">
+                </div>
+                <div class="ui-field-contain">
+                    <label for="login-password">Mật khẩu:</label>
+                    <input type="password" name="password" id="login-password" placeholder="Mật khẩu">
+                </div>
+                <button id="login-button" class="ui-btn ui-corner-all ui-shadow ui-btn-b">Đăng nhập</button>
+            </form>
+            <div class="message" id="message"></div>
+            <a href="register.html" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-mini">Chưa có tài khoản? Đăng
+                ký tại đây</a>
+        </div><!-- /content -->
+
+        <div data-role="footer">
+            <h4>&copy; 2024 Snake Game</h4>
+        </div><!-- /footer -->
+    </div><!-- /page -->
 
     <script type="text/javascript">
-        document.getElementById('login-button').addEventListener('click', function() {
-            var username = document.getElementById('login-username').value;
-            var password = document.getElementById('login-password').value;
-            var messageDiv = document.getElementById('message');
+        $(document).on('pagecreate', '#loginPage', function () {
+            // Vô hiệu hóa AJAX của jQuery Mobile
+            $.mobile.ajaxEnabled = false;
 
-            // Kiểm tra nếu tên đăng nhập hoặc mật khẩu trống
-            if (username.trim() === '' || password.trim() === '') {
-                messageDiv.textContent = 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.';
-                return;
-            }
+            $('#login-button').on('click', function (event) {
+                event.preventDefault();
 
-            fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=UTF-8'
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
-            })
-            .then(function(response) {
-                if (response.ok) {
-                    // Đăng nhập thành công
-                    window.location.href = 'index.html';
-                } else {
-                    return response.text().then(function(text) {
-                        messageDiv.style.color = 'red';
-                        messageDiv.textContent = text || 'Đăng nhập thất bại. Vui lòng thử lại.';
-                    });
+                var username = $('#login-username').val();
+                var password = $('#login-password').val();
+                var messageDiv = $('#message');
+
+                // Kiểm tra nếu tên đăng nhập hoặc mật khẩu trống
+                if ($.trim(username) === '' || $.trim(password) === '') {
+                    messageDiv.text('Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.');
+                    return;
                 }
-            })
-            .catch(function(error) {
-                messageDiv.style.color = 'red';
-                messageDiv.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
+
+                $.ajax({
+                    url: '/api/auth/login',
+                    method: 'POST',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({
+                        username: username,
+                        password: password
+                    }),
+                    success: function () {
+                        messageDiv.css('color', 'green').text('Đăng nhập thành công.');
+                        setTimeout(function () {
+                            // Chuyển hướng sau 1 giây
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    },
+                    error: function (xhr) {
+                        var errorMessage = xhr.responseText || 'Đăng nhập thất bại. Vui lòng thử lại.';
+                        messageDiv.css('color', 'red').text(errorMessage);
+                    }
+                });
             });
         });
     </script>
+
 </body>
+
 </html>

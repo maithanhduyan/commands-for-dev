@@ -1,32 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
-    <title>Spring Boot WebSocket Snake Game</title>
+    <title>Snake Game - Spring Boot WebSocket</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Liên kết tới CSS của jQuery Mobile -->
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+
+    <!-- Liên kết tới jQuery -->
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <!-- Liên kết tới JS của jQuery Mobile -->
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+    <!-- CSS tùy chỉnh -->
     <style type="text/css">
-        /* Include your CSS styles here */
         #playground {
-            width: 640px;
-            height: 480px;
+            width: 100%;
+            height: auto;
             background-color: #000;
         }
 
         #console-container {
-            float: left;
-            margin-left: 15px;
-            width: 300px;
+            margin-top: 20px;
         }
 
         #console {
             border: 1px solid #CCCCCC;
             border-right-color: #999999;
             border-bottom-color: #999999;
-            height: 480px;
+            height: 150px;
             overflow-y: scroll;
             padding-left: 5px;
             padding-right: 5px;
             width: 100%;
+            background-color: #fff;
         }
 
         #console p {
@@ -34,57 +44,65 @@
             margin: 0;
         }
 
-        #auth-container {
+        #score-container {
             text-align: center;
-            margin-top: 50px;
+            margin-bottom: 20px;
         }
 
-        #auth-container input {
-            display: block;
-            margin: 10px auto;
-            padding: 10px;
-            width: 200px;
+        #score-container h2 {
+            margin: 5px 0;
         }
 
-        #auth-container button {
-            padding: 10px 20px;
+        /* Đảm bảo canvas hiển thị đúng trên thiết bị di động */
+        canvas {
+            max-width: 100%;
+            height: auto;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="auth-container">
-        <div id="register-form">
-            <h2>Đăng ký</h2>
-            <input type="text" id="register-username" placeholder="Tên đăng nhập">
-            <input type="password" id="register-password" placeholder="Mật khẩu">
-            <button id="register-button">Đăng ký</button>
-        </div>
-        <div id="login-form">
-            <h2>Đăng nhập</h2>
-            <input type="text" id="login-username" placeholder="Tên đăng nhập">
-            <input type="password" id="login-password" placeholder="Mật khẩu">
-            <button id="login-button">Đăng nhập</button>
-        </div>
-    </div>
+    <div data-role="page" id="gamePage">
+        <div data-role="header">
+            <h1>Snake Game</h1>
+        </div><!-- /header -->
 
-    <div class="noscript">
-        <h2 style="color: #ff0000">Seems your browser doesn't support JavaScript! Websockets rely on JavaScript being
-            enabled.
-            Please enable JavaScript and reload this page!</h2>
-    </div>
-    <div>
-        <h2>Score: <span id="score">0</span></h2>
-        <h2>Highest Score: <span id="highestScore">0</span></h2>
-    </div>
-    <div style="float: left">
-        <canvas id="playground" width="640" height="480"></canvas>
-    </div>
-    <div id="console-container">
-        <div id="console"></div>
-    </div>
-    <script type="text/javascript" src="./game-oop.js"> </script>
+        <div role="main" class="ui-content">
+            <div id="score-container">
+                <h2>Điểm: <span id="score">0</span></h2>
+                <h2>Điểm cao nhất: <span id="highestScore">0</span></h2>
+            </div>
+
+            <canvas id="playground" width="640" height="480"></canvas>
+
+            <div id="console-container">
+                <div id="console"></div>
+            </div>
+        </div><!-- /content -->
+
+        <div data-role="footer">
+            <h4>&copy; 2024 Snake Game</h4>
+        </div><!-- /footer -->
+    </div><!-- /page -->
+
+    <script type="text/javascript">
+        $(document).on('pagecreate', '#gamePage', function () {
+            // Lấy kích thước màn hình
+            var screenWidth = $(window).width();
+            var screenHeight = $(window).height();
+
+            // Tính toán kích thước mới cho canvas
+            var canvasWidth = screenWidth * 0.9; // Ví dụ: 90% chiều rộng màn hình
+            var canvasHeight = canvasWidth * (480 / 640); // Giữ tỷ lệ 4:3
+
+            // Cập nhật kích thước canvas
+            $('#playground').attr('width', canvasWidth).attr('height', canvasHeight);
+        });
+    </script>
+    <!-- Script trò chơi -->
+    <script type="text/javascript" src="./game-oop.js"></script>
+
 </body>
 
 </html>

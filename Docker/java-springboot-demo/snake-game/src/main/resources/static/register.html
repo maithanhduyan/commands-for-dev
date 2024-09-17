@@ -1,93 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>Đăng ký - Snake Game</title>
-    <style type="text/css">
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        #register-form {
-            display: inline-block;
-            text-align: left;
-        }
+    <!-- Liên kết tới các tệp CSS của jQuery Mobile -->
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.5.0-rc1/jquery.mobile-1.5.0-rc1.min.css">
+    <!-- Liên kết tới tệp CSS tùy chỉnh nếu cần -->
+    <link rel="stylesheet" href="css/mobile.css">
 
-        #register-form input {
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            width: 300px;
-        }
-
-        #register-form button {
-            padding: 10px 20px;
-            width: 100%;
-        }
-
-        .message {
-            color: red;
-            margin-top: 20px;
-        }
-
-        a {
-            display: block;
-            margin-top: 20px;
-        }
-    </style>
+    <!-- Liên kết tới jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Liên kết tới jQuery Mobile -->
+    <script src="https://code.jquery.com/mobile/1.5.0-rc1/jquery.mobile-1.5.0-rc1.min.js"></script>
 </head>
 <body>
-    <h1>Đăng ký tài khoản</h1>
-    <div id="register-form">
-        <input type="text" id="register-username" placeholder="Tên đăng nhập">
-        <input type="password" id="register-password" placeholder="Mật khẩu">
-        <input type="password" id="register-confirm-password" placeholder="Xác nhận mật khẩu">
-        <button id="register-button">Đăng ký</button>
-    </div>
-    <div class="message" id="message"></div>
-    <a href="index.html">Đã có tài khoản? Đăng nhập tại đây</a>
 
-    <script type="text/javascript">
-        document.getElementById('register-button').addEventListener('click', function() {
-            var username = document.getElementById('register-username').value;
-            var password = document.getElementById('register-password').value;
-            var confirmPassword = document.getElementById('register-confirm-password').value;
-            var messageDiv = document.getElementById('message');
+<div data-role="page" id="registerPage">
+    <div data-role="header">
+        <h1>Đăng ký</h1>
+    </div><!-- /header -->
 
-            if (password !== confirmPassword) {
-                messageDiv.textContent = 'Mật khẩu và xác nhận mật khẩu không khớp.';
+    <div role="main" class="ui-content">
+        <form id="register-form">
+            <div class="ui-field-contain">
+                <label for="register-username">Tên đăng nhập:</label>
+                <input type="text" name="username" id="register-username" placeholder="Tên đăng nhập">
+            </div>
+            <div class="ui-field-contain">
+                <label for="register-password">Mật khẩu:</label>
+                <input type="password" name="password" id="register-password" placeholder="Mật khẩu">
+            </div>
+            <div class="ui-field-contain">
+                <label for="register-confirm-password">Xác nhận mật khẩu:</label>
+                <input type="password" name="confirm_password" id="register-confirm-password" placeholder="Xác nhận mật khẩu">
+            </div>
+            <button id="register-button" class="ui-btn ui-corner-all ui-shadow ui-btn-b">Đăng ký</button>
+        </form>
+        <div class="message" id="message"></div>
+        <a href="login.html" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-mini">Đã có tài khoản? Đăng nhập tại đây</a>
+    </div><!-- /content -->
+
+    <div data-role="footer">
+        <h4>&copy; 2024 Snake Game</h4>
+    </div><!-- /footer -->
+</div><!-- /page -->
+
+<script type="text/javascript">
+    $(document).on('pagecreate', '#registerPage', function() {
+        $('#register-button').on('click', function(event) {
+            event.preventDefault();
+
+            var username = $('#register-username').val();
+            var password = $('#register-password').val();
+            var confirmPassword = $('#register-confirm-password').val();
+            var messageDiv = $('#message');
+
+            // Kiểm tra nếu tên đăng nhập hoặc mật khẩu trống
+            if ($.trim(username) === '' || $.trim(password) === '' || $.trim(confirmPassword) === '') {
+                messageDiv.text('Vui lòng nhập đầy đủ thông tin.');
                 return;
             }
 
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/api/auth/register', true);
-            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            if (password !== confirmPassword) {
+                messageDiv.text('Mật khẩu và xác nhận mật khẩu không khớp.');
+                return;
+            }
 
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        messageDiv.style.color = 'green';
-                        messageDiv.textContent = 'Đăng ký thành công! Chuyển đến trang đăng nhập...';
-                        // Chuyển đến trang đăng nhập sau vài giây
-                        setTimeout(function() {
-                            window.location.href = 'index.html';
-                        }, 2000);
-                    } else {
-                        messageDiv.style.color = 'red';
-                        messageDiv.textContent = xhr.responseText || 'Đăng ký thất bại. Vui lòng thử lại.';
-                    }
+            $.ajax({
+                url: '/api/auth/register',
+                method: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
+                    username: username,
+                    password: password
+                }),
+                success: function() {
+                    messageDiv.css('color', 'green').text('Đăng ký thành công! Chuyển đến trang đăng nhập...');
+                    // Chuyển đến trang đăng nhập sau vài giây
+                    setTimeout(function() {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                },
+                error: function(xhr) {
+                    var errorMessage = xhr.responseText || 'Đăng ký thất bại. Vui lòng thử lại.';
+                    messageDiv.css('color', 'red').text(errorMessage);
                 }
-            };
-
-            var data = {
-                username: username,
-                password: password
-            };
-
-            xhr.send(JSON.stringify(data));
+            });
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>

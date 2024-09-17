@@ -2,23 +2,28 @@ package com.example.snakegame.controller;
 
 import com.example.snakegame.model.User;
 import com.example.snakegame.service.UserService;
-
-import jakarta.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController extends BaseController {
+public class AuthController {
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/register")
@@ -28,15 +33,23 @@ public class AuthController extends BaseController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserDto userDto, HttpSession session) {
-        return userService.loginUser(userDto.getUsername(), userDto.getPassword())
-                .map(user -> {
-                    // Lưu thông tin người dùng vào session
-                    session.setAttribute("user", user);
-                    return ResponseEntity.ok("Đăng nhập thành công!");
-                })
-                .orElseGet(
-                        () -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai tên đăng nhập hoặc mật khẩu!"));
+    public ResponseEntity<String> login(@RequestBody UserDto userDto) {
+        try {
+            UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword());
+
+            Authentication authentication = authenticationManager.authenticate(authToken);
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            return ResponseEntity.ok("Đăng nhập thành công!");
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai tên đăng nhập hoặc mật khẩu!");
+        } catch (Exception e) {
+            // Ghi log lỗi nếu cần
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Đã xảy ra lỗi. Vui lòng thử lại.");
+        }
     }
 
     // Lớp DTO để nhận dữ liệu từ client
@@ -44,6 +57,7 @@ public class AuthController extends BaseController {
         private String username;
         private String password;
 
+        // Getters và Setters
         public String getUsername() {
             return username;
         }
@@ -55,10 +69,9 @@ public class AuthController extends BaseController {
         public String getPassword() {
             return password;
         }
-
+ 
         public void setPassword(String password) {
             this.password = password;
         }
-
     }
 }
