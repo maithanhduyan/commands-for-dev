@@ -1,6 +1,6 @@
 import configparser
 import asyncio
-from odoo.odoo_v15 import webchat
+from odoo.odoo_v17 import webchat
 
 # Load cấu hình từ file app.config
 config = configparser.ConfigParser()

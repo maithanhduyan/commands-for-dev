@@ -9,3 +9,6 @@ or in linux
 
 ### Docker build image
 > docker build --pull --rm -f "llms\chat-bot\Dockerfile" -t chatbot:latest "llms\chat-bot" 
+
+> docker logs -f selenium
+> docker logs -f chatbot

@@ -8,14 +8,15 @@ import google.generativeai as genai
 
 # Load cấu hình từ file app.config
 config = configparser.ConfigParser()
-# config.read('app.config')
+config.read('app.config')
+
 GOOGLE_GEMINI_API_KEY = 'AIzaSyA6gwmwIS6aha3xOWQD-MYidqwO9zgwDN4'
 
 async def webchat(config):
     # Load cấu hình
-    WEB_URL = 'http://localhost:8069//web/login'                                            #config['odoo_v17']['url']
-    USERNAME = 'admin@company.com'                                           #config['odoo_v17']['username']
-    PASSWORD = 'admin'                                           #config['odoo_v17']['password']
+    WEB_URL = 'http://localhost:8069//web/login'            #config['odoo_v17']['url']
+    USERNAME = 'admin@company.com'                          #config['odoo_v17']['username']
+    PASSWORD = 'admin'                                      #config['odoo_v17']['password']
     API_KEY = 'AIzaSyA6gwmwIS6aha3xOWQD-MYidqwO9zgwDN4'     #config['google']['api_key']
     ON_DOCKER = False                                       #config['chatbot']['docker']
 

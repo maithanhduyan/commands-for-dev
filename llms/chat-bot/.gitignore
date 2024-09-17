@@ -1,4 +1,5 @@
 /.venv
+/venv
 /app.config
 /logs
 /history

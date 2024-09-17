@@ -26,7 +26,7 @@ SELENIUM_REMOTE_URL = "http://localhost:4444/wd/hub"
 
 # Cấu hình trình duyệt
 chrome_options = Options()
-# chrome_options.add_argument("--headless")  # Chạy ở chế độ headless (không mở cửa sổ trình duyệt)
+chrome_options.add_argument("--headless")  # Chạy ở chế độ headless (không mở cửa sổ trình duyệt)
 # chrome_options.add_argument("--no-sandbox")
 # chrome_options.add_argument("--disable-dev-shm-usage")
 

@@ -8,7 +8,7 @@ sales = "sales"
 def chat(messages):
     r = requests.post(
         "http://127.0.0.1:11434/api/chat",
-        json={"model": sales, "messages": messages, "stream": True},
+        json={"model": model, "messages": messages, "stream": True},
 	stream=True
     )
     r.raise_for_status()

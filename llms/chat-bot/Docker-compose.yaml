@@ -15,14 +15,14 @@ services:
     image: chatbot
     restart : unless-stopped
     depends_on:
-      - tunnel
-
-
-  tunnel:
-    image: cloudflare/cloudflared:latest
-    restart: unless-stopped
-    environment:
-      - TUNNEL_URL=http://localhost:4444
-    command: tunnel --no-autoupdate
-    depends_on:
       - selenium
+
+
+  # tunnel:
+  #   image: cloudflare/cloudflared:latest
+  #   restart: unless-stopped
+  #   environment:
+  #     - TUNNEL_URL=http://localhost:4444
+  #   command: tunnel --no-autoupdate
+  #   depends_on:
+  #     - selenium

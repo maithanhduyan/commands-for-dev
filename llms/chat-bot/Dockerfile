@@ -20,8 +20,12 @@ RUN pip install openai \
 COPY . .
 
 VOLUME ["/app"]
+
+# Mount thư mục bên ngoài vào /app/config để lấy file app.config
+VOLUME ["/app/config"]
+
 # Chờ Selenium server khởi động
-# ENTRYPOINT ["./docker/entrypoint.sh"]
+ENTRYPOINT ["./docker/entrypoint.sh"]
 
 # Lệnh mặc định khi container được khởi động
 CMD ["python3","app.py"]
