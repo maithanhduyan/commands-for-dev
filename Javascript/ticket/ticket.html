@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket Queue</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #queuePage {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure full viewport height */
+        }
+
+        .ui-content {
+            flex-grow: 1; /* This makes the content area grow to fill the space */
+        }
+        .header-text{ text-align: center; padding: 0px; margin: 0px;}
+        .center-text { text-align: center; }
+        .left-text { text-align: left; color: #c9213a; margin: 5px;}
+        .right-text { text-align: right; color: #c9213a; margin: 10px;}
+        .big-text { font-size: 70px; color: #065482;  font-weight: bold;}
+        .highlight-text-bold { color: #c9213a; font-size: 70px; font-weight: bold;}
+        .update-text { font-size: 14px; }
+        .content-box-header { border: 1px solid #065482; padding: 10px; margin: 5px; }
+        .content-box-body { border: 1px solid #c9213a; padding: 0px; margin: 5px; }
+        .content-box-footer { border: 1px solid #147e08bc; padding: 10px; margin: 5px; }
+        .header-box { background-color: #0654f0; padding: 10px; border-bottom: 1px solid #07059e; }
+        .footer-box { background-color: #f7f7f7; padding: 10px; border-top: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <div data-role="page" id="queuePage">
+        <div data-role="header" class="header-box">
+            <h1 class="center-text ">Queue Status</h1>
+        </div>
+        <div data-role="content" class="ui-content">
+            <div class="content-box-header">
+                <h2 class="header-text">Receipt Number</h2>
+                <div class="center-text big-text">374</div>
+            </div>
+            <div class="content-box-body">
+                <div class="left-text">You are</div>
+                <div class="center-text highlight-text-bold">4th</div>
+                <div class="right-text">in line for being called.</div>
+                <p class="center-text update-text">The page was updated at 2023/12/28 12:41:48.</p>
+            </div>
+            <div class="content-box-footer">
+                <h3 class="center-text">Call By Text Service</h3>
+                <p>You'll receive an email when your number is about to be called and once it's called.</p>
+                <p>The subject and body text will be sent to you.</p>
+            </div>
+        </div>
+        <div data-role="footer" class="footer-box">
+            <h4 class="center-text">Copyright 2024</h4>
+        </div>
+    </div>
+</body>
+</html>

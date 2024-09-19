@@ -1,4 +1,26 @@
 {
     "files.autoSave": "off",
     "security.workspace.trust.enabled": false,
+    "liveServer.settings.port": 5501,
+    "security.workspace.trust.emptyWindow": true,
+    "security.workspace.trust.banner": "untilDismissed",
+    "security.workspace.trust.startupPrompt": "once",
+    "security.workspace.trust.untrustedFiles": "prompt",
+    // Tắt các extension tự động
+    "extensions.autoUpdate": false,
+    "extensions.ignoreRecommendations": true,
+
+    // Vô hiệu hóa các extension cụ thể
+    "python.disable": true,
+    "java.disable": true,
+
+    // Không mở trình editor khi khởi động (có thể tránh kích hoạt extension tự động)
+    "workbench.startupEditor": "none",
+
+     // Cài đặt Git/Source Control
+     "git.autorefresh": true,
+    //  "git.enableSmartCommit": true,
+    //  "git.autoStaging": false,  // Nếu bạn không muốn tự động stage file
+    //  "files.watcherExclude": {},
+    //  "git.ignoredRepositories": []
 }

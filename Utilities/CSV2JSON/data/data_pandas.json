@@ -1,0 +1,20 @@
+[
+    {
+        "id":1,
+        "name":"Nguyễn Văn A",
+        "age":25,
+        "city":"Hà Nội"
+    },
+    {
+        "id":2,
+        "name":"Trần Thị B",
+        "age":30,
+        "city":"Hồ Chí Minh"
+    },
+    {
+        "id":3,
+        "name":"Lê Văn C",
+        "age":22,
+        "city":"Đà Nẵng"
+    }
+]
