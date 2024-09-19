@@ -7,13 +7,26 @@
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #queuePage {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure full viewport height */
+        }
+
+        .ui-content {
+            flex-grow: 1; /* This makes the content area grow to fill the space */
+        }
         .header-text{ text-align: center; padding: 0px; margin: 0px;}
         .center-text { text-align: center; }
         .left-text { text-align: left; color: #c9213a; margin: 5px;}
-        .right-text { text-align: right; color: #c9213a; margin: 5px;}
-        .big-text { font-size: 40px; color: #065482; }
-        .highlight-text { color: #c9213a; font-size: 40px; }
-        .highlight-text-bold { color: #c9213a; font-size: 40px; font-weight: bold;}
+        .right-text { text-align: right; color: #c9213a; margin: 10px;}
+        .big-text { font-size: 70px; color: #065482;  font-weight: bold;}
+        .highlight-text-bold { color: #c9213a; font-size: 70px; font-weight: bold;}
         .update-text { font-size: 14px; }
         .content-box-header { border: 1px solid #065482; padding: 10px; margin: 5px; }
         .content-box-body { border: 1px solid #c9213a; padding: 0px; margin: 5px; }
@@ -30,7 +43,7 @@
         <div data-role="content" class="ui-content">
             <div class="content-box-header">
                 <h2 class="header-text">Receipt Number</h2>
-                <h1 class="center-text big-text">374</h1>
+                <div class="center-text big-text">374</div>
             </div>
             <div class="content-box-body">
                 <div class="left-text">You are</div>
@@ -45,7 +58,7 @@
             </div>
         </div>
         <div data-role="footer" class="footer-box">
-            <h4 class="center-text">Footer Content</h4>
+            <h4 class="center-text">Copyright 2024</h4>
         </div>
     </div>
 </body>
