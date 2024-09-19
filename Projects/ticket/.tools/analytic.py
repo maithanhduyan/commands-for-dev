@@ -18,21 +18,56 @@ def collect_files(root_dir, extensions, filenames, exclude_dirs=None, exclude_fi
                 matches.append(filepath)
     return matches
 
-def write_markdown(files, output_file):
+def get_directory_tree(root_dir, exclude_dirs=None, exclude_files=None, prefix=''):
+    """
+    Tạo một chuỗi biểu diễn cấu trúc thư mục dưới dạng cây.
+    """
+    if exclude_dirs is None:
+        exclude_dirs = []
+    if exclude_files is None:
+        exclude_files = []
+    
+    tree_str = ''
+    entries = sorted(os.listdir(root_dir))
+    entries = [e for e in entries if e not in exclude_dirs and e not in exclude_files]
+    entries_count = len(entries)
+    
+    for index, entry in enumerate(entries):
+        path = os.path.join(root_dir, entry)
+        connector = '└── ' if index == entries_count - 1 else '├── '
+        tree_str += f"{prefix}{connector}{entry}\n"
+        if os.path.isdir(path):
+            extension = '    ' if index == entries_count - 1 else '│   '
+            tree_str += get_directory_tree(path, exclude_dirs, exclude_files, prefix + extension)
+    return tree_str
+
+def write_markdown(files, output_file, root_dir, exclude_dirs=None, exclude_files=None):
     with open(output_file, 'w', encoding='utf-8') as f:
+        # Viết cấu trúc thư mục đầu tiên
+        f.write('# Cấu trúc Dự án\n\n')
+        tree = get_directory_tree(root_dir, exclude_dirs, exclude_files)
+        f.write('```\n')
+        f.write(tree)
+        f.write('```\n\n')
+        
+        # Viết nội dung các tệp
+        f.write('# Danh sách Các Tệp Dự án\n\n')
         for filepath in files:
-            f.write(f'# {filepath}\n\n')
+            f.write(f'## {filepath}\n\n')
             f.write('```\n')
-            with open(filepath, 'r', encoding='utf-8') as file_content:
-                f.write(file_content.read())
+            try:
+                with open(filepath, 'r', encoding='utf-8') as file_content:
+                    f.write(file_content.read())
+            except Exception as e:
+                f.write(f'**Lỗi đọc tệp:** {e}\n')
             f.write('\n```\n\n')
 
 if __name__ == '__main__':
     root_dir = '../'
     output_file = 'project_files.md'
-    extensions = ['.html', '.js', '.css', 'java', '.properties']  # Danh sách các phần mở rộng tệp
+    extensions = ['.html', '.js', '.css', '.java', '.properties']  # Danh sách các phần mở rộng tệp
     filenames = ['pom.xml', 'Dockerfile']  # Danh sách các tên tệp cụ thể
-    exclude_dirs = ['node_modules','target']  # Thư mục cần bỏ qua
+    exclude_dirs = ['node_modules','target', 'mysql_data' , '.tools', '.mvn','.vscode']  # Thư mục cần bỏ qua
     exclude_files = ['package-lock.json','launch.json', 'maven-wrapper.properties']  # Tệp cần bỏ qua
     files = collect_files(root_dir, extensions, filenames, exclude_dirs, exclude_files)
-    write_markdown(files, output_file)
+    write_markdown(files, output_file, root_dir, exclude_dirs, exclude_files)

@@ -1,4 +1,60 @@
-# ../pom.xml
+# Cấu trúc Dự án
+
+```
+├── .gitignore
+├── HELP.md
+├── compose.yaml
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── com
+    │   │       └── hot
+    │   │           └── ticket
+    │   │               ├── TicketApplication.java
+    │   │               ├── api
+    │   │               ├── config
+    │   │               │   └── SecurityConfig.java
+    │   │               ├── controller
+    │   │               │   └── AuthController.java
+    │   │               ├── dto
+    │   │               │   └── UserDto.java
+    │   │               ├── filter
+    │   │               ├── model
+    │   │               │   ├── Role.java
+    │   │               │   └── User.java
+    │   │               ├── repository
+    │   │               │   ├── RoleRepository.java
+    │   │               │   └── UserRepository.java
+    │   │               ├── service
+    │   │               │   ├── UserDetailsServiceImpl.java
+    │   │               │   └── UserService.java
+    │   │               └── util
+    │   └── resources
+    │       ├── application.properties
+    │       ├── static
+    │       │   ├── css
+    │       │   ├── index.html
+    │       │   ├── js
+    │       │   ├── login.html
+    │       │   └── register.html
+    │       └── templates
+    │           ├── index.html
+    │           ├── login.html
+    │           └── register.html
+    └── test
+        └── java
+            └── com
+                └── hot
+                    └── ticket
+                        └── TicketApplicationTests.java
+```
+
+# Danh sách Các Tệp Dự án
+
+## ../pom.xml
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -90,7 +146,7 @@
 
 ```
 
-# ../src\main\java\com\hot\ticket\TicketApplication.java
+## ../src\main\java\com\hot\ticket\TicketApplication.java
 
 ```
 package com.hot.ticket;
@@ -109,7 +165,7 @@ public class TicketApplication {
 
 ```
 
-# ../src\main\java\com\hot\ticket\config\SecurityConfig.java
+## ../src\main\java\com\hot\ticket\config\SecurityConfig.java
 
 ```
 package com.hot.ticket.config;
@@ -156,7 +212,7 @@ public class SecurityConfig {
 
 ```
 
-# ../src\main\java\com\hot\ticket\controller\AuthController.java
+## ../src\main\java\com\hot\ticket\controller\AuthController.java
 
 ```
 package com.hot.ticket.controller;
@@ -240,7 +296,7 @@ public class AuthController {
 
 ```
 
-# ../src\main\java\com\hot\ticket\dto\UserDto.java
+## ../src\main\java\com\hot\ticket\dto\UserDto.java
 
 ```
 package com.hot.ticket.dto;
@@ -269,7 +325,7 @@ public class UserDto {
 }
 ```
 
-# ../src\main\java\com\hot\ticket\model\Role.java
+## ../src\main\java\com\hot\ticket\model\Role.java
 
 ```
 package com.hot.ticket.model;
@@ -309,7 +365,7 @@ public class Role {
 
 ```
 
-# ../src\main\java\com\hot\ticket\model\User.java
+## ../src\main\java\com\hot\ticket\model\User.java
 
 ```
 package com.hot.ticket.model;
@@ -399,7 +455,7 @@ public class User {
 
 ```
 
-# ../src\main\java\com\hot\ticket\repository\RoleRepository.java
+## ../src\main\java\com\hot\ticket\repository\RoleRepository.java
 
 ```
 package com.hot.ticket.repository;
@@ -417,7 +473,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 }
 ```
 
-# ../src\main\java\com\hot\ticket\repository\UserRepository.java
+## ../src\main\java\com\hot\ticket\repository\UserRepository.java
 
 ```
 package com.hot.ticket.repository;
@@ -436,7 +492,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 ```
 
-# ../src\main\java\com\hot\ticket\service\UserDetailsServiceImpl.java
+## ../src\main\java\com\hot\ticket\service\UserDetailsServiceImpl.java
 
 ```
 package com.hot.ticket.service;
@@ -482,7 +538,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 ```
 
-# ../src\main\java\com\hot\ticket\service\UserService.java
+## ../src\main\java\com\hot\ticket\service\UserService.java
 
 ```
 package com.hot.ticket.service;
@@ -518,7 +574,7 @@ public class UserService {
 
 ```
 
-# ../src\main\resources\application.properties
+## ../src\main\resources\application.properties
 
 ```
 spring.application.name=ticket
@@ -538,175 +594,89 @@ spring.security.user.name=admin
 spring.security.user.password=admin123
 ```
 
-# ../src\main\resources\templates\index.html
-
-```
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Ticket Application</title>
-    <!-- jQuery Mobile CSS -->
-    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <!-- jQuery Mobile JS -->
-    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-</head>
-<body>
-    <div data-role="page" id="home">
-        <div data-role="header">
-            <h1>Welcome to Ticket Application</h1>
-            <a href="/logout" data-icon="delete" class="ui-btn-right">Logout</a>
-        </div>
-
-        <div role="main" class="ui-content">
-            <p>Hello World!</p>
-            <a href="/register" class="ui-btn ui-btn-b">Register</a>
-            <a href="/login" class="ui-btn ui-btn-a">Login</a>
-        </div>
-
-        <div data-role="footer">
-            <h4>&copy; 2024 Ticket Application</h4>
-        </div>
-    </div>
-</body>
-</html>
+## ../src\main\resources\static\index.html
 
 ```
 
-# ../src\main\resources\templates\login.html
+```
+
+## ../src\main\resources\static\login.html
+
+```
+
+```
+
+## ../src\main\resources\static\register.html
+
+```
+
+```
+
+## ../src\main\resources\templates\index.html
+
+```
+Helloworld
+```
+
+## ../src\main\resources\templates\login.html
 
 ```
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Login</title>
-    <!-- jQuery Mobile CSS -->
-    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <!-- jQuery Mobile JS -->
-    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 </head>
 <body>
-    <div data-role="page" id="loginPage">
-        <div data-role="header">
-            <h1>Login</h1>
+    <form th:action="@{/login}" method="post">
+        <div>
+            <label>Username:</label>
+            <input type="text" name="username"/>
         </div>
-
-        <div role="main" class="ui-content">
-            <form th:action="@{/login}" method="post">
-                <div class="ui-field-contain">
-                    <label for="username">Username:</label>
-                    <input type="text" name="username" id="username" value="" />
-                </div>
-                <div class="ui-field-contain">
-                    <label for="password">Password:</label>
-                    <input type="password" name="password" id="password" value="" />
-                </div>
-                <div class="ui-field-contain">
-                    <button type="submit" class="ui-btn ui-btn-b">Login</button>
-                </div>
-            </form>
-            <a href="/register" class="ui-btn ui-btn-a">Register</a>
+        <div>
+            <label>Password:</label>
+            <input type="password" name="password"/>
         </div>
-
-        <div data-role="footer">
-            <h4>&copy; 2024 Ticket Application</h4>
+        <div>
+            <button type="submit">Login</button>
         </div>
-    </div>
+    </form>
 </body>
 </html>
 
 ```
 
-# ../src\main\resources\templates\register.html
+## ../src\main\resources\templates\register.html
 
 ```
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Register</title>
-    <!-- jQuery Mobile CSS -->
-    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <!-- jQuery Mobile JS -->
-    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 </head>
 <body>
-    <div data-role="page" id="registerPage">
-        <div data-role="header">
-            <h1>Register</h1>
+    <form th:action="@{/register}" th:object="${user}" method="post">
+        <div>
+            <label>Username:</label>
+            <input type="text" th:field="*{username}"/>
         </div>
-
-        <div role="main" class="ui-content">
-            <form th:action="@{/register}" th:object="${user}" method="post">
-                <div class="ui-field-contain">
-                    <label for="username">Username:</label>
-                    <input type="text" th:field="*{username}" id="username" />
-                </div>
-                <div class="ui-field-contain">
-                    <label for="password">Password:</label>
-                    <input type="password" th:field="*{password}" id="password" />
-                </div>
-                <div class="ui-field-contain">
-                    <label for="email">Email:</label>
-                    <input type="email" th:field="*{email}" id="email" />
-                </div>
-                <div class="ui-field-contain">
-                    <button type="submit" class="ui-btn ui-btn-b">Register</button>
-                </div>
-            </form>
-            <a href="/login" class="ui-btn ui-btn-a">Back to Login</a>
+        <div>
+            <label>Password:</label>
+            <input type="password" th:field="*{password}"/>
         </div>
-
-        <div data-role="footer">
-            <h4>&copy; 2024 Ticket Application</h4>
+        <div>
+            <label>Email:</label>
+            <input type="email" th:field="*{email}"/>
         </div>
-    </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+    </form>
 </body>
 </html>
 
 ```
 
-# ../src\main\resources\templates\fragments\layout.html
-
-```
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <title th:text="${title}">Ticket Application</title>
-    <!-- jQuery Mobile CSS -->
-    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <!-- jQuery Mobile JS -->
-    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-</head>
-
-<body>
-    <div data-role="page">
-        <div data-role="header">
-            <h1 th:text="${headerTitle}">Header</h1>
-            <div th:if="${showLogout}">
-                <a href="/logout" data-icon="delete" class="ui-btn-right">Logout</a>
-            </div>
-        </div>
-
-        <div role="main" class="ui-content" th:insert="${content}"></div>
-
-        <div data-role="footer">
-            <h4>&copy; 2024 Ticket Application</h4>
-        </div>
-    </div>
-</body>
-
-</html>
-```
-
-# ../src\test\java\com\hot\ticket\TicketApplicationTests.java
+## ../src\test\java\com\hot\ticket\TicketApplicationTests.java
 
 ```
 package com.hot.ticket;

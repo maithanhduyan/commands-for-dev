@@ -2,43 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Register</title>
-    <!-- jQuery Mobile CSS -->
-    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <!-- jQuery Mobile JS -->
-    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 </head>
 <body>
-    <div data-role="page" id="registerPage">
-        <div data-role="header">
-            <h1>Register</h1>
+    <form th:action="@{/register}" th:object="${user}" method="post">
+        <div>
+            <label>Username:</label>
+            <input type="text" th:field="*{username}"/>
         </div>
-
-        <div role="main" class="ui-content">
-            <form th:action="@{/register}" th:object="${user}" method="post">
-                <div class="ui-field-contain">
-                    <label for="username">Username:</label>
-                    <input type="text" th:field="*{username}" id="username" />
-                </div>
-                <div class="ui-field-contain">
-                    <label for="password">Password:</label>
-                    <input type="password" th:field="*{password}" id="password" />
-                </div>
-                <div class="ui-field-contain">
-                    <label for="email">Email:</label>
-                    <input type="email" th:field="*{email}" id="email" />
-                </div>
-                <div class="ui-field-contain">
-                    <button type="submit" class="ui-btn ui-btn-b">Register</button>
-                </div>
-            </form>
-            <a href="/login" class="ui-btn ui-btn-a">Back to Login</a>
+        <div>
+            <label>Password:</label>
+            <input type="password" th:field="*{password}"/>
         </div>
-
-        <div data-role="footer">
-            <h4>&copy; 2024 Ticket Application</h4>
+        <div>
+            <label>Email:</label>
+            <input type="email" th:field="*{email}"/>
         </div>
-    </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+    </form>
 </body>
 </html>
