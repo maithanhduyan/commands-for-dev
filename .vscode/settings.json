@@ -1,4 +1,5 @@
 {
     "files.autoSave": "off",
     "security.workspace.trust.enabled": false,
+    "liveServer.settings.port": 5501,
 }

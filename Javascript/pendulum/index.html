@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inverted Pendulum Neural Network</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            flex-direction: column;
+        }
+        canvas {
+            background-color: #ffffff;
+            margin-bottom: 20px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="pendulumCanvas" width="600" height="250"></canvas>
+    <canvas id="networkCanvas" width="600" height="400"></canvas> <!-- Canvas thứ hai cho mạng neural -->
+    <button id="saveButton">Save Model</button>
+    <button id="loadButton">Load Model</button>
+    <script src="ai.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
