@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ticket Application</title>
+    <!-- jQuery Mobile CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!-- jQuery Mobile JS -->
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body>
+    <div data-role="page" id="home">
+        <div data-role="header">
+            <h1>Welcome to Ticket Application</h1>
+            <a href="/logout" data-icon="delete" class="ui-btn-right">Logout</a>
+        </div>
+
+        <div role="main" class="ui-content">
+            <p>Hello World!</p>
+            <a href="/register" class="ui-btn ui-btn-b">Register</a>
+            <a href="/login" class="ui-btn ui-btn-a">Login</a>
+        </div>
+
+        <div data-role="footer">
+            <h4>&copy; 2024 Ticket Application</h4>
+        </div>
+    </div>
+</body>
+</html>
