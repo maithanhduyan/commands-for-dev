@@ -1,9 +1,14 @@
 # Cấu trúc Dự án
 
 ```
+├── .dockerignore
 ├── .gitignore
+├── Dockerfile
 ├── HELP.md
+├── README.md
 ├── compose.yaml
+├── logs
+│   └── ticket.log
 ├── mvnw
 ├── mvnw.cmd
 ├── pom.xml
@@ -24,6 +29,7 @@
     │   │               ├── data
     │   │               │   └── DataInitializer.java
     │   │               ├── dto
+    │   │               │   ├── TicketDto.java
     │   │               │   └── UserDto.java
     │   │               ├── model
     │   │               │   ├── Organization.java
@@ -47,14 +53,26 @@
     │       │   ├── css
     │       │   │   └── styles.css
     │       │   ├── demo
+    │       │   │   ├── thymeleaf.html
     │       │   │   └── ticket.html
     │       │   └── js
     │       └── templates
+    │           ├── account
+    │           │   └── my-account.html
+    │           ├── error
+    │           │   └── 404.html
     │           ├── index.html
     │           ├── login.html
     │           ├── org
     │           │   ├── new-ticket.html
-    │           │   └── services.html
+    │           │   ├── service
+    │           │   │   ├── add-new-service.html
+    │           │   │   ├── services.html
+    │           │   │   └── table-service.html
+    │           │   └── ticket
+    │           │       ├── ticket-confirmation.html
+    │           │       ├── ticket-details.html
+    │           │       └── ticket-error.html
     │           └── register.html
     └── test
         └── java
@@ -65,6 +83,40 @@
 ```
 
 # Danh sách Các Tệp Dự án
+
+## ../Dockerfile
+
+```
+# Giai đoạn 1: Sử dụng Maven image để build dự án
+FROM maven:3.9.9-ibm-semeru-21-jammy AS builder
+
+# Đặt thư mục làm việc trong container
+WORKDIR /app
+
+# Copy file pom.xml và các file cấu hình Maven
+COPY pom.xml ./
+COPY src ./src
+
+# Build ứng dụng
+RUN mvn clean package -DskipTests
+
+# Giai đoạn 2: sử dụng OpenJDK để chạy ứng dụng
+FROM openjdk:21
+
+# Tạo một thư mục cho ứng dụng
+VOLUME /tmp
+
+# Copy file JAR từ giai đoạn build trước vào container
+COPY --from=builder /app/target/*.jar app.jar
+
+# Chạy ứng dụng Spring Boot
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+# Expose port 8080
+EXPOSE 8080
+
+
+```
 
 ## ../pom.xml
 
@@ -83,7 +135,7 @@
 	<artifactId>ticket</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ticket</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Ticket project for Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -99,6 +151,8 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -200,7 +254,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/register", "/login", "/css/**", "/js/**","/ticket/ticket-details").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
@@ -253,6 +307,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -262,6 +317,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.hot.ticket.dto.UserDto;
 import com.hot.ticket.model.User;
+import com.hot.ticket.repository.UserRepository;
 import com.hot.ticket.service.UserService;
 
 @Controller
@@ -269,6 +325,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -320,6 +379,24 @@ public class AuthController {
     public String logout() {
         return "redirect:/login?logout";
     }
+
+    @GetMapping("/my-account")
+    public String myAccount(Authentication authentication, Model model) {
+        User _user = null;
+        if (authentication != null) {
+            // Giả sử bạn có một lớp UserDetails tùy chỉnh
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+            // Lấy thông tin từ đối tượng tùy chỉnh của bạn
+            String username = userDetails.getUsername();
+
+            _user = userRepository.findByUsername(username).get();
+
+        }
+
+        model.addAttribute("user", _user);
+        return "account/my-account";
+    }
 }
 
 ```
@@ -329,13 +406,52 @@ public class AuthController {
 ```
 package com.hot.ticket.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.hot.ticket.model.Service;
+import com.hot.ticket.repository.ServiceRepository;
 
 @Controller
 @RequestMapping("/service")
 public class ServiceController {
-    
+    @Autowired
+    private ServiceRepository serviceRepository;
+
+    // Màn hình lấy số
+    @GetMapping({ "/", "" })
+    public String show(Authentication authentication, Model model) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        
+        model.addAttribute("services", serviceRepository.findByOrganization("ACB").get());
+        return "org/service/table-service";
+    }
+
+    // http://localhost:8080/services/my-services
+    @GetMapping("/my-services")
+    public String showMyServices(Model model) {
+        model.addAttribute("services", serviceRepository.findByOrganization("ACB").get());
+        return "org/service/services";
+    }
+
+    @GetMapping("/add")
+    public String addService(Authentication authentication, Model model) {
+        model.addAttribute("service", new Service());
+        return "org/service/add-new-service";
+    }
+
+    @PostMapping("/add")
+    public String addNewService(@ModelAttribute Service service) {
+        serviceRepository.save(service);
+        return "redirect:/service/my-services";
+    }
 }
 
 ```
@@ -345,6 +461,8 @@ public class ServiceController {
 ```
 package com.hot.ticket.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -363,6 +481,8 @@ import com.hot.ticket.service.TicketService;
 @RequestMapping("/ticket")
 public class TicketController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
+
     @Autowired
     private TicketService ticketService;
 
@@ -373,7 +493,7 @@ public class TicketController {
     @GetMapping("/new")
     public String getNewTicket(Authentication authentication, Model model) {
         model.addAttribute("services", serviceRepository.findAll());
-        return "/org/new-ticket";
+        return "org/new-ticket";
     }
 
     // Xử lý lấy số thứ tự cho dịch vụ
@@ -382,9 +502,34 @@ public class TicketController {
         Service service = serviceRepository.findById(serviceId).orElse(null);
         if (service != null) {
             Ticket ticket = ticketService.createTicket(service);
-            model.addAttribute("ticket", ticket);
+            // model.addAttribute("ticket", ticket);
+            // Redirect sang URL /ticket?id=werwer với giá trị id là ticketId
+            return "redirect:/ticket/ticket-details?id=" + ticket.getId();
         }
-        return "ticket-confirmation";
+        return "redirect:/error"; // Trong trường hợp không tìm thấy service hoặc lỗi
+    }
+
+    // Public link for everyone http://localhost:8080/ticket/ticket-details?id=0
+    @GetMapping("/ticket-details")
+    public String viewTicket(@RequestParam(value = "id", required = false) String ticketId, Model model) {
+        Ticket ticket;
+        Service service = null;
+        try {
+            Long id = Long.parseLong(ticketId);
+            ticket = ticketService.findById(id);
+            if (ticket != null) {
+                service = ticket.getService();
+            }
+            model.addAttribute("ticket", ticket);
+            model.addAttribute("service", service);
+            return "/org/ticket/ticket-details"; // Trang hiển thị chi tiết ticket
+
+        } catch (Exception e) {
+            logger.error("ticket không tồn tại");
+            model.addAttribute("error", "Ticket không tồn tại");
+            return "/org/ticket/ticket-error";
+        }
+
     }
 
     // Màn hình của nhân viên xử lý danh sách khách hàng chờ
@@ -400,6 +545,11 @@ public class TicketController {
         ticketService.callNextTicket(ticketId);
         return "redirect:/ticket/queue";
     }
+
+    @GetMapping({ "/error" })
+    public String getTicketError() {
+        return "org/ticket/ticket-error";
+    }
 }
 ```
 
@@ -408,26 +558,82 @@ public class TicketController {
 ```
 package com.hot.ticket.data;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.hot.ticket.model.Organization;
 import com.hot.ticket.model.Role;
+import com.hot.ticket.model.Service;
+import com.hot.ticket.model.User;
+import com.hot.ticket.repository.OrganizationRepository;
 import com.hot.ticket.repository.RoleRepository;
+import com.hot.ticket.repository.ServiceRepository;
+import com.hot.ticket.repository.UserRepository;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
+    @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private ServiceRepository serviceRepository;
 
     @Override
     public void run(String... args) throws Exception {
+        createUSerDemo("admin");
         // Tạo các vai trò nếu chưa tồn tại
         createRoleIfNotFound("ROLE_USER");
         createRoleIfNotFound("ROLE_ADMIN");
+
+        createOrganization("ACB");
+        String description = "Bạn sẽ nhận được thông báo khi số của bạn sắp được gọi. Chờ gọi tên và đến quầy dịch vụ";
+        createServiceDemo("ACB", "Dịch Vụ Thẻ", description);
+        createServiceDemo("ACB", "Dịch Vụ Vay", description);
+        createServiceDemo("ACB", "Dịch Vụ Gủi Tiền", description);
+        createServiceDemo("ACB", "Dịch Vụ Rút Tiền", description);
+    }
+
+    private void createUSerDemo(String name) {
+        Optional<User> userOptional = userRepository.findByUsername(name);
+        if (!userOptional.isPresent()) {
+            List<Role> roles = new ArrayList<Role>();
+            roles.add(roleRepository.findByName("ROLE_ADMIN").get());
+            User user = new User();
+            user.setUsername(name);
+            user.setEmail("admin@company.com");
+
+            user.setPassword(passwordEncoder.encode("admin"));
+            user.setRoles(roles);
+            userRepository.save(user);
+        }
+    }
+
+    private void createOrganization(String name) {
+        Optional<Organization> optional = organizationRepository.findByName(name);
+        if (!optional.isPresent()) {
+            Organization _org = new Organization();
+            User _user = userRepository.findByUsername("admin").get();
+            _org.setName(name);
+            _org.addUser(_user);
+            _org.setCreateBy(_user.getUsername());
+            organizationRepository.save(_org);
+        }
     }
 
     private void createRoleIfNotFound(String roleName) {
@@ -438,6 +644,81 @@ public class DataInitializer implements CommandLineRunner {
             roleRepository.save(role);
         }
     }
+
+    private void createServiceDemo(String orgName, String serviceName, String description) {
+        Optional<Organization> orgOptional = organizationRepository.findByName(orgName);
+        Optional<Service> serviceOptional = serviceRepository.findByName(serviceName);
+        if (!orgOptional.isPresent()) {
+
+        } else {
+            if (!serviceOptional.isPresent()) {
+                Service service = new Service();
+                service.setName(serviceName);
+                service.setDescription(description);
+                service.setOrganization(orgOptional.get());
+                serviceRepository.save(service);
+            }
+        }
+    }
+
+}
+
+```
+
+## ../src\main\java\com\hot\ticket\dto\TicketDto.java
+
+```
+package com.hot.ticket.dto;
+
+import com.hot.ticket.model.Organization;
+
+public class TicketDto {
+    String id;
+    private String ticketNumber;
+    private String status; // "Đang chờ", "Đang gọi", "Hết hạn"
+    private String qrCode; // Mã QR
+    private Organization organization;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTicketNumber() {
+        return ticketNumber;
+    }
+
+    public void setTicketNumber(String ticketNumber) {
+        this.ticketNumber = ticketNumber;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
+    }
+
 }
 
 ```
@@ -492,12 +773,31 @@ public class Organization {
     private String name;
     private String address;
     private String email;
+    private String createBy;
 
     @OneToMany(mappedBy = "organization")
     private List<Service> services;
 
     @OneToMany(mappedBy = "organization")
     private List<User> users;
+
+    /**
+     * return 0 : fail
+     * return 1 : success
+     * return 2 : exist
+     */
+    public int addUser(User user) {
+        try {
+            if (!this.users.contains(user)) {
+                this.users.add(user);
+            } else {
+                return 2;
+            }
+        } catch (Exception e) {
+            return 0;
+        }
+        return 1;
+    }
 
     public Long getId() {
         return id;
@@ -545,6 +845,14 @@ public class Organization {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 
 }
@@ -612,7 +920,8 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
+    private String description;
+    
     @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
@@ -650,6 +959,14 @@ public class Service {
 
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }
@@ -730,7 +1047,7 @@ public class Ticket {
 ```
 package com.hot.ticket.model;
 
-import java.util.Set;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -767,7 +1084,7 @@ public class User {
     private Organization organization;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    private List<Role> roles;
 
     public Long getId() {
         return id;
@@ -809,11 +1126,11 @@ public class User {
         this.enabled = enabled;
     }
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
@@ -834,6 +1151,8 @@ public class User {
 ```
 package com.hot.ticket.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -841,6 +1160,7 @@ import com.hot.ticket.model.Organization;
 
 @Repository
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
+    Optional<Organization> findByName(String name);
 }
 
 ```
@@ -868,13 +1188,22 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 ```
 package com.hot.ticket.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.hot.ticket.model.Service;
 
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Long> {
+    Optional<Service> findByName(String name);
+
+    @Query("SELECT s FROM Service s WHERE s.organization.name = :orgName")
+    Optional<List<Service>> findByOrganization(String orgName);
+
 }
 ```
 
@@ -957,6 +1286,10 @@ public class TicketService {
     public void callNextTicket(Long ticketId) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'callNextTicket'");
+    }
+
+    public Ticket findById(Long id) {
+        return ticketRepository.findById(id).orElse(null);
     }
 }
 
@@ -1047,21 +1380,59 @@ public class UserService {
 ## ../src\main\resources\application.properties
 
 ```
+# ===============================
+# WEB SERVER
+# ===============================
+# server.address=0.0.0.0
+# server.compression.enabled=true
+# server.http2.enabled=true
+# server.port=8080
+# server.tomcat.uri-encoding=UTF-8
+
 spring.application.name=ticket
+# spring.http.encoding.charset=UTF-8
+# spring.http.encoding.force=true
+# spring.messages.encoding=UTF-8
+spring.output.ansi.enabled=always
+# spring.output.encoding=UTF-8
+# spring.output.encoding.force=true
+# ===============================
+# DATABASE
+# ===============================
 # MySQL Configuration
-spring.datasource.url=jdbc:mysql://localhost:3306/ticket?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+# spring.datasource.url=jdbc:mysql://mysqldb:3306/ticket?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+spring.datasource.url=jdbc:mysql://localhost:3306/ticket?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
 spring.datasource.username=admin
 spring.datasource.password=admin@2024
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
+# ===============================
+# JPA / HIBERNATE
+# ===============================
 # Hibernate Configuration
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 # spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5Dialect
 
+# ===============================
 # Security Config
+# ===============================
 spring.security.user.name=admin
 spring.security.user.password=admin123
+
+# ===============================
+# Logging
+# ===============================
+# logging.level.org.springframework.web=DEBUG
+# logging.level.org.hibernate=DEBUG
+logging.file.name=logs/ticket.log
+logging.file.encoding=UTF-8
+#logging.pattern.console= %d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n
+
+# ===============================
+# THYMELEAF
+# ===============================
+#spring.thymeleaf.cache=true
 ```
 
 ## ../src\main\resources\static\css\styles.css
@@ -1183,6 +1554,25 @@ div .text-center {
   color: #333;
 }
 
+```
+
+## ../src\main\resources\static\demo\thymeleaf.html
+
+```
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+</body>
+
+</html>
 ```
 
 ## ../src\main\resources\static\demo\ticket.html
@@ -1352,7 +1742,31 @@ div .text-center {
 ## ../src\main\resources\templates\index.html
 
 ```
-Helloworld
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <h1>Ticket</h1>
+    <p>Chào mừng, <a th:href="@{/my-account}" th:text="${#authentication.name}"></a>! &nbsp; </p>
+    <div th:if="${#authentication?.name != null}">
+        <!-- Nội dung cho người dùng đã đăng nhập -->
+        <p><a th:href="@{/service/my-services}">Dịch Vụ</a></p>
+    </div>
+    <div th:unless="${#authentication?.name != null}">
+        <h1>Chào mừng, Khách!</h1>
+        <p><a th:href="@{/login}">Đăng nhập</a> hoặc <a th:href="@{/register}">Đăng ký</a> để tiếp tục.</p>
+    </div>
+
+    <p><a th:href="@{/logout}">Đăng xuất</a></p>
+</body>
+
+</html>
 ```
 
 ## ../src\main\resources\templates\login.html
@@ -1413,6 +1827,34 @@ Helloworld
 
 ```
 
+## ../src\main\resources\templates\account\my-account.html
+
+```
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tài khoản của tôi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <p><a th:href="@{/}">Trở lại</a></p>
+    Tài khoản của tôi <br>
+    <p><span th:text="${user.username}">Username</span></p>
+
+</body>
+
+</html>
+```
+
+## ../src\main\resources\templates\error\404.html
+
+```
+404 Error! 
+```
+
 ## ../src\main\resources\templates\org\new-ticket.html
 
 ```
@@ -1434,24 +1876,442 @@ Helloworld
 </html>
 ```
 
-## ../src\main\resources\templates\org\services.html
+## ../src\main\resources\templates\org\service\add-new-service.html
 
 ```
-<!-- new-ticket.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <p><a th:href="@{/service/my-services}">Trở lại</a></p>
+    <h1>Thêm Dịch vụ mới</h1>
+    <form th:action="@{/service/add}" method="post" th:object="${service}">
+        <label>Tên dịch vụ:</label>
+        <input type="text" th:field="*{name}" /><br/>
+        <label>Mô tả:</label>
+        <input type="text" th:field="*{description}" /><br/>
+        <button type="submit">Lưu</button>
+    </form>
+</body>
+
+</html>
+```
+
+## ../src\main\resources\templates\org\service\services.html
+
+```
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Chọn Dịch Vụ</title>
+    <title>Dịch Vụ</title>
 </head>
+
 <body>
-    <h1>Chọn Dịch Vụ</h1>
-    <form action="/ticket/new" method="post">
+    <p><a th:href="@{/}">Trở lại</a></p>
+    <h1>Danh Sách Dịch Vụ</h1>
+    <a th:href="@{/service/add}">Thêm mới</a>
+    <table border="1">
+        <tr>
+            <th>ID</th><th>Tên dịch vụ</th>
+        </tr>
+        <tr th:each="service : ${services}">
+            <td th:text="${service.id}">1</td>
+            <td>
+                <a th:href="@{/service/}" th:text="${service.name}">dịch vụ</a>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
+```
+
+## ../src\main\resources\templates\org\service\table-service.html
+
+```
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <h1>Bàn Dịch Vụ</h1>
+    <h3>Chọn Dịch Vụ</h3>
+    <form th:action="@{/ticket/new}" method="post">
         <select name="serviceId">
             <option th:each="service : ${services}" th:value="${service.id}" th:text="${service.name}"></option>
         </select>
         <button type="submit">Lấy Số</button>
     </form>
 </body>
+
+</html>
+```
+
+## ../src\main\resources\templates\org\ticket\ticket-confirmation.html
+
+```
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <h1>Vé <span th:text="${ticket.ticketNumber}"></span>!</h1>
+</body>
+
+</html>
+```
+
+## ../src\main\resources\templates\org\ticket\ticket-details.html
+
+```
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket System</title>
+    <!-- <link rel="stylesheet" href="css/styles.css"> -->
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+        }
+
+        .header {
+            background-color: #065482;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            background-color: #065482;
+            color: white;
+            text-align: center;
+            margin: 10px 0px 0px 0px;
+            padding: 10px;
+        }
+
+        .footer p {
+            text-align: center;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .receipt {
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #065482;
+            text-align: center;
+            width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        div .receipt-header {
+            font-size: 30px;
+        }
+
+        div .receipt-body {
+            color: #065482;
+            font-size: 70px;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .receipt span {
+            color: #333;
+        }
+
+        .receipt h1 {
+            color: #007bff;
+            font-size: 70px;
+        }
+
+        .status {
+            color: #c9213a;
+            border: solid 2px #c9213a;
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .status h1 {
+            margin: 10px 0;
+        }
+
+        div .text-right {
+            text-align: right;
+        }
+
+        div .text-left {
+            text-align: left;
+        }
+
+        div .text-center {
+            text-align: center;
+            font-size: 70px;
+        }
+
+        .status p {
+            margin: 5px 0;
+            color: #000;
+            text-align: center;
+            margin: 10px 10px 10px 10px;
+        }
+
+        .call-by-text {
+            background-color: #f0f0f0;
+            border: solid 2px #147e08bc;
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .call-by-text h3 {
+            color: #e3e6ea;
+            background-color: #147e08bc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            /* flex-grow: 1; */
+            /* width: 100%; */
+            margin: 0px 0px 0px 0px;
+        }
+
+        .call-by-text p {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1 th:text="${service.organization.name}">Tên Tổ Chức</h1>
+        <h2 th:text="${service.name}">Tiếp Nhận Hồ Sơ</h2>
+    </div>
+    <!-- Hiển thị lỗi nếu có -->
+    <div th:if="${error != null}" class="status">
+        <h2 class="text-center" style="color:red;" th:text="${error}"></h2>
+    </div>
+
+    <div class="main" th:unless="${error != null}">
+        <div class="receipt">
+            <div class="receipt-header">Số Thứ Tự</div>
+            <div class="receipt-body" th:text="${ticket.ticketNumber}">374</div>
+        </div>
+        <div class="status">
+            <div class="text-left">Bạn đứng thứ</div>
+            <div class="text-center">4</div>
+            <div class="text-right">trong hàng đợi.</div>
+            <p>Cập nhật mới nhất: 2023/12/28 12:41:48.</p>
+        </div>
+        <div class="call-by-text">
+            <h3>Thông tin dịch vụ</h3>
+            <p th:utext="${service.description}">Bạn sẽ nhận được thông báo khi số của bạn sắp được gọi.</p>
+        </div>
+    </div>
+    <div class="footer">
+        <p>Copyright &copy;2024</p>
+    </div>
+</body>
+
+</html>
+```
+
+## ../src\main\resources\templates\org\ticket\ticket-error.html
+
+```
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket System</title>
+    <!-- <link rel="stylesheet" href="css/styles.css"> -->
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+        }
+
+        .header {
+            background-color: #065482;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            background-color: #065482;
+            color: white;
+            text-align: center;
+            margin: 10px 0px 0px 0px;
+            padding: 10px;
+        }
+
+        .footer p {
+            text-align: center;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .receipt {
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #065482;
+            text-align: center;
+            width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        div .receipt-header {
+            font-size: 30px;
+        }
+
+        div .receipt-body {
+            color: #065482;
+            font-size: 70px;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .receipt span {
+            color: #333;
+        }
+
+        .receipt h1 {
+            color: #007bff;
+            font-size: 70px;
+        }
+
+        .status {
+            color: #c9213a;
+            border: solid 2px #c9213a;
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .status h1 {
+            margin: 10px 0;
+        }
+
+        div .text-right {
+            text-align: right;
+        }
+
+        div .text-left {
+            text-align: left;
+        }
+
+        div .text-center {
+            text-align: center;
+            font-size: 70px;
+        }
+
+        .status p {
+            margin: 5px 0;
+            color: #000;
+            text-align: center;
+            margin: 10px 10px 10px 10px;
+        }
+
+        .call-by-text {
+            background-color: #f0f0f0;
+            border: solid 2px #147e08bc;
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .call-by-text h3 {
+            color: #e3e6ea;
+            background-color: #147e08bc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            /* flex-grow: 1; */
+            /* width: 100%; */
+            margin: 0px 0px 0px 0px;
+        }
+
+        .call-by-text p {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Tên Tổ Chức</h1>
+        <h2>Tiếp Nhận Hồ Sơ</h2>
+    </div>
+    <!-- Hiển thị lỗi nếu có -->
+    <div th:if="${error != null}" class="status">
+        <h2 class="text-center" style="color:red;" th:text="${error}"></h2>
+    </div>
+
+    <div class="main" th:unless="${error != null}">
+        <div class="receipt">
+            <div class="receipt-header">Số Thứ Tự</div>
+            <div class="receipt-body" th:text="${ticket.ticketNumber}">374</div>
+        </div>
+        <div class="status">
+            <div class="text-left">Bạn đứng thứ</div>
+            <div class="text-center">4</div>
+            <div class="text-right">trong hàng đợi.</div>
+            <p>Cập nhật mới nhất: 2023/12/28 12:41:48.</p>
+        </div>
+        <div class="call-by-text">
+            <h3>Thông tin dịch vụ</h3>
+            <p>Bạn sẽ nhận được thông báo khi số của bạn sắp được gọi.</p>
+            <p>Chờ gọi tên và đến quầy dịch vụ</p>
+        </div>
+    </div>
+    <div class="footer">
+        <p>Copyright 2024</p>
+    </div>
+</body>
+
 </html>
 ```
 

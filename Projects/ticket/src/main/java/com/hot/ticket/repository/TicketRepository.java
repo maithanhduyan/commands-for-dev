@@ -9,6 +9,6 @@ import com.hot.ticket.model.Service;
 import com.hot.ticket.model.Ticket;
 
 @Repository
-public interface TicketRepository extends JpaRepository<Ticket, Long> {
+public interface TicketRepository extends JpaRepository<Ticket, String> {
     public List<Ticket> findByStatusAndService(String status, Service service);
 }

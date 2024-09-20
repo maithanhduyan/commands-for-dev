@@ -54,8 +54,7 @@ public class TicketController {
         Ticket ticket;
         Service service = null;
         try {
-            Long id = Long.parseLong(ticketId);
-            ticket = ticketService.findById(id);
+            ticket = ticketService.findById(ticketId);
             if (ticket != null) {
                 service = ticket.getService();
             }

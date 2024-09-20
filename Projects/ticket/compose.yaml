@@ -27,13 +27,29 @@ services:
     ports:
       - "8081:80"
 
-  ticket-service:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80" # public port
+      - "443:443" # public port
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d # configuration in default.conf
+      - ./nginx/ssl:/etc/nginx/ssl # Secure Sockets Layer (SSL) file: server-sample.crt, server-sample.key
+      - ./nginx/html:/var/www/html # static html web for example
+      - ./nginx/log:/var/log/nginx/
+
+  ticket:
     image: ticket:latest
+    container_name: ticket
     restart: always
     depends_on:
       - mysqldb
-    ports:
-      - "8080:8080"
+    # ports:
+    #   - "8080:8080"
+    expose:
+      - 8080
     volumes:
       - ./logs:/logs
       - ./src/main/resources/application.properties:/app/src/main/resources/application.properties

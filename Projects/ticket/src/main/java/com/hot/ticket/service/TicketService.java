@@ -29,7 +29,7 @@ public class TicketService {
 
     // Hàm để generate mã số thứ tự
     private String generateTicketNumber() {
-        return String.valueOf(System.currentTimeMillis()); // ví dụ đơn giản
+        return String.valueOf(1); // ví dụ đơn giản
     }
 
     public void callNextTicket(Long ticketId) {
@@ -37,7 +37,7 @@ public class TicketService {
         throw new UnsupportedOperationException("Unimplemented method 'callNextTicket'");
     }
 
-    public Ticket findById(Long id) {
+    public Ticket findById(String id) {
         return ticketRepository.findById(id).orElse(null);
     }
 }
