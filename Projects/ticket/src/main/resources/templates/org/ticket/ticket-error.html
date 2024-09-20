@@ -131,8 +131,8 @@
 
 <body>
     <div class="header">
-        <h1 th:text="${service.organization.name}">Tên Tổ Chức</h1>
-        <h2 th:text="${service.name}">Tiếp Nhận Hồ Sơ</h2>
+        <h1>Tên Tổ Chức</h1>
+        <h2>Tiếp Nhận Hồ Sơ</h2>
     </div>
     <!-- Hiển thị lỗi nếu có -->
     <div th:if="${error != null}" class="status">
@@ -152,11 +152,12 @@
         </div>
         <div class="call-by-text">
             <h3>Thông tin dịch vụ</h3>
-            <p th:utext="${service.description}">Bạn sẽ nhận được thông báo khi số của bạn sắp được gọi.</p>
+            <p>Bạn sẽ nhận được thông báo khi số của bạn sắp được gọi.</p>
+            <p>Chờ gọi tên và đến quầy dịch vụ</p>
         </div>
     </div>
     <div class="footer">
-        <p>Copyright &copy;2024</p>
+        <p>Copyright 2024</p>
     </div>
 </body>
 

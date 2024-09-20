@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.hot.ticket.model.User;
 import com.hot.ticket.repository.ServiceRepository;
 
 @Controller
@@ -17,12 +16,13 @@ public class ServiceController {
     private ServiceRepository serviceRepository;
 
     // Màn hình lấy số
-    @GetMapping({"/",""})
+    @GetMapping({ "/", "" })
     public String show(Authentication authentication, Model model) {
         // User user ;
         model.addAttribute("services", serviceRepository.findByOrganization("ACB").get());
         return "org/service/services";
     }
+
     // Màn hình lấy số
     @GetMapping("/add")
     public String addService(Authentication authentication, Model model) {

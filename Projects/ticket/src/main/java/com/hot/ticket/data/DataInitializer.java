@@ -24,7 +24,7 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private UserRepository userRepository;
 
-   @Autowired
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -44,10 +44,11 @@ public class DataInitializer implements CommandLineRunner {
         createRoleIfNotFound("ROLE_ADMIN");
 
         createOrganization("ACB");
-        createServiceDemo("ACB", "Dịch Vụ Thẻ");
-        createServiceDemo("ACB", "Dịch Vụ Vay");
-        createServiceDemo("ACB", "Dịch Vụ Gủi Tiền");
-        createServiceDemo("ACB", "Dịch Vụ Rút Tiền");
+        String description = "Bạn sẽ nhận được thông báo khi số của bạn sắp được gọi. Chờ gọi tên và đến quầy dịch vụ";
+        createServiceDemo("ACB", "Dịch Vụ Thẻ", description);
+        createServiceDemo("ACB", "Dịch Vụ Vay", description);
+        createServiceDemo("ACB", "Dịch Vụ Gủi Tiền", description);
+        createServiceDemo("ACB", "Dịch Vụ Rút Tiền", description);
     }
 
     private void createUSerDemo(String name) {
@@ -68,9 +69,12 @@ public class DataInitializer implements CommandLineRunner {
     private void createOrganization(String name) {
         Optional<Organization> optional = organizationRepository.findByName(name);
         if (!optional.isPresent()) {
-            Organization org = new Organization();
-            org.setName(name);
-            organizationRepository.save(org);
+            Organization _org = new Organization();
+            User _user = userRepository.findByUsername("admin").get();
+            _org.setName(name);
+            _org.addUser(_user);
+            _org.setCreateBy(_user.getUsername());
+            organizationRepository.save(_org);
         }
     }
 
@@ -83,7 +87,7 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
-    private void createServiceDemo(String orgName, String serviceName) {
+    private void createServiceDemo(String orgName, String serviceName, String description) {
         Optional<Organization> orgOptional = organizationRepository.findByName(orgName);
         Optional<Service> serviceOptional = serviceRepository.findByName(serviceName);
         if (!orgOptional.isPresent()) {
@@ -92,9 +96,11 @@ public class DataInitializer implements CommandLineRunner {
             if (!serviceOptional.isPresent()) {
                 Service service = new Service();
                 service.setName(serviceName);
+                service.setDescription(description);
                 service.setOrganization(orgOptional.get());
                 serviceRepository.save(service);
             }
         }
     }
+
 }

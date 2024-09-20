@@ -1,5 +1,7 @@
 package com.hot.ticket.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,8 @@ import com.hot.ticket.service.TicketService;
 @Controller
 @RequestMapping("/ticket")
 public class TicketController {
+
+    private static final Logger logger = LoggerFactory.getLogger(TicketController.class);
 
     @Autowired
     private TicketService ticketService;
@@ -44,16 +48,29 @@ public class TicketController {
         return "redirect:/error"; // Trong trường hợp không tìm thấy service hoặc lỗi
     }
 
+    // Public link for everyone http://localhost:8080/ticket/ticket-details?id=0
     @GetMapping("/ticket-details")
-    public String viewTicket(@RequestParam("id") Long ticketId, Model model) {
-        Ticket ticket = ticketService.findById(ticketId);
-        if (ticket != null) {
+    public String viewTicket(@RequestParam(value = "id", required = false) String ticketId, Model model) {
+        Ticket ticket;
+        Service service = null;
+        try {
+            Long id = Long.parseLong(ticketId);
+            ticket = ticketService.findById(id);
+            if (ticket != null) {
+                service = ticket.getService();
+            }
             model.addAttribute("ticket", ticket);
+            model.addAttribute("service", service);
             return "/org/ticket/ticket-details"; // Trang hiển thị chi tiết ticket
-        } else {
-            return "redirect:/error"; // Nếu ticket không tồn tại, chuyển hướng đến trang lỗi
+
+        } catch (Exception e) {
+            logger.error("ticket không tồn tại");
+            model.addAttribute("error", "Ticket không tồn tại");
+            return "/org/ticket/ticket-error";
         }
+
     }
+
     // Màn hình của nhân viên xử lý danh sách khách hàng chờ
     @GetMapping("/queue")
     public String getTicketQueue(Model model) {
@@ -66,5 +83,10 @@ public class TicketController {
     public String callNextTicket(@RequestParam Long ticketId) {
         ticketService.callNextTicket(ticketId);
         return "redirect:/ticket/queue";
+    }
+
+    @GetMapping({ "/error" })
+    public String getTicketError() {
+        return "org/ticket/ticket-error";
     }
 }

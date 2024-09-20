@@ -16,7 +16,8 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
+    private String description;
+    
     @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
@@ -54,6 +55,14 @@ public class Service {
 
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

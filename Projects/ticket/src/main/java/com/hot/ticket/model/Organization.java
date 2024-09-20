@@ -16,12 +16,31 @@ public class Organization {
     private String name;
     private String address;
     private String email;
+    private String createBy;
 
     @OneToMany(mappedBy = "organization")
     private List<Service> services;
 
     @OneToMany(mappedBy = "organization")
     private List<User> users;
+
+    /**
+     * return 0 : fail
+     * return 1 : success
+     * return 2 : exist
+     */
+    public int addUser(User user) {
+        try {
+            if (!this.users.contains(user)) {
+                this.users.add(user);
+            } else {
+                return 2;
+            }
+        } catch (Exception e) {
+            return 0;
+        }
+        return 1;
+    }
 
     public Long getId() {
         return id;
@@ -69,6 +88,14 @@ public class Organization {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 
 }
