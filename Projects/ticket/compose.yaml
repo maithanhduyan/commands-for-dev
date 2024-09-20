@@ -27,5 +27,16 @@ services:
     ports:
       - "8081:80"
 
+  ticket-service:
+    image: ticket:latest
+    restart: always
+    depends_on:
+      - mysqldb
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/logs
+      - ./src/main/resources/application.properties:/app/src/main/resources/application.properties
+
 volumes:
   mysql_data:
