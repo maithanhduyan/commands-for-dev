@@ -8,7 +8,15 @@
 </head>
 
 <body>
-
+    <p><a th:href="@{/service/my-services}">Trở lại</a></p>
+    <h1>Thêm Dịch vụ mới</h1>
+    <form th:action="@{/service/add}" method="post" th:object="${service}">
+        <label>Tên dịch vụ:</label>
+        <input type="text" th:field="*{name}" /><br/>
+        <label>Mô tả:</label>
+        <input type="text" th:field="*{description}" /><br/>
+        <button type="submit">Lưu</button>
+    </form>
 </body>
 
 </html>

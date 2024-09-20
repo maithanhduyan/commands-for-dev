@@ -1,19 +1,25 @@
-<!-- new-ticket.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Chọn Dịch Vụ</title>
+    <title>Dịch Vụ</title>
 </head>
 
 <body>
-    <h1>Chọn Dịch Vụ</h1>
-    <form th:action="@{/ticket/new}" method="post">
-        <select name="serviceId">
-            <option th:each="service : ${services}" th:value="${service.id}" th:text="${service.name}"></option>
-        </select>
-        <button type="submit">Lấy Số</button>
-    </form>
+    <p><a th:href="@{/}">Trở lại</a></p>
+    <h1>Danh Sách Dịch Vụ</h1>
+    <a th:href="@{/service/add}">Thêm mới</a>
+    <table border="1">
+        <tr>
+            <th>ID</th><th>Tên dịch vụ</th>
+        </tr>
+        <tr th:each="service : ${services}">
+            <td th:text="${service.id}">1</td>
+            <td>
+                <a th:href="@{/service/}" th:text="${service.name}">dịch vụ</a>
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>
