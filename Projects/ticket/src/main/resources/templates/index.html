@@ -1,1 +1,25 @@
-Helloworld
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <h1>Ticket</h1>
+    <p>Chào mừng, <a th:href="@{/my-account}" th:text="${#authentication.name}"></a>! &nbsp; </p>
+    <div th:if="${#authentication?.name != null}">
+        <!-- Nội dung cho người dùng đã đăng nhập -->
+        <p><a th:href="@{/service/my-services}">Dịch Vụ</a></p>
+    </div>
+    <div th:unless="${#authentication?.name != null}">
+        <h1>Chào mừng, Khách!</h1>
+        <p><a th:href="@{/login}">Đăng nhập</a> hoặc <a th:href="@{/register}">Đăng ký</a> để tiếp tục.</p>
+    </div>
+
+    <p><a th:href="@{/logout}">Đăng xuất</a></p>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thymeleaf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <h1>Bàn Dịch Vụ</h1>
+    <h3>Chọn Dịch Vụ</h3>
+    <form th:action="@{/ticket/new}" method="post">
+        <select name="serviceId">
+            <option th:each="service : ${services}" th:value="${service.id}" th:text="${service.name}"></option>
+        </select>
+        <button type="submit">Lấy Số</button>
+    </form>
+</body>
+
+</html>

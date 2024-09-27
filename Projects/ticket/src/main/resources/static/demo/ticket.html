@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket System</title>
+    <!-- <link rel="stylesheet" href="css/styles.css"> -->
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+        }
+
+        .header {
+            background-color: #065482;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            background-color: #065482;
+            color: white;
+            text-align: center;
+            margin: 10px 0px 0px 0px;
+            padding: 10px;
+        }
+
+        .footer p {
+            text-align: center;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .receipt {
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #065482;
+            text-align: center;
+            width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        div .receipt-header {
+            font-size: 30px;
+        }
+
+        div .receipt-body {
+            color: #065482;
+            font-size: 70px;
+            padding: 10px;
+            margin: 10px;
+        }
+
+        .receipt span {
+            color: #333;
+        }
+
+        .receipt h1 {
+            color: #007bff;
+            font-size: 70px;
+        }
+
+        .status {
+            color: #c9213a;
+            border: solid 2px #c9213a;
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .status h1 {
+            margin: 10px 0;
+        }
+
+        div .text-right {
+            text-align: right;
+        }
+
+        div .text-left {
+            text-align: left;
+        }
+
+        div .text-center {
+            text-align: center;
+            font-size: 70px;
+        }
+
+        .status p {
+            margin: 5px 0;
+            color: #000;
+            text-align: center;
+            margin: 10px 10px 10px 10px;
+        }
+
+        .call-by-text {
+            background-color: #f0f0f0;
+            border: solid 2px #147e08bc;
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .call-by-text h3 {
+            color: #e3e6ea;
+            background-color: #147e08bc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            /* flex-grow: 1; */
+            /* width: 100%; */
+            margin: 0px 0px 0px 0px;
+        }
+
+        .call-by-text p {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Cục Xuất Nhập Cảnh</h1>
+        <h2>Tiếp Nhận Hồ Sơ</h2>
+    </div>
+    <div class="main">
+        <div class="receipt">
+            <div class="receipt-header">Số Thứ Tự</div>
+            <div class="receipt-body">374</div>
+        </div>
+        <div class="status">
+            <div class="text-left">Bạn đứng thứ</div>
+            <div class="text-center">4</div>
+            <div class="text-right">trong hàng đợi.</div>
+            <p>Cập nhật mới nhất: 2023/12/28 12:41:48.</p>
+        </div>
+        <div class="call-by-text">
+            <h3>Thông tin dịch vụ</h3>
+            <p>Bạn sẽ nhận được thông báo khi số của bạn sắp được gọi.</p>
+            <p>Chờ gọi tên và đến quầy dịch vụ</p>
+        </div>
+    </div>
+    <div class="footer">
+        <p>Copyright 2024</p>
+    </div>
+</body>
+
+</html>

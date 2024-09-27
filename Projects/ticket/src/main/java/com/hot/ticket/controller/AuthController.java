@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.hot.ticket.dto.UserDto;
 import com.hot.ticket.model.User;
+import com.hot.ticket.repository.UserRepository;
 import com.hot.ticket.service.UserService;
 
 @Controller
@@ -24,6 +26,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -74,5 +79,23 @@ public class AuthController {
     @GetMapping("/logout")
     public String logout() {
         return "redirect:/login?logout";
+    }
+
+    @GetMapping("/my-account")
+    public String myAccount(Authentication authentication, Model model) {
+        User _user = null;
+        if (authentication != null) {
+            // Giả sử bạn có một lớp UserDetails tùy chỉnh
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+            // Lấy thông tin từ đối tượng tùy chỉnh của bạn
+            String username = userDetails.getUsername();
+
+            _user = userRepository.findByUsername(username).get();
+
+        }
+
+        model.addAttribute("user", _user);
+        return "account/my-account";
     }
 }
