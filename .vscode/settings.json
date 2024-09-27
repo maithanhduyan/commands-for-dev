@@ -6,21 +6,20 @@
     "security.workspace.trust.banner": "untilDismissed",
     "security.workspace.trust.startupPrompt": "once",
     "security.workspace.trust.untrustedFiles": "prompt",
-    // Tắt các extension tự động
-    "extensions.autoUpdate": false,
-    "extensions.ignoreRecommendations": true,
-
-    // Vô hiệu hóa các extension cụ thể
     "python.disable": true,
     "java.disable": true,
-
     // Không mở trình editor khi khởi động (có thể tránh kích hoạt extension tự động)
     "workbench.startupEditor": "none",
-
-     // Cài đặt Git/Source Control
-     "git.autorefresh": true,
+    // Cài đặt Git/Source Control
+    "git.autorefresh": true,
+    "java.help.showReleaseNotes": false,
+    "vsintellicode.java.completionsEnabled": false,
     //  "git.enableSmartCommit": true,
     //  "git.autoStaging": false,  // Nếu bạn không muốn tự động stage file
     //  "files.watcherExclude": {},
     //  "git.ignoredRepositories": []
+    // Tắt các extension tự động
+    "extensions.ignoreRecommendations": true,
+    // Vô hiệu hóa các extension cụ thể
+    "extensions.autoUpdate": false
 }
