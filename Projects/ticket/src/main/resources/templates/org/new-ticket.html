@@ -1,0 +1,16 @@
+<!-- new-ticket.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chọn Dịch Vụ</title>
+</head>
+<body>
+    <h1>Chọn Dịch Vụ</h1>
+    <form action="/ticket/new" method="post">
+        <select name="serviceId">
+            <option th:each="service : ${services}" th:value="${service.id}" th:text="${service.name}"></option>
+        </select>
+        <button type="submit">Lấy Số</button>
+    </form>
+</body>
+</html>

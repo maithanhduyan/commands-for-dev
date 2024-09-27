@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tài khoản của tôi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <p><a th:href="@{/}">Trở lại</a></p>
+    Tài khoản của tôi <br>
+    <p><span th:text="${user.username}">Username</span></p>
+
+</body>
+
+</html>

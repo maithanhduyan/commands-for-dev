@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 mysql_data/
+logs/
+nginx/log/
 
 ### STS ###
 .apt_generated
