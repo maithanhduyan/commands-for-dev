@@ -1,0 +1,27 @@
+version: "3"
+services:
+  postgresql_db:
+    container_name: postgresql
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=openpg
+      - POSTGRES_PASSWORD=openpgpwd@2024
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    restart: always # run as a service
+
+  helloworld:
+    container_name: helloworld
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+    # volumes:
+    #   - ./bin:/app
+    # depends_on:
+    #   - postgresql_db
+    # restart: always # run as a service
