@@ -1,0 +1,49 @@
+version: "3"
+services:
+  postgresql_db:
+    container_name: postgresql
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=openpg
+      - POSTGRES_PASSWORD=openpgpwd@2024
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    restart: always # run as a service
+
+  odoo:
+    image: odoo:18.0
+    container_name: odoo-18.0
+    volumes:
+      - ./odoo/addons:/mnt/extra-addons # contain odoo dev modules
+      - ./odoo/conf:/etc/odoo # contain config and log
+      - ./odoo/web-data:/var/lib/odoo # contain odoo web data
+      - ./odoo/log:/var/log/odoo # contain odoo log data
+    ports:
+      - "8069:8069" # web
+      - "8072:8072" # live chat
+    depends_on:
+      - postgresql_db
+    restart: always # run as a service
+    environment:
+      - HOST=postgresql_db
+      - PORT=5432
+      - USER=openpg
+      - PASSWORD=openpgpwd@2024
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80" # public port
+      - "443:443" # public port
+    depends_on:
+      - odoo
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d # configuration in default.conf
+      - ./nginx/ssl:/etc/nginx/ssl # Secure Sockets Layer (SSL) file: server-sample.crt, server-sample.key
+      - ./nginx/html:/var/www/html # static html web for example
+      - ./nginx/log:/var/log/nginx/
