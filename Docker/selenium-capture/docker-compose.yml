@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  seleniumcapture:
+    image: seleniumcapture
+    build:
+      context: .
+      dockerfile: ./Dockerfile
