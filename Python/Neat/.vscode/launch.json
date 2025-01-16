@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+             // Tên cấu hình hiển thị trong VSC
+            "name": "Python: Run NEAT main.py",
+            // Loại debugger
+            "type": "debugpy",
+            // Cách thức chạy chương trình: launch
+            "request": "launch",
+            
+            // Đường dẫn tới file Python cần debug
+            "program": "${workspaceFolder}/main.py",
+            
+            // Tùy chọn hiển thị console (cửa sổ đầu ra)
+            "console": "integratedTerminal",
+            
+            // (Tùy chọn) Cấu hình môi trường ảo hay pythonPath
+            // "pythonPath": "${workspaceFolder}/venv/Scripts/python.exe"
+            
+            // (Tùy chọn) Nếu cần truyền tham số cho main.py
+            // "args": ["--some-argument", "value"]
+        }
+    ]
+}
