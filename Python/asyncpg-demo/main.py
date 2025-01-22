@@ -1,4 +1,5 @@
 import asyncpg
+import time
 
 class AsyncDB:
     def __init__(self, host='localhost', port=5432, user='user', password='password', database='database', loop=None):
@@ -49,18 +50,29 @@ async def main():
     await db.connect()
 
     try:
+        start_time = time.time()
         # Ví dụ: Thực hiện một truy vấn để lấy dữ liệu
         result = await db.fetch('SELECT * FROM demo LIMIT 10')
         for row in result:
             print(row)
+        elapsed_time = time.time() - start_time
+        print(f"Query executed in {elapsed_time:.6f} seconds")
+
 
         # Thực hiện một truy vấn khác bất đồng bộ
+        start_time = time.time()
         row = await db.fetchrow('SELECT * FROM demo WHERE id = $1', 1)
         if row:
             print(row)
+        
+        elapsed_time = time.time() - start_time
+        print(f"Query executed in {elapsed_time:.6f} seconds")
 
         # Thực hiện một lệnh INSERT
+        start_time = time.time()
         await db.execute('INSERT INTO demo (name) VALUES ($1)', 'some value')
+        elapsed_time = time.time() - start_time
+        print(f"Query executed in {elapsed_time:.6f} seconds")
 
     finally:
         await db.close()
