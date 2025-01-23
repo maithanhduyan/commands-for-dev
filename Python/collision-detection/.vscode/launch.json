@@ -5,7 +5,7 @@
             "name": "Python: Debug with .venv",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/game.py",
+            "program": "${workspaceFolder}/deepseek.py",
             "console": "integratedTerminal",
             "pythonPath": "${workspaceFolder}/.venv/Scripts/python.exe",
             "args": [
