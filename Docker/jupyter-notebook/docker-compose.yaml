@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  jupyter:
+    image: jupyter/base-notebook:latest # Sử dụng image Jupyter Notebook cơ bản
+    container_name: jupyter_notebook
+    ports:
+      - "8888:8888" # Expose cổng mặc định 8888 của Jupyter Notebook
+    volumes:
+      - ./notebooks:/home/jovyan/work # Map thư mục hiện tại đến thư mục làm việc của container
+    environment:
+      JUPYTER_ENABLE_LAB: "yes" # Kích hoạt JupyterLab
+      JUPYTER_TOKEN: "your_password_here" # Đặt mật khẩu bảo vệ Jupyter Notebook
+    command: start-notebook.sh
