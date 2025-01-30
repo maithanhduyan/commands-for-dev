@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Investment Portfolio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .slider-container {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .slider {
+            width: 100%;
+        }
+
+        .output {
+            margin-top: 10px;
+        }
+
+        #myProgress {
+            width: 100%;
+            background-color: #ddd;
+        }
+
+        #myBar {
+            width: 60%;
+            height: 15px;
+            background-color: #04aa6d;
+            text-align: center;
+            line-height: 15px;
+            color: white;
+        }
+
+        #myPortfolio {
+            width: 100%;
+        }
+
+        /* CSS cho các thiết bị di động */
+        @media only screen and (max-width: 600px) {
+            body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+                /* Giảm padding để tiết kiệm không gian */
+            }
+
+            .slider-container {
+                width: 100%;
+                /* Chiếm toàn bộ chiều rộng */
+            }
+
+            .slider,
+            .output {
+                width: 80%;
+                /* Thu nhỏ slider và output */
+                margin: 5px auto;
+                /* Căn giữa */
+            }
+
+            #myChart {
+                display: flex;
+                flex-direction: column;
+                /* Hiển thị các div theo cột */
+                align-items: center;
+                /* Căn giữa theo chiều ngang */
+            }
+
+            #myPortfolio {
+                width: 90%;
+                /* Thu nhỏ chiều rộng của biểu đồ */
+                margin-bottom: 20px;
+                /* Tăng khoảng cách giữa các phần */
+            }
+        }
+    </style>
+    <!-- Load plotly.js into the DOM -->
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+</head>
+
+<body>
+    <div id="myChart">
+        <div id="myPortfolio">
+            <!-- Plotly chart will be drawn inside this DIV -->
+        </div>
+        <!-- <div id='myDiv'>Plotly chart will be drawn inside this DIV</div> -->
+    </div>
+    <div class="slider-container">
+        <div id="myProgress">
+            <div id="myBar">60%</div>
+        </div>
+        <label for="btc">BTC:</label>
+        <input type="range" min="0" max="100" value="60.000" class="slider" id="btc" />
+        <output class="output">60%</output>
+        <br />
+        <label for="eth">ETH:</label>
+        <input type="range" min="0" max="100" value="20.000" class="slider" id="eth" />
+        <output class="output">20%</output>
+        <br />
+        <label for="sol">SOL:</label>
+        <input type="range" min="0" max="100" value="1.000" class="slider" id="sol" />
+        <output class="output">1%</output>
+        <br />
+        <label for="doge">DOGE:</label>
+        <input type="range" min="0" max="100" value="1.000" class="slider" id="doge" />
+        <output class="output">1%</output>
+        <br />
+        <label for="usd">USD:</label>
+        <input type="range" min="0" max="100" value="20.000" class="slider" id="usd" />
+        <output class="output">20%</output>
+    </div>
+
+    <script>
+        const btcSlider = document.getElementById("btc");
+        const ethSlider = document.getElementById("eth");
+        const solSlider = document.getElementById("sol");
+        const dogeSlider = document.getElementById("doge");
+        const usdSlider = document.getElementById("usd");
+
+        const btcOutput = btcSlider.nextElementSibling;
+        const ethOutput = ethSlider.nextElementSibling;
+        const solOutput = ethSlider.nextElementSibling;
+        const dogeOutput = ethSlider.nextElementSibling;
+        const usdOutput = usdSlider.nextElementSibling;
+
+        btcOutput.textContent = btcSlider.value + "%";
+        ethOutput.textContent = ethSlider.value + "%";
+        usdOutput.textContent = usdSlider.value + "%";
+        solOutput.textContent = solSlider.value + "%";
+        dogeOutput.textContent = dogeSlider.value + "%";
+
+        // const total = 100;
+
+        btcSlider.addEventListener("input", function () {
+            const total = totalCal();
+            if (total > 100) {
+                this.value = 100 - parseInt(usdSlider.value);
+                btcOutput.textContent = this.value + "%";
+            } else {
+                btcOutput.textContent = this.value + "%";
+            }
+            updateChart();
+        });
+
+        ethSlider.addEventListener("input", function () {
+            const total = totalCal();
+            if (total > 100) {
+                this.value =
+                    100 - parseInt(btcSlider.value) - parseInt(usdSlider.value);
+                ethOutput.textContent = this.value + "%";
+            } else {
+                ethOutput.textContent = this.value + "%";
+            }
+            updateChart();
+        });
+
+        usdSlider.addEventListener("input", function () {
+            const total = totalCal();
+            if (total > 100) {
+                this.value =
+                    100 - parseInt(btcSlider.value) - parseInt(ethSlider.value);
+                usdOutput.textContent = this.value + "%";
+            } else {
+                usdOutput.textContent = this.value + "%";
+            }
+            updateChart();
+        });
+
+        solSlider.addEventListener("input", function () {
+            const total = totalCal();
+
+            updateChart();
+        });
+
+        dogeSlider.addEventListener("input", function () {
+            const total = totalCal();
+
+            updateChart();
+        });
+
+        var data = [
+            {
+                values: [60, 20, 20],
+                labels: ["BTC", "ETH", "USD", "SOL", "DOGE"],
+                type: "pie",
+            },
+        ];
+
+        var layout = {
+            width: 500,
+        };
+
+        Plotly.newPlot("myPortfolio", data, layout);
+
+        function updateChart() {
+            var newData = [
+                {
+                    values: [
+                        parseInt(btcSlider.value),
+                        parseInt(ethSlider.value),
+                        parseInt(usdSlider.value),
+                        parseInt(solSlider.value),
+                        parseInt(dogeSlider.value),
+                    ],
+                    labels: ["BTC", "ETH", "USD", "SOL", "DOGE"],
+                    type: "pie",
+                },
+            ];
+
+            Plotly.react("myPortfolio", newData);
+        }
+
+        function totalCal() {
+            return (total =
+                parseInt(usdSlider.value) +
+                parseInt(btcSlider.value) +
+                parseInt(ethSlider.value) +
+                parseInt(solSlider.value) +
+                parseInt(dogeSlider.value));
+        }
+    </script>
+</body>
+
+</html>

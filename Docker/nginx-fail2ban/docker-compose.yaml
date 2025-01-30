@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d # configuration in default.conf
+      - ./nginx/ssl:/etc/nginx/ssl # Secure Sockets Layer (SSL) file: server-sample.crt, server-sample.key
+      - ./nginx/html:/var/www/html # static html web for example
+      - ./nginx/log:/var/log/nginx/ # log file
+    restart: always
+
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    container_name: fail2ban
+    network_mode: "host" # <-- Fail2Ban truy cập trực tiếp vào iptables của host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    env_file:
+      - "./fail2ban/fail2ban.env"
+    volumes:
+      - "./fail2ban:/data"
+      - ./nginx/log:/var/log/nginx:ro
+    restart: always
+    depends_on:
+      - nginx
+
