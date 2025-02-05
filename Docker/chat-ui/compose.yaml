@@ -1,0 +1,27 @@
+
+services:
+  db:
+    image: mongo:latest
+    container_name: mongo-chatui
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo_data:/data/db
+
+  chat-ui:
+    image: ghcr.io/huggingface/chat-ui:latest
+    container_name: chat-ui
+    ports:
+      - "3000:3000"
+    # environment:
+    #   - HF_TOKEN=YOUR_HUGGINGFACE_TOKEN
+    #   - MONGODB_URL=mongodb://db:27017
+    env_file:
+      - .env.local
+    depends_on:
+      - db
+    volumes:
+      - ./chatui_data:/data
+
+volumes:
+  mongo_data:

@@ -2,3 +2,7 @@ mongodb
 ollama
 models
 customize
+mongo_data
+chatui_data
+.env.local
+models.json
