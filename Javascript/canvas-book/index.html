@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ứng dụng đọc sách - Hướng đối tượng</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background: #f5f5f5;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bookCanvas"></canvas>
+  <script>
+    class BookReader {
+      constructor(canvasId, dataUrl) {
+        // Lấy đối tượng canvas và context
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext("2d");
+        this.dataUrl = dataUrl;
+
+        // Các thuộc tính quản lý nội dung và trang hiện tại
+        this.pages = [];
+        this.currentPage = 0;
+        this.fullText = "";
+        
+        // Cấu hình hiển thị
+        this.fontSize = 20;
+        this.lineHeight = 24;
+        this.margin = 20;
+        this.minSwipeDistance = 50;
+        
+        // Biến lưu trữ vị trí vuốt
+        this.touchStartX = 0;
+        this.touchStartY = 0;
+        
+        // Khởi tạo các sự kiện và canvas
+        this.bindEvents();
+        this.updateCanvasSize();
+        this.loadData();
+      }
+
+      bindEvents() {
+        // Sự kiện thay đổi kích thước cửa sổ
+        window.addEventListener("resize", () => this.resizeCanvas());
+
+        // Chuyển trang bằng click (desktop)
+        this.canvas.addEventListener("click", (e) => {
+          const x = e.clientX;
+          if (x < this.canvas.width / 2) {
+            this.prevPage();
+          } else {
+            this.nextPage();
+          }
+        });
+
+        // Chuyển trang bằng vuốt (mobile)
+        this.canvas.addEventListener("touchstart", (e) => {
+          const touch = e.touches[0];
+          this.touchStartX = touch.clientX;
+          this.touchStartY = touch.clientY;
+        });
+        this.canvas.addEventListener("touchend", (e) => {
+          const touch = e.changedTouches[0];
+          const deltaX = touch.clientX - this.touchStartX;
+          const deltaY = touch.clientY - this.touchStartY;
+
+          // Xác định chuyển động chủ yếu theo chiều ngang và vượt ngưỡng
+          if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > this.minSwipeDistance) {
+            if (deltaX < 0) {
+              this.nextPage();
+            } else {
+              this.prevPage();
+            }
+          }
+        });
+      }
+
+      updateCanvasSize() {
+        // Cập nhật kích thước canvas theo kích thước hiển thị
+        this.canvas.width = this.canvas.clientWidth;
+        this.canvas.height = this.canvas.clientHeight;
+      }
+
+      resizeCanvas() {
+        this.updateCanvasSize();
+        if (this.fullText) {
+          this.pages = this.paginateText(this.fullText);
+          if (this.currentPage >= this.pages.length) this.currentPage = this.pages.length - 1;
+          this.renderPage();
+        }
+      }
+
+      loadData() {
+        fetch(this.dataUrl)
+          .then(response => response.json())
+          .then(data => {
+            // Giả sử JSON có cấu trúc: { "title": "Tiêu đề", "content": "Nội dung..." }
+            this.fullText = data.title + "\n\n" + data.content;
+            this.pages = this.paginateText(this.fullText);
+            this.renderPage();
+          })
+          .catch(error => console.error("Lỗi khi tải dữ liệu JSON:", error));
+      }
+
+      renderPage() {
+        // Xóa nội dung cũ
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // Cài đặt font và màu chữ
+        this.ctx.font = `${this.fontSize}px Arial`;
+        this.ctx.fillStyle = "#000";
+
+        // Lấy nội dung của trang hiện tại và vẽ từng dòng
+        const text = this.pages[this.currentPage] || "";
+        const lines = text.split("\n");
+        let y = this.margin + this.fontSize;
+        lines.forEach(line => {
+          this.ctx.fillText(line, this.margin, y);
+          y += this.lineHeight;
+        });
+        // Hiển thị số trang ở góc dưới bên phải
+        this.ctx.font = "16px Arial";
+        this.ctx.fillText(`Trang ${this.currentPage + 1} / ${this.pages.length}`, this.canvas.width - 120, this.canvas.height - 20);
+      }
+
+      paginateText(text) {
+        // Phân trang dựa trên kích thước canvas, font chữ, khoảng cách lề và chiều cao dòng
+        const words = text.split(" ");
+        const pagesArray = [];
+        let currentText = "";
+        this.ctx.font = `${this.fontSize}px Arial`;
+        const maxWidth = this.canvas.width - this.margin * 2;
+        const maxLines = Math.floor((this.canvas.height - this.margin * 2) / this.lineHeight);
+        let lineCount = 0;
+        let currentLine = "";
+
+        words.forEach(word => {
+          const testLine = currentLine ? currentLine + " " + word : word;
+          const metrics = this.ctx.measureText(testLine);
+          if (metrics.width > maxWidth) {
+            // Khi dòng vượt quá chiều rộng, thêm dòng đó vào currentText
+            currentText += (currentText === "" ? currentLine : "\n" + currentLine);
+            lineCount++;
+            currentLine = word;
+            // Nếu đã đủ số dòng cho 1 trang, lưu trang đó và reset
+            if (lineCount >= maxLines) {
+              pagesArray.push(currentText);
+              currentText = "";
+              lineCount = 0;
+            }
+          } else {
+            currentLine = testLine;
+          }
+        });
+        // Thêm dòng còn lại
+        if (currentLine !== "") {
+          currentText += (currentText === "" ? currentLine : "\n" + currentLine);
+          lineCount++;
+        }
+        if (currentText) pagesArray.push(currentText);
+        return pagesArray;
+      }
+
+      nextPage() {
+        if (this.currentPage < this.pages.length - 1) {
+          this.currentPage++;
+          this.renderPage();
+        }
+      }
+
+      prevPage() {
+        if (this.currentPage > 0) {
+          this.currentPage--;
+          this.renderPage();
+        }
+      }
+    }
+
+    // Khởi tạo ứng dụng sau khi tài liệu HTML được tải xong
+    document.addEventListener("DOMContentLoaded", () => {
+      new BookReader("bookCanvas", "data.json");
+    });
+  </script>
+</body>
+</html>
