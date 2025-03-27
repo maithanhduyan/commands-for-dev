@@ -1,0 +1,165 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Remove Timestamps (Python)",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.tools/editor/remove_timestamps.py",
+          "${file}"
+        ],
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Remove [âm nhạc] (Python)",
+        "type": "shell",
+        "command": "python",
+        "args": ["${workspaceFolder}/.tools/editor/remove_amnhac.py", "${file}"],
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Remove Vietnamese (auto-generated) (Python)",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.tools/editor/remove_vietnamese.py",
+          "${file}"
+        ],
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Remove English (auto-generated) (Python)",
+        "type": "shell",
+        "command": "python",
+        "args": ["${workspaceFolder}/.tools/editor/remove_english.py", "${file}"],
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Remove Whitespace (Python)",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.tools/editor/remove_whitespace.py",
+          "${file}"
+        ],
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Insert User Prompt for A.I (Python)",
+        "type": "shell",
+        "command": "python",
+        "args": ["${workspaceFolder}/.tools/editor/insert_header.py", "${file}"],
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Insert User Prompt of OpenAI",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.tools/editor/insert_prompt_openai.py",
+          "${file}"
+        ],
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Insert User Prompt of Deepseek",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.tools/editor/insert_prompt_deepseek.py",
+          "${file}"
+        ],
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Replace think tag",
+        "type": "shell",
+        "command": "python",
+        "args": ["${workspaceFolder}/.tools/editor/replace_think.py", "${file}"],
+        "problemMatcher": [],
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "Insert Post Category",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.tools/editor/insert_post_category.py",
+          "${file}"
+        ],
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Run All Text Cleanup Tasks",
+        "dependsOn": [
+          "Remove Timestamps (Python)",
+          "Remove [âm nhạc] (Python)",
+          "Remove Vietnamese (auto-generated) (Python)",
+          "Remove Whitespace (Python)"
+        ],
+        "dependsOrder": "sequence",
+        "problemMatcher": []
+      }
+    ]
+  }
+  
