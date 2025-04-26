@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobConnect - Nền tảng tuyển dụng & tìm việc làm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3b82f6;
+        }
+        .freelancer-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .category-card:hover {
+            background-color: #f0f7ff;
+            transform: translateY(-3px);
+        }
+        .nav-item:hover::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #3b82f6;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+        }
+        .dropdown:hover .dropdown-menu,
+        .dropdown:focus-within .dropdown-menu {
+            display: block;
+        }
+        .skill-tag:hover {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-main, .btn-main:hover, .btn-main:focus {
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .btn-outline, .btn-outline:hover, .btn-outline:focus {
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        @media (max-width: 768px) {
+            .category-card, .job-card, .freelancer-card, .testimonial-card {
+                padding: 1rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="#" class="flex items-center">
+                    <i class="fas fa-briefcase text-blue-500 text-3xl mr-2"></i>
+                    <span class="text-2xl font-bold text-blue-600">Job<span class="text-orange-500">Connect</span></span>
+                </a>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8" id="mainNav">
+                <a href="#" class="text-gray-700 hover:text-blue-600 font-medium relative nav-item">Trang chủ</a>
+                <div class="dropdown relative">
+                    <button class="text-gray-700 hover:text-blue-600 font-medium flex items-center nav-item">
+                        Việc làm <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                    <div class="dropdown-menu absolute hidden bg-white py-2 mt-2 rounded shadow-lg w-48">
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Việc làm IT</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Kinh doanh</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Marketing</a>
+                    </div>
+                </div>
+                <div class="dropdown relative">
+                    <button class="text-gray-700 hover:text-blue-600 font-medium flex items-center nav-item">
+                        Freelancer <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                    <div class="dropdown-menu absolute hidden bg-white py-2 mt-2 rounded shadow-lg w-48">
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Thiết kế</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Lập trình</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Content</a>
+                    </div>
+                </div>
+                <a href="#" class="text-gray-700 hover:text-blue-600 font-medium relative nav-item">Công ty</a>
+                <a href="#" class="text-gray-700 hover:text-blue-600 font-medium relative nav-item">Blog</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button class="hidden md:block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition btn-main">
+                    <i class="fas fa-plus mr-2"></i> Đăng tuyển
+                </button>
+                <button class="hidden md:block border border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg font-medium transition btn-outline">
+                    <i class="fas fa-user mr-2"></i> Đăng nhập
+                </button>
+                <button class="md:hidden text-gray-600" id="mobileMenuBtn" aria-label="Mở menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">Tìm công việc mơ ước hoặc ứng viên tài năng</h1>
+                <p class="text-xl mb-8">Kết nối hơn 10,000 công ty với 50,000 ứng viên và freelancer chất lượng</p>
+                
+                <!-- Search Box -->
+                <div class="bg-white rounded-lg p-2 shadow-lg">
+                    <div class="flex flex-col md:flex-row">
+                        <div class="flex-grow relative">
+                            <input type="text" placeholder="Tìm kiếm việc làm, kỹ năng, công ty..." 
+                                   class="w-full px-4 py-3 border-0 rounded-lg focus:outline-none text-gray-800">
+                            <button class="absolute right-3 top-3 text-gray-500">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition mt-2 md:mt-0 md:ml-2">
+                            <i class="fas fa-search mr-2"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap justify-center mt-6 gap-2">
+                    <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">Lập trình viên</span>
+                    <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">Thiết kế đồ họa</span>
+                    <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">Digital Marketing</span>
+                    <span class="text-sm bg-white bg-opacity-20 px-3 py-1 rounded-full">Kế toán</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Job Categories -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800">Ngành nghề phổ biến</h2>
+                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                    Xem tất cả <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <a href="#" class="category-card bg-gray-50 hover:bg-blue-50 rounded-xl p-6 text-center transition border border-gray-200 hover:border-blue-300">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-laptop-code text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Công nghệ thông tin</h3>
+                    <p class="text-sm text-gray-500 mt-1">1,245 việc làm</p>
+                </a>
+                
+                <a href="#" class="category-card bg-gray-50 hover:bg-blue-50 rounded-xl p-6 text-center transition border border-gray-200 hover:border-blue-300">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Kinh doanh</h3>
+                    <p class="text-sm text-gray-500 mt-1">890 việc làm</p>
+                </a>
+                
+                <a href="#" class="category-card bg-gray-50 hover:bg-blue-50 rounded-xl p-6 text-center transition border border-gray-200 hover:border-blue-300">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-bullhorn text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Marketing</h3>
+                    <p class="text-sm text-gray-500 mt-1">756 việc làm</p>
+                </a>
+                
+                <a href="#" class="category-card bg-gray-50 hover:bg-blue-50 rounded-xl p-6 text-center transition border border-gray-200 hover:border-blue-300">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-paint-brush text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Thiết kế</h3>
+                    <p class="text-sm text-gray-500 mt-1">632 việc làm</p>
+                </a>
+                
+                <a href="#" class="category-card bg-gray-50 hover:bg-blue-50 rounded-xl p-6 text-center transition border border-gray-200 hover:border-blue-300">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calculator text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Kế toán</h3>
+                    <p class="text-sm text-gray-500 mt-1">523 việc làm</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Jobs -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800">Việc làm nổi bật</h2>
+                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                    Xem tất cả <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Job Card 1 -->
+                <div class="job-card bg-white rounded-lg overflow-hidden shadow-md p-6 transition duration-300">
+                    <div class="flex items-start mb-4">
+                        <img src="https://logo.clearbit.com/google.com" alt="Company" class="w-12 h-12 rounded-md mr-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Lập trình viên Frontend</h3>
+                            <p class="text-gray-600">Google Vietnam</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">ReactJS</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">JavaScript</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">HTML/CSS</span>
+                    </div>
+                    <div class="flex items-center text-gray-700 mb-4">
+                        <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                        <span class="text-sm">Hà Nội</span>
+                        <i class="fas fa-money-bill-wave text-blue-500 ml-4 mr-2"></i>
+                        <span class="text-sm">$1,500 - $2,500</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+                        <span class="text-sm text-gray-500">2 ngày trước</span>
+                        <button class="text-blue-600 hover:text-blue-800 font-medium">
+                            Ứng tuyển ngay <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Job Card 2 -->
+                <div class="job-card bg-white rounded-lg overflow-hidden shadow-md p-6 transition duration-300">
+                    <div class="flex items-start mb-4">
+                        <img src="https://logo.clearbit.com/facebook.com" alt="Company" class="w-12 h-12 rounded-md mr-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Product Manager</h3>
+                            <p class="text-gray-600">Facebook</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">Product</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">UX</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">Agile</span>
+                    </div>
+                    <div class="flex items-center text-gray-700 mb-4">
+                        <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                        <span class="text-sm">TP. Hồ Chí Minh</span>
+                        <i class="fas fa-money-bill-wave text-blue-500 ml-4 mr-2"></i>
+                        <span class="text-sm">$3,000 - $4,500</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+                        <span class="text-sm text-gray-500">1 tuần trước</span>
+                        <button class="text-blue-600 hover:text-blue-800 font-medium">
+                            Ứng tuyển ngay <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Job Card 3 -->
+                <div class="job-card bg-white rounded-lg overflow-hidden shadow-md p-6 transition duration-300">
+                    <div class="flex items-start mb-4">
+                        <img src="https://logo.clearbit.com/amazon.com" alt="Company" class="w-12 h-12 rounded-md mr-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Data Scientist</h3>
+                            <p class="text-gray-600">Amazon</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">Python</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">Machine Learning</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">SQL</span>
+                    </div>
+                    <div class="flex items-center text-gray-700 mb-4">
+                        <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                        <span class="text-sm">Đà Nẵng</span>
+                        <i class="fas fa-money-bill-wave text-blue-500 ml-4 mr-2"></i>
+                        <span class="text-sm">$2,000 - $3,000</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+                        <span class="text-sm text-gray-500">3 ngày trước</span>
+                        <button class="text-blue-600 hover:text-blue-800 font-medium">
+                            Ứng tuyển ngay <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Freelancers -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800">Freelancer hàng đầu</h2>
+                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                    Xem tất cả <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Freelancer Card 1 -->
+                <div class="freelancer-card bg-white rounded-lg overflow-hidden shadow-md p-6 transition duration-300">
+                    <div class="flex flex-col items-center text-center">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Freelancer" class="w-20 h-20 rounded-full mb-4 border-2 border-blue-500">
+                        <h3 class="text-lg font-bold text-gray-800">Nguyễn Thị Mai</h3>
+                        <p class="text-blue-600 font-medium mb-2">Thiết kế đồ họa</p>
+                        <div class="flex mb-3">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span class="text-gray-600 text-sm ml-1">(24)</span>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">Photoshop</span>
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">Illustrator</span>
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">UI/UX</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Thiết kế chuyên nghiệp với 5 năm kinh nghiệm làm việc với các thương hiệu lớn</p>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition w-full">
+                            <i class="fas fa-paper-plane mr-2"></i> Liên hệ
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Freelancer Card 2 -->
+                <div class="freelancer-card bg-white rounded-lg overflow-hidden shadow-md p-6 transition duration-300">
+                    <div class="flex flex-col items-center text-center">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Freelancer" class="w-20 h-20 rounded-full mb-4 border-2 border-blue-500">
+                        <h3 class="text-lg font-bold text-gray-800">Trần Văn Nam</h3>
+                        <p class="text-blue-600 font-medium mb-2">Lập trình viên Fullstack</p>
+                        <div class="flex mb-3">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star-half-alt text-yellow-400"></i>
+                            <span class="text-gray-600 text-sm ml-1">(18)</span>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">JavaScript</span>
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">Node.js</span>
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">React</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Chuyên phát triển ứng dụng web với stack MERN, có kinh nghiệm làm remote</p>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition w-full">
+                            <i class="fas fa-paper-plane mr-2"></i> Liên hệ
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Freelancer Card 3 -->
+                <div class="freelancer-card bg-white rounded-lg overflow-hidden shadow-md p-6 transition duration-300">
+                    <div class="flex flex-col items-center text-center">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Freelancer" class="w-20 h-20 rounded-full mb-4 border-2 border-blue-500">
+                        <h3 class="text-lg font-bold text-gray-800">Lê Thị Hương</h3>
+                        <p class="text-blue-600 font-medium mb-2">Content Writer</p>
+                        <div class="flex mb-3">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <span class="text-gray-600 text-sm ml-1">(32)</span>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">SEO</span>
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">Blogging</span>
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">Copywriting</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Viết content SEO, blog, website với vốn từ phong phú và khả năng research tốt</p>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition w-full">
+                            <i class="fas fa-paper-plane mr-2"></i> Liên hệ
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Freelancer Card 4 -->
+                <div class="freelancer-card bg-white rounded-lg overflow-hidden shadow-md p-6 transition duration-300">
+                    <div class="flex flex-col items-center text-center">
+                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Freelancer" class="w-20 h-20 rounded-full mb-4 border-2 border-blue-500">
+                        <h3 class="text-lg font-bold text-gray-800">Phạm Đức Anh</h3>
+                        <p class="text-blue-600 font-medium mb-2 ">Chuyên viên Marketing</p>
+                        <div class="flex mb-3">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star-half-alt text-yellow-400"></i>
+                            <i class="fas fa-star-half-alt text-yellow-400"></i>
+                            <span class="text-gray-600 text-sm ml-1">(15)</span>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">Google Ads</span>
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">Facebook Ads</span>
+                            <span class="skill-tag bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full transition">Email Marketing</span>
+
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Chuyên chạy quảng cáo Google, Facebook với tỷ lệ chuyển đổi cao</p>
+                    </div>
+                </div>
+
+            </div>
+        </div> 
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Cách thức hoạt động</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">JobConnect giúp kết nối nhà tuyển dụng và ứng viên một cách hiệu quả nhất</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center px-6">
+                    <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-user-plus text-blue-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">1. Tạo hồ sơ</h3>
+                    <p class="text-gray-600">Đăng ký tài khoản và tạo hồ sơ cá nhân hoặc công ty đầy đủ thông tin</p>
+                </div>
+                
+                <div class="text-center px-6">
+                    <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-search text-blue-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">2. Tìm kiếm</h3>
+                    <p class="text-gray-600">Tìm kiếm công việc phù hợp hoặc ứng viên tài năng bằng bộ lọc thông minh</p>
+                </div>
+                
+                <div class="text-center px-6">
+                    <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-handshake text-blue-600 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">3. Kết nối</h3>
+                    <p class="text-gray-600">Liên hệ và làm việc cùng nhau để đạt được mục tiêu chung</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Khách hàng nói gì về chúng tôi</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">Những trải nghiệm thực tế từ cả nhà tuyển dụng và ứng viên</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="testimonial-card bg-white rounded-lg shadow-md p-6 transition duration-300">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="User" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Nguyễn Thị Lan</h4>
+                            <p class="text-blue-600 text-sm">Frontend Developer tại FPT</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"Tôi đã tìm được công việc mơ ước qua JobConnect. Hệ thống gợi ý việc làm rất phù hợp với hồ sơ và kỹ năng của tôi."</p>
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card bg-white rounded-lg shadow-md p-6 transition duration-300">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Trần Văn Minh</h4>
+                            <p class="text-blue-600 text-sm">HR Manager tại Viettel</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"Chúng tôi đã tuyển dụng được nhiều nhân tài chất lượng cao thông qua JobConnect. Đặc biệt thích tính năng lọc ứng viên theo kỹ năng."</p>
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card bg-white rounded-lg shadow-md p-6 transition duration-300">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Lê Thị Hồng</h4>
+                            <p class="text-blue-600 text-sm">Freelancer Designer</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"Là freelancer, tôi nhận được nhiều dự án chất lượng từ JobConnect. Hệ thống bảo vệ quyền lợi của cả hai bên rất tốt."</p>
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Companies -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800">Công ty hàng đầu</h2>
+                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                    Xem tất cả <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <a href="#" class="company-logo bg-white rounded-lg p-6 flex items-center justify-center border border-gray-200 hover:border-blue-300 transition">
+                    <img src="https://logo.clearbit.com/vng.com.vn" alt="VNG" class="h-10">
+                </a>
+                <a href="#" class="company-logo bg-white rounded-lg p-6 flex items-center justify-center border border-gray-200 hover:border-blue-300 transition">
+                    <img src="https://logo.clearbit.com/fpt.com.vn" alt="FPT" class="h-10">
+                </a>
+                <a href="#" class="company-logo bg-white rounded-lg p-6 flex items-center justify-center border border-gray-200 hover:border-blue-300 transition">
+                    <img src="https://logo.clearbit.com/viettel.com.vn" alt="Viettel" class="h-10">
+                </a>
+                <a href="#" class="company-logo bg-white rounded-lg p-6 flex items-center justify-center border border-gray-200 hover:border-blue-300 transition">
+                    <img src="https://logo.clearbit.com/tiki.vn" alt="Tiki" class="h-10">
+                </a>
+                <a href="#" class="company-logo bg-white rounded-lg p-6 flex items-center justify-center border border-gray-200 hover:border-blue-300 transition">
+                    <img src="https://logo.clearbit.com/momo.vn" alt="Momo" class="h-10">
+                </a>
+                <a href="#" class="company-logo bg-white rounded-lg p-6 flex items-center justify-center border border-gray-200 hover:border-blue-300 transition">
+                    <img src="https://logo.clearbit.com/vietcombank.com.vn" alt="Vietcombank" class="h-10">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Sẵn sàng cho bước tiến mới trong sự nghiệp?</h2>
+                <p class="text-xl mb-8">Đăng ký ngay hôm nay để khám phá hàng ngàn cơ hội việc làm và dự án hấp dẫn</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button class="bg-white text-blue-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-bold transition">
+                        <i class="fas fa-user-plus mr-2"></i> Đăng ký ứng viên
+                    </button>
+                    <button class="bg-blue-800 hover:bg-blue-900 text-white px-6 py-3 rounded-lg font-bold transition border border-white">
+                        <i class="fas fa-building mr-2"></i> Đăng ký nhà tuyển dụng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800">Tin tức & Blog</h2>
+                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                    Xem tất cả <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Blog" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span class="text-sm text-blue-600 font-medium">Kỹ năng phỏng vấn</span>
+                        <h3 class="text-xl font-bold text-gray-800 my-2">10 câu hỏi phỏng vấn bạn nên chuẩn bị</h3>
+                        <p class="text-gray-600 mb-4">Chuẩn bị tốt cho buổi phỏng vấn với những câu hỏi thường gặp nhất từ nhà tuyển dụng...</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="far fa-calendar-alt mr-2"></i> 15/06/2023
+                            <i class="far fa-comment ml-4 mr-2"></i> 12 bình luận
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Blog" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span class="text-sm text-blue-600 font-medium">Xu hướng tuyển dụng</span>
+                        <h3 class="text-xl font-bold text-gray-800 my-2">Top 5 ngành nghề hot nhất 2023</h3>
+                        <p class="text-gray-600 mb-4">Những ngành nghề đang có nhu cầu tuyển dụng cao với mức lương hấp dẫn trong năm nay...</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="far fa-calendar-alt mr-2"></i> 05/06/2023
+                            <i class="far fa-comment ml-4 mr-2"></i> 24 bình luận
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg overflow-hidden shadow-md">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Blog" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span class="text-sm text-blue-600 font-medium">Làm việc từ xa</span>
+                        <h3 class="text-xl font-bold text-gray-800 my-2">Bí quyết làm việc remote hiệu quả</h3>
+                        <p class="text-gray-600 mb-4">Làm thế nào để duy trì năng suất và cân bằng cuộc sống khi làm việc từ xa...</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="far fa-calendar-alt mr-2"></i> 28/05/2023
+                            <i class="far fa-comment ml-4 mr-2"></i> 8 bình luận
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <a href="#" class="flex items-center mb-6">
+                        <i class="fas fa-briefcase text-blue-500 text-3xl mr-2"></i>
+                        <span class="text-2xl font-bold text-white">Job<span class="text-orange-500">Connect</span></span>
+                    </a>
+                    <p class="text-gray-400 mb-4">Nền tảng kết nối nhà tuyển dụng và ứng viên hàng đầu Việt Nam</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-xl">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-6">Về JobConnect</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Giới thiệu</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Đội ngũ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tin tức</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tuyển dụng</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Liên hệ</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-6">Dành cho ứng viên</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tìm việc làm</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tạo hồ sơ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tài nguyên</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Hướng dẫn</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Câu hỏi thường gặp</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-6">Dành cho nhà tuyển dụng</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Đăng tuyển dụng</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tìm ứng viên</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Giải pháp tuyển dụng</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Bảng giá</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Hỗ trợ</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 mb-4 md:mb-0">© 2023 JobConnect. Bản quyền thuộc về Công ty TNHH JobConnect Việt Nam</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white">Điều khoản sử dụng</a>
+                        <a href="#" class="text-gray-400 hover:text-white">Chính sách bảo mật</a>
+                        <a href="#" class="text-gray-400 hover:text-white">Sơ đồ trang web</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-6 right-6 bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg hidden">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+    <script>
+        // Back to Top Button
+        const backToTopButton = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.remove('hidden');
+            } else {
+                backToTopButton.classList.add('hidden');
+            }
+        });
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mainNav = document.getElementById('mainNav');
+        mobileMenuBtn.addEventListener('click', () => {
+            mainNav.classList.toggle('hidden');
+            mainNav.classList.toggle('flex');
+        });
+
+        // Dropdown for mobile
+        document.querySelectorAll('.dropdown > button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const menu = this.parentElement.querySelector('.dropdown-menu');
+                if (menu) menu.classList.toggle('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

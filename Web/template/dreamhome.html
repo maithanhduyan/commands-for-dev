@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DreamHome - Giải pháp bất động sản hiện đại</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .property-card {
+            transition: all 0.3s ease;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .type-tag {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .price-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .filter-btn.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .testimonial-card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .map-container {
+            height: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-home text-2xl text-blue-600 mr-2"></i>
+                <span class="text-xl font-bold text-blue-600">DreamHome</span>
+            </div>
+            
+            <nav class="hidden lg:flex space-x-8">
+                <a href="#" class="text-gray-800 hover:text-blue-600 font-medium">Trang chủ</a>
+                <a href="#" class="text-gray-800 hover:text-blue-600 font-medium">Mua bán</a>
+                <a href="#" class="text-gray-800 hover:text-blue-600 font-medium">Cho thuê</a>
+                <a href="#" class="text-gray-800 hover:text-blue-600 font-medium">Dự án</a>
+                <a href="#" class="text-gray-800 hover:text-blue-600 font-medium">Tin tức</a>
+                <a href="#" class="text-gray-800 hover:text-blue-600 font-medium">Liên hệ</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button class="hidden md:flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                    <i class="fas fa-plus-circle mr-2"></i> Đăng tin
+                </button>
+                <button class="p-2 text-gray-600 hover:text-blue-600">
+                    <i class="fas fa-search text-lg"></i>
+                </button>
+                <button class="p-2 text-gray-600 hover:text-blue-600">
+                    <i class="fas fa-user-circle text-xl"></i>
+                </button>
+                <button class="lg:hidden p-2 text-gray-600 hover:text-blue-600">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-16 md:py-24">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Tìm ngôi nhà mơ ước của bạn</h1>
+                <p class="text-xl mb-8">Hơn 10,000 bất động sản cao cấp đang chờ bạn khám phá</p>
+                
+                <div class="bg-white rounded-xl p-2 shadow-lg">
+                    <div class="flex flex-col md:flex-row">
+                        <div class="flex-1 mb-2 md:mb-0 md:mr-2">
+                            <select class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800">
+                                <option>Loại bất động sản</option>
+                                <option>Căn hộ</option>
+                                <option>Nhà phố</option>
+                                <option>Biệt thự</option>
+                                <option>Đất nền</option>
+                                <option>Phòng trọ</option>
+                            </select>
+                        </div>
+                        <div class="flex-1 mb-2 md:mb-0 md:mr-2">
+                            <select class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800">
+                                <option>Khu vực</option>
+                                <option>Hà Nội</option>
+                                <option>TP.HCM</option>
+                                <option>Đà Nẵng</option>
+                                <option>Hải Phòng</option>
+                                <option>Cần Thơ</option>
+                            </select>
+                        </div>
+                        <button class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition duration-300">
+                            <i class="fas fa-search mr-2"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="flex items-start">
+                    <div class="feature-icon bg-blue-100 text-blue-600 mr-4">
+                        <i class="fas fa-shield-alt text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-2">Bảo mật thông tin</h3>
+                        <p class="text-gray-600">Cam kết bảo mật thông tin khách hàng và giao dịch an toàn tuyệt đối</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="feature-icon bg-green-100 text-green-600 mr-4">
+                        <i class="fas fa-check-circle text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-2">Kiểm định chất lượng</h3>
+                        <p class="text-gray-600">Tất cả bất động sản đều được kiểm tra và xác minh trước khi đăng tải</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="feature-icon bg-purple-100 text-purple-600 mr-4">
+                        <i class="fas fa-headset text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-2">Hỗ trợ 24/7</h3>
+                        <p class="text-gray-600">Đội ngũ chuyên viên luôn sẵn sàng hỗ trợ bạn mọi lúc, mọi nơi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Listings -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold mb-4 md:mb-0">Bất động sản nổi bật</h2>
+                <div class="flex space-x-2">
+                    <button class="filter-btn active px-4 py-2 rounded-lg border border-gray-300 bg-blue-600 text-white">
+                        Tất cả
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100">
+                        Bán
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100">
+                        Cho thuê
+                    </button>
+                    <button class="filter-btn px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100">
+                        Dự án
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Property 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md property-card">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Biệt thự" 
+                             class="w-full h-48 object-cover">
+                        <span class="type-tag bg-blue-600 text-white">Bán</span>
+                        <span class="price-badge bg-white text-blue-600">12.5 tỷ</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">Biệt thự ven hồ Tây</h3>
+                        <div class="flex items-center text-gray-500 mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Quận Tây Hồ, Hà Nội</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600 border-b border-gray-100 pb-3 mb-3">
+                            <span><i class="fas fa-ruler-combined mr-1"></i> 200m²</span>
+                            <span><i class="fas fa-bed mr-1"></i> 5 phòng</span>
+                            <span><i class="fas fa-bath mr-1"></i> 3 WC</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" 
+                                     alt="Agent" 
+                                     class="w-8 h-8 rounded-full mr-2">
+                                <span class="text-sm">Mr. Đức</span>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                Xem chi tiết <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md property-card">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Căn hộ" 
+                             class="w-full h-48 object-cover">
+                        <span class="type-tag bg-green-600 text-white">Cho thuê</span>
+                        <span class="price-badge bg-white text-green-600">15 triệu/tháng</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">Căn hộ cao cấp Q1</h3>
+                        <div class="flex items-center text-gray-500 mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Quận 1, TP.HCM</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600 border-b border-gray-100 pb-3 mb-3">
+                            <span><i class="fas fa-ruler-combined mr-1"></i> 75m²</span>
+                            <span><i class="fas fa-bed mr-1"></i> 2 phòng</span>
+                            <span><i class="fas fa-bath mr-1"></i> 2 WC</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" 
+                                     alt="Agent" 
+                                     class="w-8 h-8 rounded-full mr-2">
+                                <span class="text-sm">Ms. Lan</span>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                Xem chi tiết <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md property-card">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Nhà phố" 
+                             class="w-full h-48 object-cover">
+                        <span class="type-tag bg-blue-600 text-white">Bán</span>
+                        <span class="price-badge bg-white text-blue-600">8.2 tỷ</span>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-2">Nhà phố mặt tiền</h3>
+                        <div class="flex items-center text-gray-500 mb-3">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Quận Cầu Giấy, Hà Nội</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600 border-b border-gray-100 pb-3 mb-3">
+                            <span><i class="fas fa-ruler-combined mr-1"></i> 120m²</span>
+                            <span><i class="fas fa-bed mr-1"></i> 4 phòng</span>
+                            <span><i class="fas fa-bath mr-1"></i> 3 WC</span>
+                        </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Agent" class="w-8 h-8 rounded-full mr-2">
+                            <span class="text-sm">Mr. Hoàng</span>
+                        </div>
+                        <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            Xem chi tiết <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-12 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-8">Phản hồi từ khách hàng</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-gray-50 p-6 rounded-xl shadow testimonial-card">
+                <p class="text-gray-600 mb-4">"Dịch vụ tuyệt vời! Tìm được căn nhà mơ ước chỉ sau vài bước đơn giản."</p>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/women/55.jpg" alt="Customer" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <p class="font-bold">Nguyễn Thị Hương</p>
+                        <span class="text-sm text-gray-500">Khách hàng</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-xl shadow testimonial-card">
+                <p class="text-gray-600 mb-4">"DreamHome thực sự là giải pháp bất động sản hiện đại mà tôi luôn tìm kiếm."</p>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Customer" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <p class="font-bold">Trần Văn Minh</p>
+                        <span class="text-sm text-gray-500">Khách hàng</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-xl shadow testimonial-card">
+                <p class="text-gray-600 mb-4">"Giao diện dễ sử dụng và thông tin bất động sản rất rõ ràng."</p>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/women/75.jpg" alt="Customer" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <p class="font-bold">Phạm Thị Lan</p>
+                        <span class="text-sm text-gray-500">Khách hàng</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="py-12">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-8">Tìm kiếm trên bản đồ</h2>
+        <div class="map-container">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.201783481366!2d105.78525351533129!3d21.028511593617867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135abcb7c81c0bb%3A0x65717f6d1b9f96f9!2zTeG7jWMgTG_DoCBUw6AgTOG7mW5nIFRoxrDGoG5o!5e0!3m2!1svi!2s!4v1615990688734!5m2!1svi!2s" 
+                width="100%" 
+                height="100%" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy">
+            </iframe>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-gray-200 py-8">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between">
+            <div class="mb-6">
+                <h3 class="text-xl font-bold mb-2">DreamHome</h3>
+                <p class="text-gray-400">Giải pháp bất động sản hiện đại, kết nối người mua bán một cách nhanh chóng và hiệu quả.</p>
+            </div>
+            <div class="mb-6">
+                <h4 class="font-bold mb-2">Liên hệ</h4>
+                <p class="text-gray-400">Địa chỉ: 123 Đường ABC, Quận 1, TP.HCM</p>
+                <p class="text-gray-400">Email: info@dreamhome.com</p>
+                <p class="text-gray-400">Điện thoại: 090-123-4567</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-2">Theo dõi</h4>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-square text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter-square text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram-square text-2xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin text-2xl"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 text-center text-gray-500 text-sm">
+            © 2023 DreamHome. All rights reserved.
+        </div>
+    </div>
+</footer>
+</html> 

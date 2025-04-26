@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KicksZone - Giày thể thao phong cách</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .shoe-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .shoe-card {
+            transition: all 0.3s ease;
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.2);
+        }
+        
+        .size-option {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .size-option:hover, .size-option.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-shoe-prints text-2xl text-indigo-600 mr-2"></i>
+                <span class="text-xl font-bold text-indigo-600">KicksZone</span>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-800 hover:text-indigo-600 font-medium">Trang chủ</a>
+                <a href="#" class="text-gray-800 hover:text-indigo-600 font-medium">Sản phẩm</a>
+                <a href="#" class="text-gray-800 hover:text-indigo-600 font-medium">Bộ sưu tập</a>
+                <a href="#" class="text-gray-800 hover:text-indigo-600 font-medium">Khuyến mãi</a>
+                <a href="#" class="text-gray-800 hover:text-indigo-600 font-medium">Liên hệ</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button class="p-2 text-gray-600 hover:text-indigo-600">
+                    <i class="fas fa-search text-lg"></i>
+                </button>
+                <button class="p-2 text-gray-600 hover:text-indigo-600 relative">
+                    <i class="fas fa-shopping-cart text-lg"></i>
+                    <span class="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </button>
+                <button class="md:hidden p-2 text-gray-600 hover:text-indigo-600">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-16 md:py-24">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Thể hiện phong cách của bạn</h1>
+                <p class="text-xl mb-8">Bộ sưu tập giày thể thao mới nhất với thiết kế trẻ trung, năng động dành cho giới trẻ.</p>
+                <div class="flex space-x-4">
+                    <button class="bg-white text-indigo-600 px-6 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300">
+                        Mua ngay
+                    </button>
+                    <button class="border-2 border-white text-white px-6 py-3 rounded-full font-medium hover:bg-white hover:text-indigo-600 transition duration-300">
+                        Khám phá
+                    </button>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <img src="https://images.unsplash.com/photo-1600269452121-1f5d1415c810?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                     alt="Giày thể thao" 
+                     class="w-full max-w-md pulse-animation">
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Categories -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Danh mục nổi bật</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-gray-100 rounded-xl p-6 text-center hover:bg-indigo-50 transition duration-300">
+                    <div class="bg-indigo-100 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-running text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Giày chạy bộ</h3>
+                    <p class="text-gray-600">Thoải mái cho đôi chân</p>
+                </div>
+                
+                <div class="bg-gray-100 rounded-xl p-6 text-center hover:bg-indigo-50 transition duration-300">
+                    <div class="bg-indigo-100 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-basketball-ball text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Giày bóng rổ</h3>
+                    <p class="text-gray-600">Bứt phá mọi giới hạn</p>
+                </div>
+                
+                <div class="bg-gray-100 rounded-xl p-6 text-center hover:bg-indigo-50 transition duration-300">
+                    <div class="bg-indigo-100 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-tshirt text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Giày thời trang</h3>
+                    <p class="text-gray-600">Phong cách cá tính</p>
+                </div>
+                
+                <div class="bg-gray-100 rounded-xl p-6 text-center hover:bg-indigo-50 transition duration-300">
+                    <div class="bg-indigo-100 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-hiking text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="font-semibold text-lg mb-2">Giày đi bộ</h3>
+                    <p class="text-gray-600">Dẻo dai mọi địa hình</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Products -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">Sản phẩm hot</h2>
+                <a href="#" class="text-indigo-600 font-medium hover:underline">Xem tất cả</a>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md shoe-card">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Nike Air Max" 
+                             class="w-full h-64 object-cover">
+                        <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            -20%
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg mb-1">Nike Air Max</h3>
+                                <p class="text-gray-600 text-sm">Giày thể thao</p>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                <span>4.8</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <div>
+                                <span class="text-gray-400 line-through text-sm">3,500,000đ</span>
+                                <p class="text-indigo-600 font-bold">2,800,000đ</p>
+                            </div>
+                            <button class="bg-indigo-100 text-indigo-600 p-2 rounded-full hover:bg-indigo-200">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md shoe-card">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Adidas Ultraboost" 
+                             class="w-full h-64 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg mb-1">Adidas Ultraboost</h3>
+                                <p class="text-gray-600 text-sm">Giày chạy bộ</p>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                <span>4.9</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-indigo-600 font-bold">3,200,000đ</p>
+                            </div>
+                            <button class="bg-indigo-100 text-indigo-600 p-2 rounded-full hover:bg-indigo-200">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md shoe-card">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Puma RS-X" 
+                             class="w-full h-64 object-cover">
+                        <div class="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            Mới
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg mb-1">Puma RS-X</h3>
+                                <p class="text-gray-600 text-sm">Giày thời trang</p>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                <span>4.7</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-indigo-600 font-bold">2,500,000đ</p>
+                            </div>
+                            <button class="bg-indigo-100 text-indigo-600 p-2 rounded-full hover:bg-indigo-200">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 4 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md shoe-card">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1600269452121-1f5d1415c810?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Converse Chuck 70" 
+                             class="w-full h-64 object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg mb-1">Converse Chuck 70</h3>
+                                <p class="text-gray-600 text-sm">Giày cổ điển</p>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                <span>4.6</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <div>
+                                <p class="text-indigo-600 font-bold">1,800,000đ</p>
+                            </div>
+                            <button class="bg-indigo-100 text-indigo-600 p-2 rounded-full hover:bg-indigo-200">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Banner -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 md:p-12 text-white">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-2/3 mb-6 md:mb-0">
+                        <h2 class="text-2xl md:text-3xl font-bold mb-4">Giảm giá lên đến 50%</h2>
+                        <p class="text-lg mb-6">Mùa hè này, KicksZone mang đến cho bạn những ưu đãi không thể bỏ lỡ. Nhanh tay lên!</p>
+                        <button class="bg-white text-indigo-600 px-6 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300">
+                            Mua ngay
+                        </button>
+                    </div>
+                    <div class="md:w-1/3 flex justify-center">
+                        <img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                             alt="Giảm giá" 
+                             class="w-full max-w-xs">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Detail Modal -->
+    <div id="productModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-screen overflow-y-auto">
+            <div class="relative">
+                <button id="closeModal" class="absolute top-4 right-4 bg-gray-200 rounded-full p-2 hover:bg-gray-300">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-1/2 p-6">
+                        <div class="mb-4">
+                            <img id="modalImage" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Product" 
+                                 class="w-full rounded-lg">
+                        </div>
+                        <div class="grid grid-cols-4 gap-2">
+                            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Thumbnail" 
+                                 class="cursor-pointer border-2 border-indigo-500 rounded">
+                            <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Thumbnail" 
+                                 class="cursor-pointer hover:border-2 hover:border-gray-300 rounded">
+                            <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Thumbnail" 
+                                 class="cursor-pointer hover:border-2 hover:border-gray-300 rounded">
+                            <img src="https://images.unsplash.com/photo-1600269452121-1f5d1415c810?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Thumbnail" 
+                                 class="cursor-pointer hover:border-2 hover:border-gray-300 rounded">
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2 p-6">
+                        <h2 id="modalTitle" class="text-2xl font-bold mb-2">Nike Air Max</h2>
+                        <div class="flex items-center mb-4">
+                            <div class="flex mr-2">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star-half-alt text-yellow-400"></i>
+                            </div>
+                            <span class="text-gray-600">(42 đánh giá)</span>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <span class="text-3xl font-bold text-indigo-600">2,800,000đ</span>
+                            <span class="text-gray-400 line-through ml-2">3,500,000đ</span>
+                            <span class="bg-red-100 text-red-600 text-sm font-medium ml-2 px-2 py-1 rounded">-20%</span>
+                        </div>
+                        
+                        <p id="modalDescription" class="text-gray-700 mb-6">
+                            Nike Air Max với thiết kế hiện đại, đế êm ái và kiểu dáng thể thao năng động. Chất liệu da tổng hợp cao cấp, thoáng khí và bền bỉ. Phù hợp cho cả tập luyện và dạo phố.
+                        </p>
+                        
+                        <div class="mb-6">
+                            <h3 class="font-bold mb-2">Màu sắc</h3>
+                            <div class="flex space-x-3">
+                                <div class="color-option bg-black border-2 border-gray-300" data-color="black"></div>
+                                <div class="color-option bg-blue-600 border-2 border-gray-300" data-color="blue"></div>
+                                <div class="color-option bg-red-500 border-2 border-gray-300" data-color="red"></div>
+                                <div class="color-option bg-white border-2 border-gray-300" data-color="white"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-8">
+                            <h3 class="font-bold mb-2">Kích cỡ</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="size-option border border-gray-300">36</span>
+                                <span class="size-option border border-gray-300">37</span>
+                                <span class="size-option border border-gray-300 active">38</span>
+                                <span class="size-option border border-gray-300">39</span>
+                                <span class="size-option border border-gray-300">40</span>
+                                <span class="size-option border border-gray-300">41</span>
+                                <span class="size-option border border-gray-300">42</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center border border-gray-300 rounded-full">
+                                <button class="px-3 py-2 text-gray-600 hover:text-indigo-600">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span class="px-4">1</span>
+                                <button class="px-3 py-2 text-gray-600 hover:text-indigo-600">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <button class="flex-1 bg-indigo-600 text-white py-3 rounded-full hover:bg-indigo-700 transition duration-300">
+                                <i class="fas fa-shopping-cart mr-2"></i> Thêm vào giỏ hàng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Khách hàng nói gì về chúng tôi</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-6 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" 
+                             alt="Customer" 
+                             class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold">Ngọc Anh</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "Giày rất đẹp và thoải mái. Mình đã mua 3 đôi ở KicksZone và đều rất hài lòng. Dịch vụ giao hàng nhanh, nhân viên tư vấn nhiệt tình."
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" 
+                             alt="Customer" 
+                             class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold">Minh Đức</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "Lần đầu mua hàng tại KicksZone và rất ấn tượng. Giày đúng như hình, chất lượng tốt. Sẽ quay lại mua thêm và giới thiệu cho bạn bè."
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" 
+                             alt="Customer" 
+                             class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold">Thu Hà</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">
+                        "Mình rất thích các mẫu giày ở đây, phong cách trẻ trung và giá cả hợp lý. Đặc biệt là chính sách đổi trả dễ dàng khi không vừa size."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-12 bg-indigo-50">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto text-center">
+                <h2 class="text-3xl font-bold mb-4">Đăng ký nhận bản tin</h2>
+                <p class="text-gray-600 mb-6">Nhận thông báo về sản phẩm mới, khuyến mãi đặc biệt và nhiều hơn nữa!</p>
+                
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <input type="email" 
+                           placeholder="Nhập email của bạn" 
+                           class="flex-1 px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <button class="bg-indigo-600 text-white px-6 py-3 rounded-full font-medium hover:bg-indigo-700 transition duration-300">
+                        Đăng ký ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-shoe-prints text-2xl text-indigo-400 mr-2"></i>
+                        <span class="text-xl font-bold text-indigo-400">KicksZone</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        KicksZone - Thế giới giày thể thao phong cách dành cho giới trẻ. Chúng tôi mang đến những sản phẩm chất lượng với giá cả hợp lý.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Về chúng tôi</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Giới thiệu</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tuyển dụng</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tin tức</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Hệ thống cửa hàng</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Chính sách bảo mật</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Hỗ trợ khách hàng</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Hướng dẫn mua hàng</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Chính sách đổi trả</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Chính sách bảo hành</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Câu hỏi thường gặp</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Liên hệ</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Thông tin liên hệ</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2 text-indigo-400"></i>
+                            <span>123 Đường ABC, Quận 1, TP.HCM</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-2 text-indigo-400"></i>
+                            <span>0901 234 567</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2 text-indigo-400"></i>
+                            <span>support@kickszone.vn</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-clock mr-2 text-indigo-400"></i>
+                            <span>8:00 - 21:00 hàng ngày</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2023 KicksZone. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <img src="https://via.placeholder.com/40x25" alt="Payment" class="h-6">
+                    <img src="https://via.placeholder.com/40x25" alt="Payment" class="h-6">
+                    <img src="https://via.placeholder.com/40x25" alt="Payment" class="h-6">
+                    <img src="https://via.placeholder.com/40x25" alt="Payment" class="h-6">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Product Modal
+        const productModal = document.getElementById('productModal');
+        const closeModal = document.getElementById('closeModal');
+        const shoeCards = document.querySelectorAll('.shoe-card');
+        
+        // Open modal when clicking on product cards
+        shoeCards.forEach(card => {
+            card.addEventListener('click', () => {
+                productModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            productModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close modal when clicking outside
+        productModal.addEventListener('click', (e) => {
+            if (e.target === productModal) {
+                productModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Color selection
+        const colorOptions = document.querySelectorAll('.color-option');
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                colorOptions.forEach(opt => opt.classList.remove('border-indigo-600', 'ring-2', 'ring-offset-2', 'ring-indigo-300'));
+                option.classList.add('border-indigo-600', 'ring-2', 'ring-offset-2', 'ring-indigo-300');
+                
+                // Change main image based on color (simulated)
+                const color = option.getAttribute('data-color');
+                const modalImage = document.getElementById('modalImage');
+                
+                switch(color) {
+                    case 'black':
+                        modalImage.src = 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80';
+                        break;
+                    case 'blue':
+                        modalImage.src = 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80';
+                        break;
+                    case 'red':
+                        modalImage.src = 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80';
+                        break;
+                    case 'white':
+                        modalImage.src = 'https://images.unsplash.com/photo-1600269452121-1f5d1415c810?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80';
+                        break;
+                }
+            });
+        });
+        
+        // Size selection
+        const sizeOptions = document.querySelectorAll('.size-option');
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                sizeOptions.forEach(opt => opt.classList.remove('active', 'bg-indigo-600', 'text-white'));
+                option.classList.add('active', 'bg-indigo-600', 'text-white');
+            });
+        });
+        
+        // Thumbnail selection
+        const thumbnails = document.querySelectorAll('.cursor-pointer');
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                const modalImage = document.getElementById('modalImage');
+                modalImage.src = thumb.src;
+                
+                thumbnails.forEach(t => t.classList.remove('border-indigo-500', 'border-2'));
+                thumb.classList.add('border-indigo-500', 'border-2');
+            });
+        });
+    </script>
+</body>
+</html>

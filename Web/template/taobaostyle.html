@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Taobao Style Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Heroicons for icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="icon" href="https://img.icons8.com/color/48/taobao.png"/>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            background: #f3f4f6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f59e42;
+            border-radius: 4px;
+        }
+        /* Custom animation for banner */
+        @keyframes bannerSlide {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 0; }
+        }
+        .banner-animate {
+            background-size: 200% 100%;
+            animation: bannerSlide 8s linear infinite alternate;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Header -->
+    <header class="bg-orange-500 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+            <!-- Logo -->
+            <div class="flex items-center space-x-2">
+                <img src="https://img.icons8.com/color/48/taobao.png" alt="Logo" class="w-10 h-10">
+                <span class="text-white text-2xl font-bold tracking-wide">TaobaoStyle</span>
+            </div>
+            <!-- Search Bar -->
+            <div class="flex-1 mx-8">
+                <div class="relative">
+                    <input type="text" placeholder="Tìm kiếm sản phẩm, thương hiệu..." class="w-full py-2 pl-4 pr-12 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400 shadow-sm">
+                    <button class="absolute right-2 top-1/2 -translate-y-1/2 text-orange-500 hover:text-orange-600">
+                        <i data-feather="search"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- User Actions -->
+            <div class="flex items-center space-x-6">
+                <button class="relative text-white hover:text-orange-200">
+                    <i data-feather="shopping-cart"></i>
+                    <span class="absolute -top-2 -right-2 bg-red-500 text-xs text-white rounded-full px-1">2</span>
+                </button>
+                <button class="text-white hover:text-orange-200">
+                    <i data-feather="user"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Navigation -->
+        <nav class="bg-orange-400">
+            <div class="max-w-7xl mx-auto flex space-x-8 px-4 py-2 text-white font-medium">
+                <a href="#" class="hover:text-orange-100">Trang chủ</a>
+                <a href="#" class="hover:text-orange-100">Danh mục</a>
+                <a href="#" class="hover:text-orange-100">Khuyến mãi</a>
+                <a href="#" class="hover:text-orange-100">Hỗ trợ</a>
+                <a href="#" class="hover:text-orange-100">Liên hệ</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Banner -->
+    <section class="max-w-7xl mx-auto mt-6 px-4">
+        <div class="rounded-2xl overflow-hidden shadow-lg banner-animate bg-gradient-to-r from-orange-400 via-yellow-300 to-orange-500 flex items-center h-48 relative">
+            <div class="p-8 z-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">Mua sắm thả ga, giá cực đã!</h2>
+                <p class="text-white text-lg mb-4 drop-shadow">Khám phá hàng triệu sản phẩm hot trend, deal sốc mỗi ngày.</p>
+                <button class="bg-white text-orange-500 font-semibold px-6 py-2 rounded-full shadow hover:bg-orange-100 transition">Khám phá ngay</button>
+            </div>
+            <img src="https://img.icons8.com/color/96/taobao.png" alt="Banner" class="absolute right-8 bottom-0 w-40 opacity-80 hidden md:block">
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="max-w-7xl mx-auto mt-8 px-4">
+        <h3 class="text-xl font-semibold mb-4 text-orange-600">Danh mục nổi bật</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-4">
+            <div class="flex flex-col items-center bg-white rounded-xl shadow hover:shadow-lg p-4 cursor-pointer transition group">
+                <div class="bg-orange-100 rounded-full p-3 mb-2 group-hover:bg-orange-200">
+                    <i data-feather="shopping-bag" class="text-orange-500"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Thời trang</span>
+            </div>
+            <div class="flex flex-col items-center bg-white rounded-xl shadow hover:shadow-lg p-4 cursor-pointer transition group">
+                <div class="bg-orange-100 rounded-full p-3 mb-2 group-hover:bg-orange-200">
+                    <i data-feather="smartphone" class="text-orange-500"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Điện tử</span>
+            </div>
+            <div class="flex flex-col items-center bg-white rounded-xl shadow hover:shadow-lg p-4 cursor-pointer transition group">
+                <div class="bg-orange-100 rounded-full p-3 mb-2 group-hover:bg-orange-200">
+                    <i data-feather="home" class="text-orange-500"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Nhà cửa</span>
+            </div>
+            <div class="flex flex-col items-center bg-white rounded-xl shadow hover:shadow-lg p-4 cursor-pointer transition group">
+                <div class="bg-orange-100 rounded-full p-3 mb-2 group-hover:bg-orange-200">
+                    <i data-feather="gift" class="text-orange-500"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Quà tặng</span>
+            </div>
+            <div class="flex flex-col items-center bg-white rounded-xl shadow hover:shadow-lg p-4 cursor-pointer transition group">
+                <div class="bg-orange-100 rounded-full p-3 mb-2 group-hover:bg-orange-200">
+                    <i data-feather="headphones" class="text-orange-500"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Phụ kiện</span>
+            </div>
+            <div class="flex flex-col items-center bg-white rounded-xl shadow hover:shadow-lg p-4 cursor-pointer transition group">
+                <div class="bg-orange-100 rounded-full p-3 mb-2 group-hover:bg-orange-200">
+                    <i data-feather="heart" class="text-orange-500"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Làm đẹp</span>
+            </div>
+            <div class="flex flex-col items-center bg-white rounded-xl shadow hover:shadow-lg p-4 cursor-pointer transition group">
+                <div class="bg-orange-100 rounded-full p-3 mb-2 group-hover:bg-orange-200">
+                    <i data-feather="book-open" class="text-orange-500"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Sách</span>
+            </div>
+            <div class="flex flex-col items-center bg-white rounded-xl shadow hover:shadow-lg p-4 cursor-pointer transition group">
+                <div class="bg-orange-100 rounded-full p-3 mb-2 group-hover:bg-orange-200">
+                    <i data-feather="coffee" class="text-orange-500"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Ẩm thực</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flash Sale -->
+    <section class="max-w-7xl mx-auto mt-10 px-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-semibold text-orange-600">Flash Sale <span class="bg-red-500 text-white px-2 py-1 rounded text-xs ml-2">HOT</span></h3>
+            <div class="flex items-center space-x-2 text-sm text-gray-600">
+                <span>Kết thúc sau:</span>
+                <span id="flash-sale-timer" class="font-bold text-red-500">00:59:59</span>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+            <!-- Product Card Example -->
+            <div class="bg-white rounded-xl shadow hover:shadow-xl transition p-3 flex flex-col group cursor-pointer relative overflow-hidden">
+                <span class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">-50%</span>
+                <img src="https://img.icons8.com/color/96/shirt.png" alt="Product" class="w-full h-28 object-contain mb-2 group-hover:scale-105 transition">
+                <div class="flex-1">
+                    <h4 class="text-sm font-semibold text-gray-800 mb-1">Áo thun nam nữ hot trend</h4>
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                        <span class="text-xs text-gray-500 ml-1">(1.2k)</span>
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <span class="text-lg font-bold text-orange-500">₫99.000</span>
+                        <span class="text-xs text-gray-400 line-through">₫198.000</span>
+                    </div>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Mua ngay</button>
+            </div>
+            <!-- Repeat for more products -->
+            <div class="bg-white rounded-xl shadow hover:shadow-xl transition p-3 flex flex-col group cursor-pointer relative overflow-hidden">
+                <span class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">-40%</span>
+                <img src="https://img.icons8.com/color/96/smartphone-tablet.png" alt="Product" class="w-full h-28 object-contain mb-2 group-hover:scale-105 transition">
+                <div class="flex-1">
+                    <h4 class="text-sm font-semibold text-gray-800 mb-1">Điện thoại thông minh</h4>
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                        <span class="text-xs text-gray-500 ml-1">(800)</span>
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <span class="text-lg font-bold text-orange-500">₫2.999.000</span>
+                        <span class="text-xs text-gray-400 line-through">₫4.999.000</span>
+                    </div>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Mua ngay</button>
+            </div>
+            <div class="bg-white rounded-xl shadow hover:shadow-xl transition p-3 flex flex-col group cursor-pointer relative overflow-hidden">
+                <span class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">-30%</span>
+                <img src="https://img.icons8.com/color/96/sofa.png" alt="Product" class="w-full h-28 object-contain mb-2 group-hover:scale-105 transition">
+                <div class="flex-1">
+                    <h4 class="text-sm font-semibold text-gray-800 mb-1">Ghế sofa mini</h4>
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                        <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                        <span class="text-xs text-gray-500 ml-1">(500)</span>
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <span class="text-lg font-bold text-orange-500">₫1.200.000</span>
+                        <span class="text-xs text-gray-400 line-through">₫1.700.000</span>
+                    </div>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Mua ngay</button>
+            </div>
+            <div class="bg-white rounded-xl shadow hover:shadow-xl transition p-3 flex flex-col group cursor-pointer relative overflow-hidden">
+                <span class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">-60%</span>
+                <img src="https://img.icons8.com/color/96/gift.png" alt="Product" class="w-full h-28 object-contain mb-2 group-hover:scale-105 transition">
+                <div class="flex-1">
+                    <h4 class="text-sm font-semibold text-gray-800 mb-1">Hộp quà sinh nhật</h4>
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <span class="text-xs text-gray-500 ml-1">(2k)</span>
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <span class="text-lg font-bold text-orange-500">₫39.000</span>
+                        <span class="text-xs text-gray-400 line-through">₫99.000</span>
+                    </div>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Mua ngay</button>
+            </div>
+            <div class="bg-white rounded-xl shadow hover:shadow-xl transition p-3 flex flex-col group cursor-pointer relative overflow-hidden">
+                <span class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">-20%</span>
+                <img src="https://img.icons8.com/color/96/headphones.png" alt="Product" class="w-full h-28 object-contain mb-2 group-hover:scale-105 transition">
+                <div class="flex-1">
+                    <h4 class="text-sm font-semibold text-gray-800 mb-1">Tai nghe bluetooth</h4>
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                        <span class="text-xs text-gray-500 ml-1">(1k)</span>
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <span class="text-lg font-bold text-orange-500">₫299.000</span>
+                        <span class="text-xs text-gray-400 line-through">₫399.000</span>
+                    </div>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Mua ngay</button>
+            </div>
+            <div class="bg-white rounded-xl shadow hover:shadow-xl transition p-3 flex flex-col group cursor-pointer relative overflow-hidden">
+                <span class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">-35%</span>
+                <img src="https://img.icons8.com/color/96/book.png" alt="Product" class="w-full h-28 object-contain mb-2 group-hover:scale-105 transition">
+                <div class="flex-1">
+                    <h4 class="text-sm font-semibold text-gray-800 mb-1">Sách kỹ năng sống</h4>
+                    <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                        <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                        <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                        <span class="text-xs text-gray-500 ml-1">(300)</span>
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <span class="text-lg font-bold text-orange-500">₫59.000</span>
+                        <span class="text-xs text-gray-400 line-through">₫89.000</span>
+                    </div>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Mua ngay</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section class="max-w-7xl mx-auto mt-12 px-4">
+        <h3 class="text-xl font-semibold mb-4 text-orange-600">Gợi ý cho bạn</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            <!-- Product Card -->
+            <div class="bg-white rounded-2xl shadow hover:shadow-2xl transition p-4 flex flex-col group cursor-pointer relative overflow-hidden">
+                <img src="https://img.icons8.com/color/96/dress-front-view.png" alt="Product" class="w-full h-36 object-contain mb-2 group-hover:scale-105 transition">
+                <h4 class="text-base font-semibold text-gray-800 mb-1">Đầm nữ thời trang</h4>
+                <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                    <span class="text-xs text-gray-500 ml-1">(900)</span>
+                </div>
+                <div class="flex items-end space-x-2">
+                    <span class="text-lg font-bold text-orange-500">₫199.000</span>
+                    <span class="text-xs text-gray-400 line-through">₫299.000</span>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Thêm vào giỏ</button>
+            </div>
+            <!-- Repeat for more products -->
+            <div class="bg-white rounded-2xl shadow hover:shadow-2xl transition p-4 flex flex-col group cursor-pointer relative overflow-hidden">
+                <img src="https://img.icons8.com/color/96/laptop.png" alt="Product" class="w-full h-36 object-contain mb-2 group-hover:scale-105 transition">
+                <h4 class="text-base font-semibold text-gray-800 mb-1">Laptop gaming</h4>
+                <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                    <span class="text-xs text-gray-500 ml-1">(1.1k)</span>
+                </div>
+                <div class="flex items-end space-x-2">
+                    <span class="text-lg font-bold text-orange-500">₫15.999.000</span>
+                    <span class="text-xs text-gray-400 line-through">₫18.999.000</span>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Thêm vào giỏ</button>
+            </div>
+            <div class="bg-white rounded-2xl shadow hover:shadow-2xl transition p-4 flex flex-col group cursor-pointer relative overflow-hidden">
+                <img src="https://img.icons8.com/color/96/sofa.png" alt="Product" class="w-full h-36 object-contain mb-2 group-hover:scale-105 transition">
+                <h4 class="text-base font-semibold text-gray-800 mb-1">Sofa phòng khách</h4>
+                <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                    <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                    <span class="text-xs text-gray-500 ml-1">(400)</span>
+                </div>
+                <div class="flex items-end space-x-2">
+                    <span class="text-lg font-bold text-orange-500">₫2.499.000</span>
+                    <span class="text-xs text-gray-400 line-through">₫3.299.000</span>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Thêm vào giỏ</button>
+            </div>
+            <div class="bg-white rounded-2xl shadow hover:shadow-2xl transition p-4 flex flex-col group cursor-pointer relative overflow-hidden">
+                <img src="https://img.icons8.com/color/96/gift.png" alt="Product" class="w-full h-36 object-contain mb-2 group-hover:scale-105 transition">
+                <h4 class="text-base font-semibold text-gray-800 mb-1">Combo quà tặng</h4>
+                <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <span class="text-xs text-gray-500 ml-1">(2.5k)</span>
+                </div>
+                <div class="flex items-end space-x-2">
+                    <span class="text-lg font-bold text-orange-500">₫79.000</span>
+                    <span class="text-xs text-gray-400 line-through">₫129.000</span>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Thêm vào giỏ</button>
+            </div>
+            <div class="bg-white rounded-2xl shadow hover:shadow-2xl transition p-4 flex flex-col group cursor-pointer relative overflow-hidden">
+                <img src="https://img.icons8.com/color/96/headphones.png" alt="Product" class="w-full h-36 object-contain mb-2 group-hover:scale-105 transition">
+                <h4 class="text-base font-semibold text-gray-800 mb-1">Tai nghe gaming</h4>
+                <div class="flex items-center space-x-1 text-yellow-400 mb-1">
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                    <i data-feather="star" class="w-4 h-4 text-gray-300"></i>
+                    <span class="text-xs text-gray-500 ml-1">(1.3k)</span>
+                </div>
+                <div class="flex items-end space-x-2">
+                    <span class="text-lg font-bold text-orange-500">₫399.000</span>
+                    <span class="text-xs text-gray-400 line-through">₫599.000</span>
+                </div>
+                <button class="mt-3 bg-orange-500 text-white rounded-full px-4 py-1 font-medium hover:bg-orange-600 transition">Thêm vào giỏ</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 mt-16 text-gray-300">
+        <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h5 class="text-lg font-bold text-white mb-3">TaobaoStyle</h5>
+                <p class="text-sm mb-2">Nền tảng mua sắm trực tuyến hàng đầu, mang đến trải nghiệm tuyệt vời cho mọi khách hàng.</p>
+                <div class="flex space-x-3 mt-3">
+                    <a href="#" class="hover:text-orange-400"><i data-feather="facebook"></i></a>
+                    <a href="#" class="hover:text-orange-400"><i data-feather="instagram"></i></a>
+                    <a href="#" class="hover:text-orange-400"><i data-feather="twitter"></i></a>
+                </div>
+            </div>
+            <div>
+                <h5 class="font-semibold text-white mb-3">Hỗ trợ khách hàng</h5>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-orange-400">Trung tâm trợ giúp</a></li>
+                    <li><a href="#" class="hover:text-orange-400">Hướng dẫn mua hàng</a></li>
+                    <li><a href="#" class="hover:text-orange-400">Chính sách đổi trả</a></li>
+                    <li><a href="#" class="hover:text-orange-400">Liên hệ hỗ trợ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-semibold text-white mb-3">Về chúng tôi</h5>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-orange-400">Giới thiệu</a></li>
+                    <li><a href="#" class="hover:text-orange-400">Tuyển dụng</a></li>
+                    <li><a href="#" class="hover:text-orange-400">Điều khoản dịch vụ</a></li>
+                    <li><a href="#" class="hover:text-orange-400">Chính sách bảo mật</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-semibold text-white mb-3">Tải ứng dụng</h5>
+                <div class="flex space-x-3">
+                    <a href="#"><img src="https://img.icons8.com/color/48/000000/google-play.png" alt="Google Play" class="w-10"></a>
+                    <a href="#"><img src="https://img.icons8.com/color/48/000000/apple-app-store.png" alt="App Store" class="w-10"></a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 text-center py-4 text-sm text-gray-400">
+            © 2024 TaobaoStyle. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Feather icons
+        feather.replace();
+
+        // Flash sale countdown
+        let timer = 3599; // 59:59 seconds
+        function updateTimer() {
+            const h = String(Math.floor(timer / 3600)).padStart(2, '0');
+            const m = String(Math.floor((timer % 3600) / 60)).padStart(2, '0');
+            const s = String(timer % 60).padStart(2, '0');
+            document.getElementById('flash-sale-timer').textContent = `${h}:${m}:${s}`;
+            if (timer > 0) timer--;
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</body>
+</html></div></section>

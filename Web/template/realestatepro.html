@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealEstatePro - Nền tảng bất động sản hàng đầu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
+    <style>
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .map-container {
+            height: 400px;
+            border-radius: 12px;
+        }
+        .price-range-slider .thumb {
+            pointer-events: all;
+        }
+        .search-box {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .nav-item:hover::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #3b82f6;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="#" class="flex items-center">
+                    <i class="fas fa-building text-blue-500 text-3xl mr-2"></i>
+                    <span class="text-2xl font-bold text-blue-600">RealEstate<span class="text-orange-500">Pro</span></span>
+                </a>
+            </div>
+            
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-700 hover:text-blue-600 font-medium relative nav-item">Trang chủ</a>
+                <div class="dropdown relative">
+                    <button class="text-gray-700 hover:text-blue-600 font-medium flex items-center nav-item">
+                        Mua bán <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                    <div class="dropdown-menu absolute hidden bg-white py-2 mt-2 rounded shadow-lg w-48">
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Nhà đất</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Căn hộ</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Đất nền</a>
+                    </div>
+                </div>
+                <div class="dropdown relative">
+                    <button class="text-gray-700 hover:text-blue-600 font-medium flex items-center nav-item">
+                        Cho thuê <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                    <div class="dropdown-menu absolute hidden bg-white py-2 mt-2 rounded shadow-lg w-48">
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Phòng trọ</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Căn hộ</a>
+                        <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-blue-50">Mặt bằng</a>
+                    </div>
+                </div>
+                <a href="#" class="text-gray-700 hover:text-blue-600 font-medium relative nav-item">Dự án</a>
+                <a href="#" class="text-gray-700 hover:text-blue-600 font-medium relative nav-item">Tin tức</a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button class="hidden md:block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                    <i class="fas fa-plus mr-2"></i> Đăng tin
+                </button>
+                <button class="hidden md:block border border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg font-medium transition">
+                    <i class="fas fa-user mr-2"></i> Đăng nhập
+                </button>
+                <button class="md:hidden text-gray-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">Tìm kiếm ngôi nhà mơ ước của bạn</h1>
+                <p class="text-xl mb-8">Hơn 50,000 bất động sản đang chờ bạn khám phá trên khắp Việt Nam</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Box -->
+    <div class="container mx-auto px-4 -mt-12 relative z-10">
+        <div class="bg-white rounded-xl p-6 search-box">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Tỉnh/Thành phố</label>
+                    <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Chọn tỉnh/thành phố</option>
+                        <option value="hanoi">Hà Nội</option>
+                        <option value="hcm">TP. Hồ Chí Minh</option>
+                        <option value="danang">Đà Nẵng</option>
+                        <option value="haiphong">Hải Phòng</option>
+                        <option value="cantho">Cần Thơ</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Loại giao dịch</label>
+                    <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Mua/Bán/Cho thuê</option>
+                        <option value="buy">Mua bán</option>
+                        <option value="rent">Cho thuê</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Loại bất động sản</label>
+                    <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Tất cả loại hình</option>
+                        <option value="house">Nhà ở</option>
+                        <option value="apartment">Căn hộ</option>
+                        <option value="land">Đất nền</option>
+                        <option value="office">Mặt bằng</option>
+                        <option value="warehouse">Kho bãi</option>
+                        <option value="factory">Xưởng sản xuất</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Khoảng giá</label>
+                    <div class="price-range-slider relative">
+                        <input type="range" min="0" max="1000000000" value="0" class="w-full" id="price-min">
+                        <input type="range" min="0" max="1000000000" value="1000000000" class="w-full" id="price-max">
+                        <div class="flex justify-between mt-2">
+                            <span class="text-sm text-gray-600">0 đ</span>
+                            <span class="text-sm text-gray-600">1 tỷ đ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <label class="block text-gray-700 font-medium mb-2">Tìm kiếm theo vị trí trên bản đồ</label>
+                <div class="relative">
+                    <input type="text" id="map-search" placeholder="Nhập địa chỉ hoặc kéo marker trên bản đồ" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button class="absolute right-3 top-3 text-gray-500">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </button>
+                </div>
+                <div id="map" class="map-container mt-4"></div>
+            </div>
+            
+            <div class="mt-6 text-center">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-medium transition">
+                    <i class="fas fa-search mr-2"></i> Tìm kiếm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Properties -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800">Bất động sản nổi bật</h2>
+                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+                    Xem tất cả <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Property Card 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md property-card transition duration-300">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Property" class="w-full h-48 object-cover">
+                        <div class="absolute top-3 left-3 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">
+                            Bán
+                        </div>
+                        <div class="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold text-gray-800 mb-1">Biệt thự ven hồ Tây</h3>
+                        <p class="text-gray-600 text-sm mb-3 flex items-center">
+                            <i class="fas fa-map-marker-alt text-blue-500 mr-1"></i> Quận Tây Hồ, Hà Nội
+                        </p>
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-bed text-blue-500 mr-1"></i>
+                                <span class="text-sm mr-3">4</span>
+                                <i class="fas fa-bath text-blue-500 mr-1"></i>
+                                <span class="text-sm mr-3">3</span>
+                                <i class="fas fa-ruler-combined text-blue-500 mr-1"></i>
+                                <span class="text-sm">150m²</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="text-blue-600 font-bold">12.5 tỷ đ</p>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Card 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md property-card transition duration-300">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Property" class="w-full h-48 object-cover">
+                        <div class="absolute top-3 left-3 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded">
+                            Cho thuê
+                        </div>
+                        <div class="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold text-gray-800 mb-1">Căn hộ cao cấp Masteri</h3>
+                        <p class="text-gray-600 text-sm mb-3 flex items-center">
+                            <i class="fas fa-map-marker-alt text-blue-500 mr-1"></i> Quận 2, TP.HCM
+                        </p>
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-bed text-blue-500 mr-1"></i>
+                                <span class="text-sm mr-3">2</span>
+                                <i class="fas fa-bath text-blue-500 mr-1"></i>
+                                <span class="text-sm mr-3">2</span>
+                                <i class="fas fa-ruler-combined text-blue-500 mr-1"></i>
+                                <span class="text-sm">75m²</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="text-blue-600 font-bold">15 triệu đ/tháng</p>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Card 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md property-card transition duration-300">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Property" class="w-full h-48 object-cover">
+                        <div class="absolute top-3 left-3 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">
+                            Bán
+                        </div>
+                        <div class="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold text-gray-800 mb-1">Nhà phố mặt tiền</h3>
+                        <p class="text-gray-600 text-sm mb-3 flex items-center">
+                            <i class="fas fa-map-marker-alt text-blue-500 mr-1"></i> Quận Cầu Giấy, Hà Nội
+                        </p>
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-bed text-blue-500 mr-1"></i>
+                                <span class="text-sm mr-3">5</span>
+                                <i class="fas fa-bath text-blue-500 mr-1"></i>
+                                <span class="text-sm mr-3">3</span>
+                                <i class="fas fa-ruler-combined text-blue-500 mr-1"></i>
+                                <span class="text-sm">200m²</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="text-blue-600 font-bold">8.5 tỷ đ</p>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Card 4 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md property-card transition duration-300">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                             alt="Property" class="w-full h-48 object-cover">
+                        <div class="absolute top-3 left-3 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded">
+                            Cho thuê
+                        </div>
+                        <div class="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold text-gray-800 mb-1">Mặt bằng kinh doanh</h3>
+                        <p class="text-gray-600 text-sm mb-3 flex items-center">
+                            <i class="fas fa-map-marker-alt text-blue-500 mr-1"></i> Quận 1, TP.HCM
+                        </p>
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center text-gray-700">
+                                <i class="fas fa-door-open text-blue-500 mr-1"></i>
+                                <span class="text-sm mr-3">2</span>
+                                <i class="fas fa-ruler-combined text-blue-500 mr-1"></i>
+                                <span class="text-sm">80m²</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="text-blue-600 font-bold">25 triệu đ/tháng</p>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-10 text-center">Khám phá theo loại hình</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <a href="#" class="bg-gray-50 hover:bg-blue-50 rounded-xl p-6 text-center transition border border-gray-200 hover:border-blue-300">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-home text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Nhà riêng</h3>
+                    <p class="text-sm text-gray-500 mt-1">2,345 tin</p>
+                </a>
+                
+                <a href="#" class="bg-gray-50 hover:bg-blue-50 rounded-xl p-6 text-center transition border border-gray-200 hover:border-blue-300">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-building text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Căn hộ</h3>
+                    <p class="text-sm text-gray-500 mt-1">5,678 tin</p>
+                </a>
+                
+                <a href="#" class="bg-gray-50 hover:bg-blue-50 rounded-xl p-6 text-center transition border border-gray-200 hover:border-blue-300">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-warehouse text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Mặt bằng</h3>
+                    <p class="text-sm text-gray-500 mt-1">1,234 tin</p>
+                </a>
+                
+                <a href="#" class="bg-gray-50 hover:bg-blue-50 rounded-xl p-6 text-center transition border border-gray-200 hover:border-blue-300">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-warehouse text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Kho bãi</h3>
+                    <p class="text-sm text-gray-500 mt-1">567 tin</p>
+                </a>
+                
+                <a href="#" class="bg-gray-50 hover:bg-blue-50 rounded-xl p-6 text-center transition border border-gray-200 hover:border-blue-300">
+                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-industry text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-medium text-gray-800">Xưởng sản xuất</h3>
+                    <p class="text-sm text-gray-500 mt-1">890 tin</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-10 text-center">Cách thức hoạt động</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-sm text-center">
+                    <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-blue-600 font-bold text-2xl">1</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Đăng ký tài khoản</h3>
+                    <p class="text-gray-600">Tạo tài khoản miễn phí để bắt đầu đăng tin hoặc tìm kiếm bất động sản phù hợp.</p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-sm text-center">
+                    <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-blue-600 font-bold text-2xl">2</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Tìm kiếm hoặc đăng tin</h3>
+                    <p class="text-gray-600">Sử dụng bộ lọc thông minh để tìm bất động sản ưng ý hoặc đăng tin cho thuê/bán của bạn.</p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-sm text-center">
+                    <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-blue-600 font-bold text-2xl">3</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Kết nối và giao dịch</h3>
+                    <p class="text-gray-600">Liên hệ trực tiếp giữa người mua và người bán, người cho thuê và người thuê.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-gray-800 mb-10 text-center">Khách hàng nói gì về chúng tôi</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="flex items-center">
+                            <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-gray-800">Chị Nguyễn Thị Mai</h4>
+                                <p class="text-sm text-gray-500">Khách hàng đã mua nhà</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">"Tôi đã tìm được ngôi nhà mơ ước của mình thông qua RealEstatePro. Nhân viên tư vấn rất nhiệt tình và chuyên nghiệp. Cảm ơn các bạn!"</p>
+                    <div class="flex mt-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-8 rounded-xl">
+                    <div class="flex items-center mb-4">
+                        <div class="flex items-center">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-gray-800">Anh Trần Văn Nam</h4>
+                                <p class="text-sm text-gray-500">Khách hàng đã cho thuê</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">"Tôi đã cho thuê căn hộ của mình chỉ sau 3 ngày đăng tin trên RealEstatePro. Nền tảng dễ sử dụng và hiệu quả. Rất hài lòng với dịch vụ!"</p>
+                    <div class="flex mt-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-16 bg-blue-600 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6">Bạn đang muốn bán hoặc cho thuê bất động sản?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Đăng ký ngay để tiếp cận hàng ngàn khách hàng tiềm năng</p>
+            <button class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-bold transition">
+                <i class="fas fa-plus mr-2"></i> Đăng tin miễn phí
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <a href="#" class="flex items-center mb-6">
+                        <i class="fas fa-building text-blue-500 text-3xl mr-2"></i>
+                        <span class="text-2xl font-bold text-white">RealEstate<span class="text-orange-500">Pro</span></span>
+                    </a>
+                    <p class="text-gray-400 mb-4">Nền tảng kết nối người mua và người bán, người cho thuê và người thuê bất động sản hàng đầu Việt Nam.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Về chúng tôi</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Giới thiệu</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Đội ngũ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tuyển dụng</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Tin tức</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Liên hệ</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Hỗ trợ</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Câu hỏi thường gặp</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Hướng dẫn đăng tin</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Chính sách bảo mật</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Điều khoản sử dụng</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Hỗ trợ khách hàng</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-6">Liên hệ</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-map-marker-alt mr-3 text-blue-500"></i>
+                            <span>Tòa nhà RealEstate, 123 Nguyễn Du, Q.1, TP.HCM</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-phone-alt mr-3 text-blue-500"></i>
+                            <span>1900 1234</span>
+                        </li>
+                        <li class="flex items-center text-gray-400">
+                            <i class="fas fa-envelope mr-3 text-blue-500"></i>
+                            <span>support@realestatepro.vn</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 mb-4 md:mb-0">© 2023 RealEstatePro. All rights reserved.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white">Điều khoản</a>
+                        <a href="#" class="text-gray-400 hover:text-white">Bảo mật</a>
+                        <a href="#" class="text-gray-400 hover:text-white">Cookies</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Google Map
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 10.8231, lng: 106.6297 }, // Default to Ho Chi Minh City
+                zoom: 12,
+            });
+            
+            // Add search box
+            const input = document.getElementById("map-search");
+            const searchBox = new google.maps.places.SearchBox(input);
+            
+            map.addListener("bounds_changed", () => {
+                searchBox.setBounds(map.getBounds());
+            });
+            
+            let markers = [];
+            
+            searchBox.addListener("places_changed", () => {
+                const places = searchBox.getPlaces();
+                
+                if (places.length === 0) {
+                    return;
+                }
+                
+                // Clear out the old markers
+                markers.forEach((marker) => {
+                    marker.setMap(null);
+                });
+                markers = [];
+                
+                // For each place, add a marker
+                const bounds = new google.maps.LatLngBounds();
+                
+                places.forEach((place) => {
+                    if (!place.geometry || !place.geometry.location) {
+                        console.log("Returned place contains no geometry");
+                        return;
+                    }
+                    
+                    const marker = new google.maps.Marker({
+                        map,
+                        title: place.name,
+                        position: place.geometry.location,
+                        draggable: true,
+                    });
+                    
+                    markers.push(marker);
+                    
+                    if (place.geometry.viewport) {
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                map.fitBounds(bounds);
+            });
+            
+            // Add draggable marker
+            const marker = new google.maps.Marker({
+                position: { lat: 10.8231, lng: 106.6297 },
+                map: map,
+                draggable: true,
+                title: "Kéo tôi để chọn vị trí",
+            });
+            
+            marker.addListener("dragend", () => {
+                const position = marker.getPosition();
+                input.value = position.lat() + ", " + position.lng();
+            });
+        }
+        
+        // Initialize price range slider
+        document.addEventListener("DOMContentLoaded", function() {
+            const minSlider = document.getElementById("price-min");
+            const maxSlider = document.getElementById("price-max");
+            
+            function updatePriceRange() {
+                const minPrice = parseInt(minSlider.value);
+                const maxPrice = parseInt(maxSlider.value);
+                
+                if (minPrice > maxPrice) {
+                    minSlider.value = maxPrice;
+                }
+                
+                // You can format the price here if needed
+            }
+            
+            minSlider.addEventListener("input", updatePriceRange);
+            maxSlider.addEventListener("input", updatePriceRange);
+        });
+    </script>
+</body>
+</html>
