@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon Magazine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f8f8;
+        }
+        
+        .magazine-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .article-card:hover .article-image {
+            transform: scale(1.03);
+        }
+        
+        .article-image {
+            transition: transform 0.3s ease;
+        }
+        
+        .flip-card {
+            perspective: 1000px;
+        }
+        
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+        
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <span class="magazine-font font-bold text-2xl text-indigo-600">HORIZON</span>
+                        </a>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-1">
+                        <a href="#" class="py-4 px-2 text-gray-700 hover:text-indigo-600 transition duration-300">Home</a>
+                        <a href="#" class="py-4 px-2 text-gray-700 hover:text-indigo-600 transition duration-300">Culture</a>
+                        <a href="#" class="py-4 px-2 text-gray-700 hover:text-indigo-600 transition duration-300">Technology</a>
+                        <a href="#" class="py-4 px-2 text-gray-700 hover:text-indigo-600 transition duration-300">Travel</a>
+                        <a href="#" class="py-4 px-2 text-gray-700 hover:text-indigo-600 transition duration-300">Science</a>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="#" class="py-2 px-2 font-medium text-gray-700 rounded hover:text-indigo-600 transition duration-300">
+                        <i class="fas fa-search"></i>
+                    </a>
+                    <a href="#" class="py-2 px-2 font-medium text-gray-700 rounded hover:text-indigo-600 transition duration-300">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <a href="#" class="py-2 px-2 font-medium text-gray-700 rounded hover:text-indigo-600 transition duration-300">
+                        <i class="fas fa-bookmark"></i>
+                    </a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button class="outline-none mobile-menu-button">
+                        <svg class="w-6 h-6 text-gray-700" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                            <path d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="hidden mobile-menu">
+            <ul>
+                <li><a href="#" class="block px-2 py-4 text-sm hover:bg-gray-200 transition duration-300">Home</a></li>
+                <li><a href="#" class="block px-2 py-4 text-sm hover:bg-gray-200 transition duration-300">Culture</a></li>
+                <li><a href="#" class="block px-2 py-4 text-sm hover:bg-gray-200 transition duration-300">Technology</a></li>
+                <li><a href="#" class="block px-2 py-4 text-sm hover:bg-gray-200 transition duration-300">Travel</a></li>
+                <li><a href="#" class="block px-2 py-4 text-sm hover:bg-gray-200 transition duration-300">Science</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-40"></div>
+        <div class="parallax bg-[url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')]"></div>
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto fade-in">
+            <h1 class="magazine-font text-5xl md:text-7xl font-bold text-white mb-6">Exploring New Horizons</h1>
+            <p class="text-xl text-gray-200 mb-8">Discover the latest in culture, technology, and innovation with our summer edition</p>
+            <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105">
+                Read Now
+            </button>
+        </div>
+        <div class="absolute bottom-10 left-0 right-0 flex justify-center">
+            <a href="#featured" class="text-white animate-bounce">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- Featured Articles -->
+    <section id="featured" class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="magazine-font text-4xl font-bold text-gray-800 mb-4">Featured Stories</h2>
+                <div class="w-20 h-1 bg-indigo-600 mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Article 1 -->
+                <div class="article-card bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300">
+                    <div class="relative overflow-hidden h-64">
+                        <img src="https://images.unsplash.com/photo-1496065187959-7f07b8353c55?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Tech future" class="article-image w-full h-full object-cover">
+                        <div class="absolute top-4 right-4 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-medium">TECH</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-gray-500 text-sm mb-2">
+                            <span>June 15, 2023</span>
+                            <span class="mx-2">•</span>
+                            <span>8 min read</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">The Future of AI in Everyday Life</h3>
+                        <p class="text-gray-600 mb-4">How artificial intelligence is transforming our daily routines and what to expect in the coming years.</p>
+                        <div class="flex items-center">
+                            <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Author" class="w-10 h-10 rounded-full mr-3">
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">Sarah Johnson</p>
+                                <p class="text-xs text-gray-500">Tech Editor</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Article 2 -->
+                <div class="article-card bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300">
+                    <div class="relative overflow-hidden h-64">
+                        <img src="https://images.unsplash.com/photo-1503917988258-f87a50e0111b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Hidden city" class="article-image w-full h-full object-cover">
+                        <div class="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">TRAVEL</div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center text-gray-500 text-sm mb-2">
+                            <span>June 10, 2023</span>
+                            <span class="mx-2">•</span>
+                            <span>12 min read</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Hidden Gems: The Undiscovered Cities of Europe</h3>
+                        <p class="text-gray-600 mb-4">Explore these lesser-known European destinations that offer authentic experiences away from tourist crowds.</p>
+                        <div class="flex items-center">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Author" class="w-10 h-10 rounded-full mr-3">
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">Michael Chen</p>
+                                <p class="text-xs text-gray-500">Travel Writer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Article 3 -->
+                <div class="flip-card bg-white rounded-lg overflow-hidden shadow-lg h-full">
+                    <div class="flip-card-inner h-full">
+                        <div class="flip-card-front h-full">
+                            <div class="relative overflow-hidden h-64">
+                                <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Sustainable fashion" class="article-image w-full h-full object-cover">
+                                <div class="absolute top-4 right-4 bg-emerald-600 text-white px-3 py-1 rounded-full text-sm font-medium">FASHION</div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center text-gray-500 text-sm mb-2">
+                                    <span>June 5, 2023</span>
+                                    <span class="mx-2">•</span>
+                                    <span>10 min read</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-3">Sustainable Fashion: More Than Just a Trend</h3>
+                                <p class="text-gray-600 mb-4">How the fashion industry is evolving to meet environmental challenges and consumer demands for sustainability.</p>
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Author" class="w-10 h-10 rounded-full mr-3">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-800">Emma Rodriguez</p>
+                                        <p class="text-xs text-gray-500">Fashion Editor</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flip-card-back bg-indigo-700 text-white p-6 flex flex-col justify-center h-full">
+                            <h3 class="text-xl font-bold mb-4">Exclusive Interview Inside</h3>
+                            <p class="mb-6">Read our exclusive interview with leading sustainable fashion designers and learn about their creative processes.</p>
+                            <button class="bg-white text-indigo-700 font-bold py-2 px-4 rounded-full self-start hover:bg-gray-100 transition duration-300">
+                                Read Interview
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="border-2 border-indigo-600 text-indigo-600 font-bold py-2 px-6 rounded-full hover:bg-indigo-600 hover:text-white transition duration-300">
+                    View All Articles
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Editor's Pick -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="magazine-font text-4xl font-bold text-gray-800 mb-4">Editor's Pick</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Our team's favorite stories this month that we think you'll love too</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="bg-white p-8 rounded-lg shadow-md">
+                        <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-3 py-1 rounded-full mb-4">EXCLUSIVE</span>
+                        <h3 class="magazine-font text-3xl font-bold text-gray-800 mb-4">The Science of Happiness: What Research Reveals</h3>
+                        <p class="text-gray-600 mb-6">Neuroscientists and psychologists are uncovering surprising truths about what truly makes us happy and how we can cultivate more joy in our lives.</p>
+                        <div class="flex items-center mb-6">
+                            <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Author" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-medium text-gray-800">Dr. Robert Lang</p>
+                                <p class="text-sm text-gray-500">Psychology Researcher</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-4">
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full transition duration-300">
+                                Read Article
+                            </button>
+                            <button class="flex items-center text-gray-600 hover:text-indigo-600 transition duration-300">
+                                <i class="fas fa-bookmark mr-2"></i>
+                                <span>Save</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Science of happiness" class="w-full h-auto rounded-lg shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Now -->
+    <section class="py-16 bg-white">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center mb-12">
+                <div>
+                    <h2 class="magazine-font text-4xl font-bold text-gray-800">Trending Now</h2>
+                    <p class="text-gray-600">The most popular articles this week</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="trending-prev bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-full transition duration-300">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="trending-next bg-gray-200 hover:bg-gray-300 text-gray-800 p-2 rounded-full transition duration-300">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="relative overflow-hidden">
+                <div class="trending-slider flex transition-transform duration-500 ease-in-out">
+                    <!-- Slide 1 -->
+                    <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] px-4">
+                        <div class="bg-gray-100 rounded-lg overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Space tourism" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full mb-2">SPACE</span>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Space Tourism: Closer Than You Think</h3>
+                                <p class="text-gray-600 text-sm mb-4">Commercial space flights are becoming a reality. Here's what you need to know before booking your ticket.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-500">2 days ago</span>
+                                    <span class="flex items-center text-sm text-gray-500">
+                                        <i class="fas fa-eye mr-1"></i> 24.5k
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 2 -->
+                    <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] px-4">
+                        <div class="bg-gray-100 rounded-lg overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1498837167922-d004275ee312?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1998&q=80" alt="Food trends" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <span class="inline-block bg-rose-100 text-rose-800 text-xs px-2 py-1 rounded-full mb-2">FOOD</span>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">2023 Food Trends: What's Hot Right Now</h3>
+                                <p class="text-gray-600 text-sm mb-4">From ube to fermented foods, discover the culinary trends taking restaurants and home kitchens by storm.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-500">4 days ago</span>
+                                    <span class="flex items-center text-sm text-gray-500">
+                                        <i class="fas fa-eye mr-1"></i> 18.2k
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 3 -->
+                    <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] px-4">
+                        <div class="bg-gray-100 rounded-lg overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Digital nomad" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-2">LIFESTYLE</span>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">The Digital Nomad Lifestyle: Pros and Cons</h3>
+                                <p class="text-gray-600 text-sm mb-4">Is working remotely while traveling the world as glamorous as it seems? We break down the reality.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-500">1 week ago</span>
+                                    <span class="flex items-center text-sm text-gray-500">
+                                        <i class="fas fa-eye mr-1"></i> 32.7k
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 4 -->
+                    <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] px-4">
+                        <div class="bg-gray-100 rounded-lg overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Film making" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <span class="inline-block bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full mb-2">FILM</span>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">The Art of Cinematography in Modern Film</h3>
+                                <p class="text-gray-600 text-sm mb-4">How today's cinematographers are pushing visual boundaries and creating unforgettable movie moments.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-500">5 days ago</span>
+                                    <span class="flex items-center text-sm text-gray-500">
+                                        <i class="fas fa-eye mr-1"></i> 15.9k
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-16 bg-indigo-700 text-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="magazine-font text-4xl font-bold mb-6">Stay Updated</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Subscribe to our newsletter and never miss our latest articles, interviews, and special offers.</p>
+            
+            <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                <button type="submit" class="bg-white text-indigo-700 font-bold px-6 py-3 rounded-full hover:bg-gray-100 transition duration-300">
+                    Subscribe
+                </button>
+            </form>
+            
+            <p class="text-sm mt-4 text-indigo-200">We respect your privacy. Unsubscribe at any time.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="magazine-font text-2xl font-bold mb-4">HORIZON</h3>
+                    <p class="text-gray-400">Exploring ideas, cultures, and innovations that shape our world.</p>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Categories</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Culture</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Technology</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Travel</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Science</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Business</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Advertise</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Press</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Terms of Use</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Cookie Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">GDPR</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 Horizon Magazine. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.querySelector('.mobile-menu-button');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Trending slider
+        const slider = document.querySelector('.trending-slider');
+        const prevButton = document.querySelector('.trending-prev');
+        const nextButton = document.querySelector('.trending-next');
+        let currentSlide = 0;
+        const slideCount = document.querySelectorAll('.trending-slider > div').length;
+        
+        function updateSlider() {
+            let offset;
+            if (window.innerWidth >= 1024) {
+                offset = currentSlide * -33.333;
+            } else if (window.innerWidth >= 768) {
+                offset = currentSlide * -50;
+            } else {
+                offset = currentSlide * -100;
+            }
+            slider.style.transform = `translateX(${offset}%)`;
+        }
+        
+        nextButton.addEventListener('click', () => {
+            if (window.innerWidth >= 1024) {
+                if (currentSlide < slideCount - 3) currentSlide++;
+            } else if (window.innerWidth >= 768) {
+                if (currentSlide < slideCount - 2) currentSlide++;
+            } else {
+                if (currentSlide < slideCount - 1) currentSlide++;
+            }
+            updateSlider();
+        });
+        
+        prevButton.addEventListener('click', () => {
+            if (currentSlide > 0) currentSlide--;
+            updateSlider();
+        });
+        
+        window.addEventListener('resize', updateSlider);
+        
+        // Parallax effect for hero section
+        window.addEventListener('scroll', function() {
+            const parallax = document.querySelector('.parallax');
+            if (parallax) {
+                let scrollPosition = window.pageYOffset;
+                parallax.style.transform = 'translateY(' + scrollPosition * 0.5 + 'px)';
+            }
+        });
+        
+        // Fade in animation for elements when they come into view
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(element => {
+            element.classList.add('opacity-0', 'transition-opacity', 'duration-1000');
+            fadeInObserver.observe(element);
+        });
+    </script>
+</body>
+</html>
