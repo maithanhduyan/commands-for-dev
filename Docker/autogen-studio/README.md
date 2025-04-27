@@ -1,0 +1,1 @@
+pip install autogen-agentchat autogen-ext[openai,web-surfer]

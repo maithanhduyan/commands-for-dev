@@ -1,0 +1,20 @@
+# Install
+- Install [uv](https://docs.astral.sh/uv/) with our official standalone installer:
+Windows: 
+
+~~~
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+~~~
+
+- Browser Use requires Python 3.12 or higher.
+First, we recommend using uv to setup the Python environment.
+
+> uv venv --python 3.12
+
+>  .venv\Scripts\activate  
+
+> uv pip install autogen-agentchat autogen-ext[openai,web-surfer]
+
+> uv pip install autogenstudio
+
+> autogenstudio ui --port 8080 --appdir ./my-app
