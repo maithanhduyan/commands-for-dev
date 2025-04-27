@@ -13,8 +13,6 @@ services:
       - ./ollama:/root/.ollama/
       - ./customize:/home/ollama/customize
       - ./ollama:/data  # Nơi lưu trữ dữ liệu nếu cần
-    networks:
-      - ai_network
     deploy:
       resources:
         reservations:
@@ -28,8 +26,6 @@ services:
     container_name: llama-cpp
     ports:
       - "11435:11435"  # Cổng API cho llama.cpp
-    networks:
-      - ai_network
     environment:
       - MODEL_PATH=/models/llama  # Đường dẫn đến mô hình llama
     volumes:
@@ -49,8 +45,8 @@ services:
       - "27017:27017"  # Mở cổng mặc định của MongoDB
     volumes:
       - ./mongodb:/data/db  # Volume để lưu trữ dữ liệu MongoDB
-    networks:
-      - ai_network
+    restart: unless-stopped
+
 
   chat-ui:
     image: huggingface/chat-ui:latest
@@ -60,9 +56,6 @@ services:
     environment:
       - REACT_APP_API_URL=http://llama:11434  # Đường dẫn API tới ollama hoặc llama.cpp
       - MONGODB_URL=mongodb://mongodb:27017/chat  # Kết nối đến MongoDB
-    networks:
-      - ai_network
+    restart: always
 
-networks:
-  ai_network:
-    driver: bridge
+

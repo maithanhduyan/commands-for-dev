@@ -1,0 +1,13 @@
+[
+    {
+        "name": "Xenova/gte-small",
+        "displayName": "Xenova/gte-small",
+        "description": "Local embedding model chạy trên server.",
+        "chunkCharLength": 512,
+        "endpoints": [
+            {
+                "type": "transformersjs"
+            }
+        ]
+    }
+]

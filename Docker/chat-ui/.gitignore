@@ -2,3 +2,5 @@ mongodb
 ollama
 models
 customize
+config
+mongo_data
