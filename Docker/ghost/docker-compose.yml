@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  ghost:
+    image: ghost:5-alpine
+    restart: always
+    ports:
+      - 2368:2368
+    environment:
+      url: http://localhost:2368
+      database__client: mysql
+      database__connection__host: db
+      database__connection__user: root
+      database__connection__password: your_mysql_password
+      database__connection__database: ghost
+      # Cấu hình mail server
+      mail__transport: SMTP
+      mail__options__service: 'Gmail'
+      mail__options__host: smtp.gmail.com
+      mail__options__port: 465
+      mail__options__secure: true
+      mail__options__auth__user: your-email@gmail.com
+      mail__options__auth__pass: your-gmail-app-password
+      mail__from: 'Your Blog <your-email@gmail.com>'
+    volumes:
+      - ./content:/var/lib/ghost/content
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: your_mysql_password
+    volumes:
+      - ./mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
