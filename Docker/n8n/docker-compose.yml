@@ -1,5 +1,4 @@
-version: '3.8'
-
+# docker-compose.yml
 services:
   postgres:
     image: postgres:16
@@ -17,9 +16,9 @@ services:
     image: n8nio/n8n:latest
     restart: always
     volumes:
-      - ./n8n:/home/node/.n8n # n8n data
+      # - ./n8n:/home/node/.n8n # n8n data
       - ./n8n/log:/var/log/n8n # n8n log
-      - ./n8n/ssl:/home/node/.n8n/ssl # Secure Sockets Layer (SSL) file: server-sample.crt, server-sample.key
+      - ./n8n/ssl:/home/node/.n8n/ssl 
     environment:
       - DB_TYPE=${DB_TYPE}
       - DB_POSTGRESDB_HOST=${DB_POSTGRESDB_HOST}
@@ -27,9 +26,20 @@ services:
       - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE}
       - DB_POSTGRESDB_USER=${DB_POSTGRESDB_USER}
       - DB_POSTGRESDB_PASSWORD=${DB_POSTGRESDB_PASSWORD}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
       - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE}
       - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
       - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_EMAIL_MODE=${N8N_EMAIL_MODE}
+      - N8N_SMTP_HOST=${N8N_SMTP_HOST}
+      - N8N_SMTP_PORT=${N8N_SMTP_PORT}
+      - N8N_SMTP_USER=${N8N_SMTP_USER}
+      - N8N_SMTP_PASS=${N8N_SMTP_PASS}
+      - N8N_SMTP_SENDER=${N8N_SMTP_SENDER}
+      - N8N_SMTP_SSL=true
+      - N8N_EXPRESS_TRUST_PROXY=true
       - TZ=UTC
     depends_on:
       - postgres
@@ -51,3 +61,15 @@ services:
     environment:
       - TZ=UTC
 
+  certbot:
+    container_name: certbot
+    image: certbot/certbot:latest
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    volumes:
+      - ./nginx/ssl/letsencrypt:/etc/letsencrypt
+      - ./certbot/logs:/var/log/letsencrypt
+      - ./nginx/html:/var/www/html # static html web for example
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
