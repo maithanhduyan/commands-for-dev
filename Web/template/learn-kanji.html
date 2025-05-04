@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanji Radical Flashcards</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .flashcard {
+            perspective: 1000px;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+        .kanji-display {
+            font-size: 8rem;
+            line-height: 1;
+        }
+        @media (max-width: 768px) {
+            .kanji-display {
+                font-size: 5rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-indigo-800 mb-2">Kanji Radical Flashcards</h1>
+            <p class="text-gray-600">Master all 214 kanji radicals with interactive flashcards</p>
+        </header>
+
+        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <div class="p-4 bg-indigo-700 text-white flex justify-between items-center">
+                <div>
+                    <span class="font-semibold">Progress:</span>
+                    <span id="progress-count">0</span>/214
+                </div>
+                <div class="w-64 bg-indigo-500 rounded-full h-4">
+                    <div id="progress-bar" class="progress-bar bg-yellow-300 h-4 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="p-4 flex items-center justify-between bg-gray-50">
+                <div class="relative w-full max-w-md">
+                    <input type="text" id="search-input" placeholder="Search radicals..." 
+                           class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <button id="shuffle-btn" class="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                    <i class="fas fa-random mr-2"></i>Shuffle
+                </button>
+            </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto mb-8">
+            <div class="flashcard-container relative h-96 w-full">
+                <div id="flashcard" class="flashcard h-full w-full bg-white rounded-xl shadow-lg cursor-pointer relative">
+                    <div class="flashcard-face front flex flex-col items-center justify-center p-8">
+                        <div id="kanji" class="kanji-display text-center mb-4"></div>
+                        <div class="text-gray-500">Click to reveal meaning</div>
+                    </div>
+                    <div class="flashcard-face back bg-indigo-50 flex flex-col items-center justify-center p-8">
+                        <div id="kanji-back" class="kanji-display text-center mb-2 text-indigo-700"></div>
+                        <div id="meaning" class="text-3xl font-semibold text-center mb-2 text-indigo-900"></div>
+                        <div id="mnemonic" class="text-gray-600 text-center italic"></div>
+                        <div class="text-gray-500 mt-4">Click to see kanji</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between mt-6">
+                <button id="prev-btn" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Previous
+                </button>
+                <div class="flex space-x-2">
+                    <button id="hard-btn" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition">
+                        <i class="fas fa-times mr-1"></i>Hard
+                    </button>
+                    <button id="easy-btn" class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition">
+                        <i class="fas fa-check mr-1"></i>Easy
+                    </button>
+                </div>
+                <button id="next-btn" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                    Next<i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="p-4 bg-gray-800 text-white">
+                <h2 class="text-xl font-semibold">All 214 Radicals</h2>
+            </div>
+            <div id="radical-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 p-4">
+                <!-- Radicals will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Kanji radical data (all 214 radicals)
+        const radicals = [
+            { kanji: "一", meaning: "một", mnemonic: "Một nét ngang" },
+            { kanji: "丨", meaning: "sổ thẳng", mnemonic: "Nét sổ thẳng từ trên xuống" },
+            { kanji: "丶", meaning: "chấm", mnemonic: "Một chấm nhỏ" },
+            { kanji: "丿", meaning: "phẩy", mnemonic: "Nét phẩy từ phải qua trái" },
+            { kanji: "乙", meaning: "ất", mnemonic: "Hình dáng uốn lượn" },
+            { kanji: "亅", meaning: "móc", mnemonic: "Nét móc lên" },
+            { kanji: "二", meaning: "hai", mnemonic: "Hai nét ngang" },
+            { kanji: "亠", meaning: "đầu", mnemonic: "Nét ngang và chấm trên đầu" },
+            { kanji: "人", meaning: "người", mnemonic: "Hình người đang đứng" },
+            { kanji: "儿", meaning: "nhi", mnemonic: "Hình đôi chân" },
+            { kanji: "入", meaning: "vào", mnemonic: "Hình người bước vào" },
+            { kanji: "八", meaning: "tám", mnemonic: "Hai nét tách ra" },
+            { kanji: "冂", meaning: "quynh", mnemonic: "Hình biên giới" },
+            { kanji: "冖", meaning: "mịch", mnemonic: "Nét phủ đầu" },
+            { kanji: "冫", meaning: "băng", mnemonic: "Hình băng đá" },
+            { kanji: "几", meaning: "kỷ", mnemonic: "Hình cái bàn" },
+            { kanji: "凵", meaning: "khảm", mnemonic: "Hình cái hố" },
+            { kanji: "刀", meaning: "đao", mnemonic: "Hình con dao" },
+            { kanji: "力", meaning: "lực", mnemonic: "Hình cánh tay có sức mạnh" },
+            { kanji: "勹", meaning: "bao", mnemonic: "Hình cái bao" },
+            { kanji: "匕", meaning: "chủy", mnemonic: "Hình cái thìa" },
+            { kanji: "匚", meaning: "phương", mnemonic: "Hình cái hộp" },
+            { kanji: "匸", meaning: "hễ", mnemonic: "Hình cái hộp che đậy" },
+            { kanji: "十", meaning: "mười", mnemonic: "Hình chữ thập" },
+            { kanji: "卜", meaning: "bốc", mnemonic: "Hình xem bói" },
+            { kanji: "卩", meaning: "tiết", mnemonic: "Hình cái ấn" },
+            { kanji: "厂", meaning: "hán", mnemonic: "Hình vách núi" },
+            { kanji: "厶", meaning: "khư", mnemonic: "Hình cái móc" },
+            { kanji: "又", meaning: "hựu", mnemonic: "Hình bàn tay" },
+            { kanji: "口", meaning: "miệng", mnemonic: "Hình cái miệng" },
+            { kanji: "囗", meaning: "vi", mnemonic: "Hình cái vòng bao quanh" },
+            { kanji: "土", meaning: "đất", mnemonic: "Hình đống đất" },
+            { kanji: "士", meaning: "kỳ sĩ", mnemonic: "Hình người có học" },
+            { kanji: "夂", meaning: "truy", mnemonic: "Hình bàn chân đi" },
+            { kanji: "夊", meaning: "tuy", mnemonic: "Hình bàn chân chậm rãi" },
+            { kanji: "夕", meaning: "tịch", mnemonic: "Hình mặt trời lặn" },
+            { kanji: "大", meaning: "lớn", mnemonic: "Hình người dang tay" },
+            { kanji: "女", meaning: "nữ", mnemonic: "Hình người phụ nữ" },
+            { kanji: "子", meaning: "con", mnemonic: "Hình đứa trẻ" },
+            { kanji: "宀", meaning: "miên", mnemonic: "Hình mái nhà" },
+            { kanji: "寸", meaning: "thốn", mnemonic: "Hình đo chiều dài" },
+            { kanji: "小", meaning: "nhỏ", mnemonic: "Hình những hạt nhỏ" },
+            { kanji: "尢", meaning: "uông", mnemonic: "Hình người què" },
+            { kanji: "尸", meaning: "thi", mnemonic: "Hình xác chết" },
+            { kanji: "屮", meaning: "sả", mnemonic: "Hình cây cỏ mọc" },
+            { kanji: "山", meaning: "núi", mnemonic: "Hình ngọn núi" },
+            { kanji: "巛", meaning: "xuyên", mnemonic: "Hình dòng nước" },
+            { kanji: "工", meaning: "công", mnemonic: "Hình dụng cụ" },
+            { kanji: "己", meaning: "kỷ", mnemonic: "Hình cái dây" },
+            { kanji: "巾", meaning: "cân", mnemonic: "Hình tấm vải" },
+            { kanji: "干", meaning: "can", mnemonic: "Hình cái khiên" },
+            { kanji: "幺", meaning: "yêu", mnemonic: "Hình sợi tơ nhỏ" },
+            { kanji: "广", meaning: "nghiễm", mnemonic: "Hình mái nhà" },
+            { kanji: "廴", meaning: "dẫn", mnemonic: "Hình bước dài" },
+            { kanji: "廾", meaning: "củng", mnemonic: "Hình hai bàn tay" },
+            { kanji: "弋", meaning: "dặc", mnemonic: "Hình cái cọc" },
+            { kanji: "弓", meaning: "cung", mnemonic: "Hình cây cung" },
+            { kanji: "彐", meaning: "kệ", mnemonic: "Hình đầu con lợn" },
+            { kanji: "彡", meaning: "sam", mnemonic: "Hình lông, tóc" },
+            { kanji: "彳", meaning: "xích", mnemonic: "Hình bước chân" },
+            { kanji: "心", meaning: "tâm", mnemonic: "Hình trái tim" },
+            { kanji: "戈", meaning: "qua", mnemonic: "Hình cây giáo" },
+            { kanji: "戶", meaning: "hộ", mnemonic: "Hình cánh cửa" },
+            { kanji: "手", meaning: "thủ", mnemonic: "Hình bàn tay" },
+            { kanji: "支", meaning: "chi", mnemonic: "Hình cành cây" },
+            { kanji: "攴", meaning: "phộc", mnemonic: "Hình tay cầm gậy" },
+            { kanji: "文", meaning: "văn", mnemonic: "Hình văn tự" },
+            { kanji: "斗", meaning: "đấu", mnemonic: "Hình cái đấu đo" },
+            { kanji: "斤", meaning: "cân", mnemonic: "Hình cái rìu" },
+            { kanji: "方", meaning: "phương", mnemonic: "Hình phương hướng" },
+            { kanji: "无", meaning: "vô", mnemonic: "Hình không có" },
+            { kanji: "日", meaning: "nhật", mnemonic: "Hình mặt trời" },
+            { kanji: "曰", meaning: "viết", mnemonic: "Hình nói ra" },
+            { kanji: "月", meaning: "nguyệt", mnemonic: "Hình mặt trăng" },
+            { kanji: "木", meaning: "mộc", mnemonic: "Hình cây" },
+            { kanji: "欠", meaning: "khiếm", mnemonic: "Hình người ngáp" },
+            { kanji: "止", meaning: "chỉ", mnemonic: "Hình bàn chân dừng" },
+            { kanji: "歹", meaning: "đãi", mnemonic: "Hình xương thịt" },
+            { kanji: "殳", meaning: "thù", mnemonic: "Hình vũ khí" },
+            { kanji: "毋", meaning: "vô", mnemonic: "Hình cấm đoán" },
+            { kanji: "比", meaning: "tỉ", mnemonic: "Hình so sánh" },
+            { kanji: "毛", meaning: "mao", mnemonic: "Hình lông" },
+            { kanji: "氏", meaning: "thị", mnemonic: "Hình họ tộc" },
+            { kanji: "气", meaning: "khí", mnemonic: "Hình hơi thở" },
+            { kanji: "水", meaning: "thủy", mnemonic: "Hình dòng nước" },
+            { kanji: "火", meaning: "hỏa", mnemonic: "Hình ngọn lửa" },
+            { kanji: "爪", meaning: "trảo", mnemonic: "Hình móng vuốt" },
+            { kanji: "父", meaning: "phụ", mnemonic: "Hình người cha" },
+            { kanji: "爻", meaning: "hào", mnemonic: "Hình giao nhau" },
+            { kanji: "爿", meaning: "tường", mnemonic: "Hình tấm ván" },
+            { kanji: "片", meaning: "phiến", mnemonic: "Hình mảnh vỡ" },
+            { kanji: "牙", meaning: "nha", mnemonic: "Hình răng" },
+            { kanji: "牛", meaning: "ngưu", mnemonic: "Hình con bò" },
+            { kanji: "犬", meaning: "khuyển", mnemonic: "Hình con chó" },
+            { kanji: "玄", meaning: "huyền", mnemonic: "Hình màu đen" },
+            { kanji: "玉", meaning: "ngọc", mnemonic: "Hình viên ngọc" },
+            { kanji: "瓜", meaning: "qua", mnemonic: "Hình quả dưa" },
+            { kanji: "瓦", meaning: "ngõa", mnemonic: "Hình ngói lợp" },
+            { kanji: "甘", meaning: "cam", mnemonic: "Hình vị ngọt" },
+            { kanji: "生", meaning: "sinh", mnemonic: "Hình cây mọc" },
+            { kanji: "用", meaning: "dụng", mnemonic: "Hình sử dụng" },
+            { kanji: "田", meaning: "điền", mnemonic: "Hình ruộng" },
+            { kanji: "疋", meaning: "thất", mnemonic: "Hình cuộn vải" },
+            { kanji: "疒", meaning: "nạch", mnemonic: "Hình bệnh tật" },
+            { kanji: "癶", meaning: "bát", mnemonic: "Hình chân bước" },
+            { kanji: "白", meaning: "bạch", mnemonic: "Hình màu trắng" },
+            { kanji: "皮", meaning: "bì", mnemonic: "Hình da" },
+            { kanji: "皿", meaning: "mãnh", mnemonic: "Hình cái đĩa" },
+            { kanji: "目", meaning: "mục", mnemonic: "Hình con mắt" },
+            { kanji: "矛", meaning: "mâu", mnemonic: "Hình cây giáo" },
+            { kanji: "矢", meaning: "thỉ", mnemonic: "Hình mũi tên" },
+            { kanji: "石", meaning: "thạch", mnemonic: "Hình hòn đá" },
+            { kanji: "示", meaning: "thị", mnemonic: "Hình thần linh" },
+            { kanji: "禸", meaning: "nhựu", mnemonic: "Hình dấu chân" },
+            { kanji: "禾", meaning: "hòa", mnemonic: "Hình cây lúa" },
+            { kanji: "穴", meaning: "huyệt", mnemonic: "Hình cái hang" },
+            { kanji: "立", meaning: "lập", mnemonic: "Hình đứng lên" },
+            { kanji: "竹", meaning: "trúc", mnemonic: "Hình cây tre" },
+            { kanji: "米", meaning: "mễ", mnemonic: "Hình hạt gạo" },
+            { kanji: "糸", meaning: "mịch", mnemonic: "Hình sợi tơ" },
+            { kanji: "缶", meaning: "phẫu", mnemonic: "Hình cái bình" },
+            { kanji: "网", meaning: "võng", mnemonic: "Hình cái lưới" },
+            { kanji: "羊", meaning: "dương", mnemonic: "Hình con dê" },
+            { kanji: "羽", meaning: "vũ", mnemonic: "Hình lông vũ" },
+            { kanji: "老", meaning: "lão", mnemonic: "Hình người già" },
+            { kanji: "而", meaning: "nhi", mnemonic: "Hình râu" },
+            { kanji: "耒", meaning: "lỗi", mnemonic: "Hình cái cày" },
+            { kanji: "耳", meaning: "nhĩ", mnemonic: "Hình tai" },
+            { kanji: "聿", meaning: "duật", mnemonic: "Hình cây bút" },
+            { kanji: "肉", meaning: "nhục", mnemonic: "Hình thịt" },
+            { kanji: "臣", meaning: "thần", mnemonic: "Hình bề tôi" },
+            { kanji: "自", meaning: "tự", mnemonic: "Hình cái mũi" },
+            { kanji: "至", meaning: "chí", mnemonic: "Hình đến nơi" },
+            { kanji: "臼", meaning: "cữu", mnemonic: "Hình cái cối" },
+            { kanji: "舌", meaning: "thiệt", mnemonic: "Hình cái lưỡi" },
+            { kanji: "舛", meaning: "suyễn", mnemonic: "Hình chân bước sai" },
+            { kanji: "舟", meaning: "chu", mnemonic: "Hình con thuyền" },
+            { kanji: "艮", meaning: "cấn", mnemonic: "Hình dừng lại" },
+            { kanji: "色", meaning: "sắc", mnemonic: "Hình màu sắc" },
+            { kanji: "艸", meaning: "thảo", mnemonic: "Hình cỏ" },
+            { kanji: "虍", meaning: "hô", mnemonic: "Hình con hổ" },
+            { kanji: "虫", meaning: "trùng", mnemonic: "Hình con sâu" },
+            { kanji: "血", meaning: "huyết", mnemonic: "Hình máu" },
+            { kanji: "行", meaning: "hành", mnemonic: "Hình đi đường" },
+            { kanji: "衣", meaning: "y", mnemonic: "Hình áo" },
+            { kanji: "襾", meaning: "á", mnemonic: "Hình che đậy" },
+            { kanji: "見", meaning: "kiến", mnemonic: "Hình nhìn thấy" },
+            { kanji: "角", meaning: "giác", mnemonic: "Hình sừng" },
+            { kanji: "言", meaning: "ngôn", mnemonic: "Hình lời nói" },
+            { kanji: "谷", meaning: "cốc", mnemonic: "Hình thung lũng" },
+            { kanji: "豆", meaning: "đậu", mnemonic: "Hình hạt đậu" },
+            { kanji: "豕", meaning: "thỉ", mnemonic: "Hình con heo" },
+            { kanji: "豸", meaning: "trãi", mnemonic: "Hình con thú" },
+            { kanji: "貝", meaning: "bối", mnemonic: "Hình vỏ sò" },
+            { kanji: "赤", meaning: "xích", mnemonic: "Hình màu đỏ" },
+            { kanji: "走", meaning: "tẩu", mnemonic: "Hình chạy" },
+            { kanji: "足", meaning: "túc", mnemonic: "Hình chân" },
+            { kanji: "身", meaning: "thân", mnemonic: "Hình cơ thể" },
+            { kanji: "車", meaning: "xa", mnemonic: "Hình xe" },
+            { kanji: "辛", meaning: "tân", mnemonic: "Hình cay" },
+            { kanji: "辰", meaning: "thần", mnemonic: "Hình con rồng" },
+            { kanji: "辵", meaning: "sước", mnemonic: "Hình đi đường" },
+            { kanji: "邑", meaning: "ấp", mnemonic: "Hình làng" },
+            { kanji: "酉", meaning: "dậu", mnemonic: "Hình vò rượu" },
+            { kanji: "釆", meaning: "biện", mnemonic: "Hình phân biệt" },
+            { kanji: "里", meaning: "lý", mnemonic: "Hình làng" },
+            { kanji: "金", meaning: "kim", mnemonic: "Hình kim loại" },
+            { kanji: "長", meaning: "trường", mnemonic: "Hình dài" },
+            { kanji: "門", meaning: "môn", mnemonic: "Hình cổng" },
+            { kanji: "阜", meaning: "phụ", mnemonic: "Hình đồi" },
+            { kanji: "隶", meaning: "đãi", mnemonic: "Hình bắt giữ" },
+            { kanji: "隹", meaning: "chuy", mnemonic: "Hình chim đuôi ngắn" },
+            { kanji: "雨", meaning: "vũ", mnemonic: "Hình mưa" },
+            { kanji: "青", meaning: "thanh", mnemonic: "Hình màu xanh" },
+            { kanji: "非", meaning: "phi", mnemonic: "Hình không phải" },
+            { kanji: "面", meaning: "diện", mnemonic: "Hình khuôn mặt" },
+            { kanji: "革", meaning: "cách", mnemonic: "Hình da thuộc" },
+            { kanji: "韋", meaning: "vi", mnemonic: "Hình da thuộc" },
+            { kanji: "韭", meaning: "cửu", mnemonic: "Hình hẹ" },
+            { kanji: "音", meaning: "âm", mnemonic: "Hình âm thanh" },
+            { kanji: "頁", meaning: "hiệt", mnemonic: "Hình đầu" },
+            { kanji: "風", meaning: "phong", mnemonic: "Hình gió" },
+            { kanji: "飛", meaning: "phi", mnemonic: "Hình bay" },
+            { kanji: "食", meaning: "thực", mnemonic: "Hình ăn" },
+            { kanji: "首", meaning: "thủ", mnemonic: "Hình cái đầu" },
+            { kanji: "香", meaning: "hương", mnemonic: "Hình mùi thơm" },
+            { kanji: "馬", meaning: "mã", mnemonic: "Hình con ngựa" },
+            { kanji: "骨", meaning: "cốt", mnemonic: "Hình xương" },
+            { kanji: "高", meaning: "cao", mnemonic: "Hình cao" },
+            { kanji: "髟", meaning: "bưu", mnemonic: "Hình tóc dài" },
+            { kanji: "鬥", meaning: "đấu", mnemonic: "Hình đánh nhau" },
+            { kanji: "鬯", meaning: "sưởng", mnemonic: "Hình rượu cúng" },
+            { kanji: "鬲", meaning: "cách", mnemonic: "Hình nồi" },
+            { kanji: "鬼", meaning: "quỷ", mnemonic: "Hình con ma" },
+            { kanji: "魚", meaning: "ngư", mnemonic: "Hình con cá" },
+            { kanji: "鳥", meaning: "điểu", mnemonic: "Hình con chim" },
+            { kanji: "鹵", meaning: "lỗ", mnemonic: "Hình muối" },
+            { kanji: "鹿", meaning: "lộc", mnemonic: "Hình con hươu" },
+            { kanji: "麥", meaning: "mạch", mnemonic: "Hình lúa mì" },
+            { kanji: "麻", meaning: "ma", mnemonic: "Hình cây gai" },
+            { kanji: "黃", meaning: "hoàng", mnemonic: "Hình màu vàng" },
+            { kanji: "黍", meaning: "thử", mnemonic: "Hình lúa nếp" },
+            { kanji: "黑", meaning: "hắc", mnemonic: "Hình màu đen" },
+            { kanji: "黹", meaning: "chỉ", mnemonic: "Hình may vá" },
+            { kanji: "黽", meaning: "mãnh", mnemonic: "Hình con ếch" },
+            { kanji: "鼎", meaning: "đỉnh", mnemonic: "Hình cái vạc" },
+            { kanji: "鼓", meaning: "cổ", mnemonic: "Hình cái trống" },
+            { kanji: "鼠", meaning: "thử", mnemonic: "Hình con chuột" },
+            { kanji: "鼻", meaning: "tị", mnemonic: "Hình cái mũi" },
+            { kanji: "齊", meaning: "tề", mnemonic: "Hình bằng nhau" },
+            { kanji: "齒", meaning: "xỉ", mnemonic: "Hình răng" },
+            { kanji: "龍", meaning: "long", mnemonic: "Hình con rồng" },
+            { kanji: "龜", meaning: "quy", mnemonic: "Hình con rùa" },
+            { kanji: "龠", meaning: "dược", mnemonic: "Hình ống sáo" }
+        ];
+
+        // App state
+        let currentIndex = 0;
+        let masteredRadicals = new Set();
+        let filteredRadicals = [...radicals];
+        
+        // DOM elements
+        const flashcard = document.getElementById('flashcard');
+        const kanjiElement = document.getElementById('kanji');
+        const kanjiBackElement = document.getElementById('kanji-back');
+        const meaningElement = document.getElementById('meaning');
+        const mnemonicElement = document.getElementById('mnemonic');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const hardBtn = document.getElementById('hard-btn');
+        const easyBtn = document.getElementById('easy-btn');
+        const shuffleBtn = document.getElementById('shuffle-btn');
+        const searchInput = document.getElementById('search-input');
+        const progressCount = document.getElementById('progress-count');
+        const progressBar = document.getElementById('progress-bar');
+        const radicalGrid = document.getElementById('radical-grid');
+        
+        // Initialize the app
+        function init() {
+            updateCard();
+            renderRadicalGrid();
+            
+            // Event listeners
+            flashcard.addEventListener('click', flipCard);
+            prevBtn.addEventListener('click', showPrevCard);
+            nextBtn.addEventListener('click', showNextCard);
+            hardBtn.addEventListener('click', () => markRadical(false));
+            easyBtn.addEventListener('click', () => markRadical(true));
+            shuffleBtn.addEventListener('click', shuffleCards);
+            searchInput.addEventListener('input', filterRadicals);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                switch(e.key) {
+                    case 'ArrowLeft': showPrevCard(); break;
+                    case 'ArrowRight': showNextCard(); break;
+                    case ' ': flipCard(); break;
+                    case 'h': markRadical(false); break;
+                    case 'e': markRadical(true); break;
+                }
+            });
+        }
+        
+        // Update the current flashcard
+        function updateCard() {
+            const radical = filteredRadicals[currentIndex];
+            kanjiElement.textContent = radical.kanji;
+            kanjiBackElement.textContent = radical.kanji;
+            meaningElement.textContent = radical.meaning;
+            mnemonicElement.textContent = radical.mnemonic;
+            
+            // Reset card to front
+            flashcard.classList.remove('flipped');
+            
+            // Update progress
+            progressCount.textContent = masteredRadicals.size;
+            progressBar.style.width = `${(masteredRadicals.size / radicals.length) * 100}%`;
+            
+            // Update button states
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === filteredRadicals.length - 1;
+        }
+        
+        // Flip the card
+        function flipCard() {
+            flashcard.classList.toggle('flipped');
+        }
+        
+        // Show previous card
+        function showPrevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        }
+        
+        // Show next card
+        function showNextCard() {
+            if (currentIndex < filteredRadicals.length - 1) {
+                currentIndex++;
+                updateCard();
+            }
+        }
+        
+        // Mark radical as easy or hard
+        function markRadical(isEasy) {
+            const radical = filteredRadicals[currentIndex];
+            if (isEasy) {
+                masteredRadicals.add(radical.kanji);
+            } else {
+                masteredRadicals.delete(radical.kanji);
+            }
+            updateCard();
+        }
+        
+        // Shuffle the cards
+        function shuffleCards() {
+            for (let i = filteredRadicals.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [filteredRadicals[i], filteredRadicals[j]] = [filteredRadicals[j], filteredRadicals[i]];
+            }
+            currentIndex = 0;
+            updateCard();
+        }
+        
+        // Filter radicals based on search input
+        function filterRadicals() {
+            const searchTerm = searchInput.value.toLowerCase();
+            filteredRadicals = radicals.filter(radical => 
+                radical.kanji.includes(searchTerm) || 
+                radical.meaning.includes(searchTerm) ||
+                radical.mnemonic.toLowerCase().includes(searchTerm)
+            );
+            currentIndex = 0;
+            updateCard();
+            renderRadicalGrid();
+        }
+        
+        // Render the grid of all radicals
+        function renderRadicalGrid() {
+            radicalGrid.innerHTML = '';
+            filteredRadicals.forEach((radical, index) => {
+                const radicalElement = document.createElement('div');
+                radicalElement.className = `p-2 text-center rounded-lg cursor-pointer transition ${index === currentIndex ? 'bg-indigo-600 text-white' : 'bg-gray-100 hover:bg-gray-200'} ${masteredRadicals.has(radical.kanji) ? 'border-2 border-green-500' : ''}`;
+                radicalElement.innerHTML = `
+                    <div class="text-2xl">${radical.kanji}</div>
+                    <div class="text-xs text-gray-600">${radical.meaning}</div>
+                `;
+                radicalElement.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateCard();
+                });
+                radicalGrid.appendChild(radicalElement);
+            });
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
