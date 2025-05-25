@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Skyline Architects - Crafting Tomorrow's Horizons</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a unique and elegant typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* Base styles and custom utilities not easily done with Tailwind */
+      body {
+        font-family: 'Montserrat', sans-serif; /* Modern sans-serif for body text */
+        background-color: #0f0f0f; /* Very dark background for a premium feel */
+        color: #e0e0e0; /* Light text for contrast */
+        overflow-x: hidden; /* Prevent horizontal scroll issues */
+        line-height: 1.6;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', serif; /* Elegant serif for headings */
+        color: #f0f0f0;
+      }
+
+      /* Hero Section specific styles */
+      .hero-section {
+        position: relative;
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+        overflow: hidden;
+      }
+
+      .hero-video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -1;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+        filter: brightness(0.4); /* Darken the video for better text readability */
+      }
+
+      .hero-content {
+        z-index: 10;
+        position: relative;
+        padding: 1rem;
+        max-width: 80%; /* Constrain content width */
+      }
+
+      /* Consistent vertical padding for sections */
+      .section-padding {
+        padding: 8rem 2rem;
+      }
+
+      /* Gradient text effect for headings and accents */
+      .gradient-text {
+        background: linear-gradient(90deg, #eab308, #f59e0b); /* Tailwind amber-500 to amber-400 */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* Scroll down arrow animation */
+      .scroll-down-arrow {
+        position: absolute;
+        bottom: 3rem;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: bounce 2s infinite;
+        cursor: pointer;
+        z-index: 20;
+      }
+
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-15px);
+        }
+        60% {
+          transform: translateY(-7px);
+        }
+      }
+
+      /* Card hover effect */
+      .card-hover-effect {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      }
+      .card-hover-effect:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Custom scrollbar for a sleek look */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1a1a1a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #eab308; /* Amber accent color */
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #f59e0b; /* Slightly darker amber on hover */
+      }
+
+      /* Styles for fade-in animation on scroll */
+      .fade-in-hidden {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      }
+      .fade-in-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-black bg-opacity-70 backdrop-blur-sm shadow-lg">
+      <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="#hero" class="text-3xl font-bold text-white tracking-wider">
+          <span class="gradient-text">Skyline</span> Architects
+        </a>
+        <!-- Desktop Navigation Links -->
+        <div class="hidden md:flex space-x-8">
+          <a href="#hero" class="text-gray-300 hover:text-amber-400 transition duration-300 text-lg">Home</a>
+          <a href="#about" class="text-gray-300 hover:text-amber-400 transition duration-300 text-lg">About</a>
+          <a href="#designs" class="text-gray-300 hover:text-amber-400 transition duration-300 text-lg">Designs</a>
+          <a href="#future" class="text-gray-300 hover:text-amber-400 transition duration-300 text-lg">Future</a>
+          <a href="#contact" class="text-gray-300 hover:text-amber-400 transition duration-300 text-lg">Contact</a>
+        </div>
+        <!-- Mobile Menu Button (Hamburger Icon) -->
+        <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </nav>
+      <!-- Mobile Menu Overlay -->
+      <div id="mobile-menu" class="md:hidden fixed inset-0 bg-black bg-opacity-95 z-40 hidden flex flex-col items-center justify-center space-y-8 text-2xl transition-transform duration-300 transform -translate-x-full">
+        <button id="close-mobile-menu" class="absolute top-6 right-6 text-white focus:outline-none">
+          <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+        <a href="#hero" class="text-gray-300 hover:text-amber-400 transition duration-300">Home</a>
+        <a href="#about" class="text-gray-300 hover:text-amber-400 transition duration-300">About</a>
+        <a href="#designs" class="text-gray-300 hover:text-amber-400 transition duration-300">Designs</a>
+        <a href="#future" class="text-gray-300 hover:text-amber-400 transition duration-300">Future</a>
+        <a href="#contact" class="text-gray-300 hover:text-amber-400 transition duration-300">Contact</a>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section id="hero" class="hero-section">
+        <video autoplay muted loop playsinline class="hero-video">
+          <!-- Placeholder video: Replace with a high-quality video of skyscrapers or architectural renders -->
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-day-view-of-a-city-with-tall-buildings-5100-large.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="hero-content max-w-4xl mx-auto">
+          <h1 class="text-6xl md:text-8xl font-extrabold leading-tight tracking-tighter mb-6">
+            <span class="gradient-text">Soaring Aspirations:</span> <br class="hidden md:block"> Crafting Tomorrow's Horizons
+          </h1>
+          <p class="text-xl md:text-2xl text-gray-200 mb-10 leading-relaxed">
+            Explore the art and engineering behind the world's most breathtaking skyscrapers, redefining urban landscapes.
+          </p>
+          <a href="#about" class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-semibold py-4 px-10 rounded-full text-lg shadow-xl transition duration-300 transform hover:scale-105">
+            Discover Our Vision
+          </a>
+        </div>
+        <!-- Scroll Down Arrow -->
+        <div class="scroll-down-arrow text-white text-4xl">
+          <svg class="w-10 h-10 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+          </svg>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section id="about" class="section-padding bg-gray-900 text-center">
+        <div class="container mx-auto max-w-5xl">
+          <h2 class="text-5xl font-bold mb-8 gradient-text">The Vertical Frontier</h2>
+          <p class="text-lg md:text-xl leading-relaxed mb-6 text-gray-300">
+            For centuries, humanity has looked to the sky, driven by a relentless desire to build higher, bolder, and more beautifully. Skyscrapers are not just buildings; they are monumental testaments to human ingenuity, technological prowess, and boundless ambition. They reshape skylines, define cities, and stand as symbols of progress.
+          </p>
+          <p class="text-lg md:text-xl leading-relaxed text-gray-300">
+            At <span class="text-amber-400 font-semibold">Skyline Architects</span>, we believe in pushing the boundaries of what's possible. Our designs blend cutting-edge engineering with sustainable practices and aesthetic brilliance, creating structures that are not only iconic but also harmonious with their environment and community. We are crafting the future, one magnificent tower at a time.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+            <div class="bg-gray-800 p-8 rounded-lg shadow-lg card-hover-effect">
+              <h3 class="text-3xl font-semibold mb-4 text-amber-400">Innovation</h3>
+              <p class="text-gray-300">Pioneering new materials and construction techniques for unparalleled structural integrity.</p>
+            </div>
+            <div class="bg-gray-800 p-8 rounded-lg shadow-lg card-hover-effect">
+              <h3 class="text-3xl font-semibold mb-4 text-amber-400">Sustainability</h3>
+              <p class="text-gray-300">Designing eco-friendly towers that minimize environmental impact and maximize energy efficiency.</p>
+            </div>
+            <div class="bg-gray-800 p-8 rounded-lg shadow-lg card-hover-effect">
+              <h3 class="text-3xl font-semibold mb-4 text-amber-400">Aesthetics</h3>
+              <p class="text-gray-300">Creating visually stunning landmarks that inspire awe and become symbols of urban pride.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Iconic Designs Section -->
+      <section id="designs" class="section-padding bg-gray-800">
+        <div class="container mx-auto max-w-6xl text-center">
+          <h2 class="text-5xl font-bold mb-16 gradient-text">Architectural Marvels</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <!-- Design Card 1 -->
+            <div class="bg-gray-900 rounded-lg shadow-xl overflow-hidden card-hover-effect">
+              <img src="https://via.placeholder.com/600x400?text=Burj+Khalifa" alt="Burj Khalifa" class="w-full h-64 object-cover">
+              <div class="p-6">
+                <h3 class="text-3xl font-semibold mb-3 text-white">Burj Khalifa</h3>
+                <p class="text-gray-400 text-lg">Dubai, UAE - A breathtaking icon of human ambition, the world's tallest structure.</p>
+              </div>
+            </div>
+            <!-- Design Card 2 -->
+            <div class="bg-gray-900 rounded-lg shadow-xl overflow-hidden card-hover-effect">
+              <img src="https://via.placeholder.com/600x400?text=Shanghai+Tower" alt="Shanghai Tower" class="w-full h-64 object-cover">
+              <div class="p-6">
+                <h3 class="text-3xl font-semibold mb-3 text-white">Shanghai Tower</h3>
+                <p class="text-gray-400 text-lg">Shanghai, China - A spiraling marvel known for its sustainable design and double-skin facade.</p>
+              </div>
+            </div>
+            <!-- Design Card 3 -->
+            <div class="bg-gray-900 rounded-lg shadow-xl overflow-hidden card-hover-effect">
+              <img src="https://via.placeholder.com/600x400?text=Empire+State+Building" alt="Empire State Building" class="w-full h-64 object-cover">
+              <div class="p-6">
+                <h3 class="text-3xl font-semibold mb-3 text-white">Empire State Building</h3>
+                <p class="text-gray-400 text-lg">New York, USA - A timeless Art Deco masterpiece, a symbol of American resilience.</p>
+              </div>
+            </div>
+            <!-- Design Card 4 -->
+            <div class="bg-gray-900 rounded-lg shadow-xl overflow-hidden card-hover-effect">
+              <img src="https://via.placeholder.com/600x400?text=Petronas+Towers" alt="Petronas Towers" class="w-full h-64 object-cover">
+              <div class="p-6">
+                <h3 class="text-3xl font-semibold mb-3 text-white">Petronas Towers</h3>
+                <p class="text-gray-400 text-lg">Kuala Lumpur, Malaysia - Twin towers linked by a sky bridge, showcasing Islamic architectural motifs.</p>
+              </div>
+            </div>
+            <!-- Design Card 5 -->
+            <div class="bg-gray-900 rounded-lg shadow-xl overflow-hidden card-hover-effect">
+              <img src="https://via.placeholder.com/600x400?text=One+World+Trade+Center" alt="One World Trade Center" class="w-full h-64 object-cover">
+              <div class="p-6">
+                <h3 class="text-3xl font-semibold mb-3 text-white">One World Trade Center</h3>
+                <p class="text-gray-400 text-lg">New York, USA - A symbol of rebirth and resilience, the tallest building in the Western Hemisphere.</p>
+              </div>
+            </div>
+            <!-- Design Card 6 -->
+            <div class="bg-gray-900 rounded-lg shadow-xl overflow-hidden card-hover-effect">
+              <img src="https://via.placeholder.com/600x400?text=Taipei+101" alt="Taipei 101" class="w-full h-64 object-cover">
+              <div class="p-6">
+                <h3 class="text-3xl font-semibold mb-3 text-white">Taipei 101</h3>
+                <p class="text-gray-400 text-lg">Taipei, Taiwan - An earthquake-resistant marvel, inspired by traditional Chinese pagoda architecture.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Future Vision Section -->
+      <section id="future" class="section-padding bg-gray-900 text-center">
+        <div class="container mx-auto max-w-5xl">
+          <h2 class="text-5xl font-bold mb-8 gradient-text">Tomorrow's Skyline: Sustainable & Smart</h2>
+          <p class="text-lg md:text-xl leading-relaxed mb-6 text-gray-300">
+            The future of skyscraper architecture is not just about height, but about intelligence, sustainability, and integration. We envision buildings that are living ecosystems, responsive to their environment and inhabitants.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mt-16">
+            <div class="text-left bg-gray-800 p-8 rounded-lg shadow-xl card-hover-effect">
+              <h3 class="text-3xl font-semibold mb-4 text-amber-400">Eco-Conscious Design</h3>
+              <p class="text-gray-300 mb-4">
+                Integrating green spaces, vertical farms, rainwater harvesting, and renewable energy sources like solar and wind power directly into the building's structure. Our goal is net-zero or even carbon-negative footprints.
+              </p>
+              <img src="https://via.placeholder.com/600x350?text=Green+Skyscraper+Concept" alt="Green Skyscraper Concept" class="w-full rounded-lg shadow-md mt-6">
+            </div>
+            <div class="text-left bg-gray-800 p-8 rounded-lg shadow-xl card-hover-effect">
+              <h3 class="text-3xl font-semibold mb-4 text-amber-400">Smart Urban Living</h3>
+              <p class="text-gray-300 mb-4">
+                Utilizing AI and IoT to create intelligent buildings that optimize energy consumption, manage waste, enhance security, and provide seamless experiences for residents and workers. Predictive maintenance and adaptive environments are key.
+              </p>
+              <img src="https://via.placeholder.com/600x350?text=Smart+City+Concept" alt="Smart City Concept" class="w-full rounded-lg shadow-md mt-6">
+            </div>
+          </div>
+          <p class="text-lg md:text-xl leading-relaxed mt-12 text-gray-300">
+            We are committed to pioneering these advancements, ensuring that the skyscrapers of tomorrow are not just taller, but smarter, greener, and more connected than ever before.
+          </p>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section id="contact" class="section-padding bg-gray-800">
+        <div class="container mx-auto max-w-4xl text-center">
+          <h2 class="text-5xl font-bold mb-8 gradient-text">Connect With Us</h2>
+          <p class="text-lg md:text-xl leading-relaxed mb-12 text-gray-300">
+            Have a project in mind, a question about our vision, or just want to discuss the future of architecture? We'd love to hear from you.
+          </p>
+          <form class="bg-gray-900 p-10 rounded-lg shadow-xl max-w-2xl mx-auto">
+            <div class="mb-6 text-left">
+              <label for="name" class="block text-gray-300 text-sm font-bold mb-2">Name</label>
+              <input type="text" id="name" name="name" class="shadow appearance-none border border-gray-700 rounded w-full py-3 px-4 text-gray-100 leading-tight focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-700" placeholder="Your Name" required>
+            </div>
+            <div class="mb-6 text-left">
+              <label for="email" class="block text-gray-300 text-sm font-bold mb-2">Email</label>
+              <input type="email" id="email" name="email" class="shadow appearance-none border border-gray-700 rounded w-full py-3 px-4 text-gray-100 leading-tight focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-700" placeholder="your.email@example.com" required>
+            </div>
+            <div class="mb-8 text-left">
+              <label for="message" class="block text-gray-300 text-sm font-bold mb-2">Message</label>
+              <textarea id="message" name="message" rows="6" class="shadow appearance-none border border-gray-700 rounded w-full py-3 px-4 text-gray-100 leading-tight focus:outline-none focus:ring-2 focus:ring-amber-500 bg-gray-700" placeholder="Tell us about your project or inquiry..." required></textarea>
+            </div>
+            <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg transition duration-300 transform hover:scale-105">
+              Send Message
+            </button>
+          </form>
+          <div class="mt-12 text-gray-400">
+            <p class="mb-4">Or find us on social media:</p>
+            <div class="flex justify-center space-x-6 text-3xl">
+              <!-- Using simple text placeholders for icons as external libraries are restricted unless imported -->
+              <a href="#" class="hover:text-amber-400 transition duration-300" aria-label="Facebook">F</a> 
+              <a href="#" class="hover:text-amber-400 transition duration-300" aria-label="Twitter">T</a> 
+              <a href="#" class="hover:text-amber-400 transition duration-300" aria-label="Instagram">I</a> 
+              <a href="#" class="hover:text-amber-400 transition duration-300" aria-label="LinkedIn">L</a> 
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black py-8 text-center text-gray-500 text-sm">
+      <div class="container mx-auto px-6">
+        <p>© 2023 Skyline Architects. All rights reserved.</p>
+        <p class="mt-2">Designed with passion for the future of urban landscapes.</p>
+      </div>
+    </footer>
+
+    <script>
+      // Smooth scrolling for navigation links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            // Calculate offset to account for fixed header height
+            const headerOffset = document.querySelector('header').offsetHeight;
+            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth"
+            });
+          }
+        });
+      });
+
+      // Mobile menu toggle functionality
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+
+      mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.remove('hidden');
+        // Small delay to allow 'display' change before 'transform' for smooth animation
+        setTimeout(() => {
+          mobileMenu.classList.remove('-translate-x-full');
+          mobileMenu.classList.add('translate-x-0');
+        }, 10);
+      });
+
+      closeMobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.remove('translate-x-0');
+        mobileMenu.classList.add('-translate-x-full');
+        // Match transition duration to hide the menu after animation completes
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+        }, 300);
+      });
+
+      // Close mobile menu when a navigation link inside it is clicked
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('translate-x-0');
+          mobileMenu.classList.add('-translate-x-full');
+          setTimeout(() => {
+            mobileMenu.classList.add('hidden');
+          }, 300);
+        });
+      });
+
+      // Basic client-side form validation for the contact form
+      const contactForm = document.querySelector('#contact form');
+      contactForm.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission to handle with JS
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        if (name === '' || email === '' || message === '') {
+          alert('Please fill in all required fields.');
+          return;
+        }
+
+        // Simple email format validation
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          alert('Please enter a valid email address.');
+          return;
+        }
+
+        // If all validations pass, simulate form submission success
+        alert('Thank you for your message! We will get back to you shortly.');
+        contactForm.reset(); // Clear the form fields
+        // In a real application, you would send this data to a server using fetch() or XMLHttpRequest
+      });
+
+      // Intersection Observer for fade-in effect on sections as they come into view
+      const sections = document.querySelectorAll('section:not(#hero)'); // Exclude hero section from this animation
+      const observerOptions = {
+        root: null, // Use the viewport as the root
+        rootMargin: '0px',
+        threshold: 0.15 // Trigger when 15% of the section is visible
+      };
+
+      const sectionObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in-visible'); // Add class to make it visible
+            observer.unobserve(entry.target); // Stop observing once it's animated
+          }
+        });
+      }, observerOptions);
+
+      // Add initial hidden state and observe each section
+      sections.forEach(section => {
+        section.classList.add('fade-in-hidden'); // Apply initial hidden styles
+        sectionObserver.observe(section);
+      });
+    </script>
+  </body>
+</html>

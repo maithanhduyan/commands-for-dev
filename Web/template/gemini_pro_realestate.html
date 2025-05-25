@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <title>Bất Động Sản Mơ Ước</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5; /* Light gray background */
+      color: #333;
+    }
+
+    .hero-section {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVhbCUyMGVzdGF0ZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=1400&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .property-card {
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .property-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .rating-stars .fa-star {
+      color: #ffc107; /* Amber color for stars */
+    }
+    .rating-stars .fa-star-half-alt {
+      color: #ffc107;
+    }
+    .rating-stars .text-gray-300 { /* For empty stars */
+        color: #e0e0e0;
+    }
+
+    #map {
+      height: 100%; /* Make map take full height of its container */
+      min-height: 400px;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .leaflet-popup-content-wrapper {
+        border-radius: 8px;
+    }
+    .leaflet-popup-content {
+        margin: 10px !important;
+        font-size: 14px;
+    }
+    .leaflet-popup-content h3 {
+        margin-top: 0;
+        margin-bottom: 5px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .leaflet-popup-content p {
+        margin-bottom: 3px;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1000; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 25px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 900px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .close-button {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .gallery-container {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding-bottom: 10px; /* For scrollbar */
+      margin-bottom: 15px;
+    }
+    .gallery-image {
+      width: 150px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.3s;
+    }
+    .gallery-image:hover, .gallery-image.active-thumbnail {
+        border-color: #0ea5e9; /* Sky 500 */
+    }
+    #main-modal-image {
+        width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+    .filter-active {
+        background-color: #0ea5e9 !important; /* Sky 500 */
+        color: white !important;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="#" class="text-3xl font-bold text-sky-600">
+        <i class="fas fa-home mr-2"></i>DreamHome
+      </a>
+      <nav class="space-x-4">
+        <a href="#" class="text-gray-700 hover:text-sky-600 transition duration-300">Trang Chủ</a>
+        <a href="#listings" class="text-gray-700 hover:text-sky-600 transition duration-300">Danh Sách</a>
+        <a href="#contact" class="text-gray-700 hover:text-sky-600 transition duration-300">Liên Hệ</a>
+        <a href="#" class="bg-sky-600 text-white px-4 py-2 rounded-md hover:bg-sky-700 transition duration-300">Đăng Tin</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section text-white py-20 md:py-32">
+    <div class="container mx-auto px-6 text-center">
+      <h1 class="text-4xl md:text-6xl font-bold mb-4">Tìm Kiếm Ngôi Nhà Mơ Ước Của Bạn</h1>
+      <p class="text-lg md:text-xl mb-8">Khám phá hàng ngàn bất động sản cho thuê và bán trên toàn quốc.</p>
+      <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-xl">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input type="text" id="searchInput" placeholder="Nhập địa điểm, quận, dự án..."
+            class="col-span-1 md:col-span-2 p-3 border border-gray-300 rounded-md focus:ring-sky-500 focus:border-sky-500">
+          <button id="searchButton"
+            class="bg-sky-600 text-white p-3 rounded-md hover:bg-sky-700 transition duration-300 font-semibold flex items-center justify-center">
+            <i class="fas fa-search mr-2"></i>Tìm Kiếm
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Area -->
+  <main class="container mx-auto px-6 py-12">
+    <!-- Filters and Map Section -->
+    <section class="mb-12">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Khám Phá Bất Động Sản</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Filters -->
+            <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Bộ Lọc Tìm Kiếm</h3>
+                
+                <div class="mb-4">
+                    <label for="propertyTypeFilter" class="block text-sm font-medium text-gray-600 mb-1">Loại hình:</label>
+                    <select id="propertyTypeFilter" class="w-full p-2 border border-gray-300 rounded-md focus:ring-sky-500 focus:border-sky-500">
+                        <option value="all">Tất cả</option>
+                        <option value="nhà ở">Nhà ở</option>
+                        <option value="shophouse">Shophouse</option>
+                        <option value="mặt bằng">Mặt bằng kinh doanh</option>
+                        <option value="căn hộ">Căn hộ</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="priceRangeFilter" class="block text-sm font-medium text-gray-600 mb-1">Khoảng giá (VNĐ/tháng):</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="number" id="minPrice" placeholder="Từ" class="w-1/2 p-2 border border-gray-300 rounded-md">
+                        <span class="text-gray-500">-</span>
+                        <input type="number" id="maxPrice" placeholder="Đến" class="w-1/2 p-2 border border-gray-300 rounded-md">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Đánh giá:</label>
+                    <div class="flex space-x-1" id="ratingFilter">
+                        <button data-rating="5" class="px-3 py-1 border rounded-md hover:bg-sky-100"><i class="fas fa-star text-yellow-400"></i> 5</button>
+                        <button data-rating="4" class="px-3 py-1 border rounded-md hover:bg-sky-100"><i class="fas fa-star text-yellow-400"></i> 4+</button>
+                        <button data-rating="3" class="px-3 py-1 border rounded-md hover:bg-sky-100"><i class="fas fa-star text-yellow-400"></i> 3+</button>
+                        <button data-rating="0" class="px-3 py-1 border rounded-md hover:bg-sky-100">Tất cả</button>
+                    </div>
+                </div>
+                <button id="applyFiltersButton" class="w-full bg-sky-600 text-white p-3 rounded-md hover:bg-sky-700 transition duration-300 font-semibold mt-4">
+                    Áp Dụng Bộ Lọc
+                </button>
+                 <button id="resetFiltersButton" class="w-full bg-gray-300 text-gray-700 p-3 rounded-md hover:bg-gray-400 transition duration-300 font-semibold mt-2">
+                    Đặt Lại
+                </button>
+            </div>
+
+            <!-- Map -->
+            <div class="lg:col-span-2 bg-white p-1 rounded-lg shadow-lg">
+                <div id="map" class="w-full h-[400px] md:h-[500px] rounded-md"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Listings Section -->
+    <section id="listings">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Bất Động Sản Nổi Bật</h2>
+        <div>
+            <label for="sortProperties" class="text-sm font-medium text-gray-600 mr-2">Sắp xếp:</label>
+            <select id="sortProperties" class="p-2 border border-gray-300 rounded-md">
+                <option value="default">Mặc định</option>
+                <option value="price_asc">Giá tăng dần</option>
+                <option value="price_desc">Giá giảm dần</option>
+                <option value="rating_desc">Đánh giá cao nhất</option>
+            </select>
+        </div>
+      </div>
+      
+      <div id="propertyListings" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Property cards will be injected here by JavaScript -->
+      </div>
+      <div id="noResults" class="text-center text-gray-500 py-10 text-xl hidden">
+        <i class="fas fa-search fa-3x mb-4 text-gray-400"></i>
+        <p>Không tìm thấy bất động sản nào phù hợp với tiêu chí của bạn.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Contact Section -->
+  <section id="contact" class="bg-sky-700 text-white py-16">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-6">Liên Hệ Với Chúng Tôi</h2>
+        <p class="mb-8 max-w-xl mx-auto">Có câu hỏi hoặc muốn tìm hiểu thêm? Đừng ngần ngại liên hệ. Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ bạn.</p>
+        <form class="max-w-lg mx-auto grid grid-cols-1 gap-4">
+            <input type="text" placeholder="Tên của bạn" class="p-3 rounded-md text-gray-800 focus:ring-sky-300 focus:border-sky-300">
+            <input type="email" placeholder="Email của bạn" class="p-3 rounded-md text-gray-800 focus:ring-sky-300 focus:border-sky-300">
+            <textarea placeholder="Nội dung tin nhắn" rows="4" class="p-3 rounded-md text-gray-800 focus:ring-sky-300 focus:border-sky-300"></textarea>
+            <button type="submit" class="bg-amber-500 text-white p-3 rounded-md hover:bg-amber-600 transition duration-300 font-semibold">Gửi Tin Nhắn</button>
+        </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-300 py-12">
+    <div class="container mx-auto px-6 text-center">
+      <div class="mb-4">
+        <a href="#" class="text-xl font-bold text-sky-500"><i class="fas fa-home mr-2"></i>DreamHome</a>
+      </div>
+      <p class="mb-4">© 2023 DreamHome. Mọi quyền được bảo lưu.</p>
+      <div class="space-x-4">
+        <a href="#" class="hover:text-sky-400"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="hover:text-sky-400"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="hover:text-sky-400"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="hover:text-sky-400"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Property Detail Modal -->
+  <div id="propertyModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal()">×</span>
+      <div id="modalBody">
+        <!-- Content will be injected by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    const mockProperties = [
+      {
+        id: 1,
+        title: "Shophouse Sang Trọng Mặt Tiền Quận 1",
+        type: "shophouse",
+        location: "Đường Đồng Khởi, Quận 1, TP. HCM",
+        coordinates: [10.7775, 106.7028],
+        price: 120000000, // VNĐ/tháng
+        area: "150 m²",
+        bedrooms: null,
+        bathrooms: 2,
+        rating: 4.8,
+        images: {
+          facade: ["https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bHV4dXJ5JTIwaG91c2UlMjBmYWNhZGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60"],
+          interior: [
+            "https://images.unsplash.com/photo-1616046229478-9901c5536a45?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwaW50ZXJpb3J8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+            "https://images.unsplash.com/photo-1618220179428-22790b461013?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8bHV4dXJ5JTIwaW50ZXJpb3J8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60"
+          ],
+          view: ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVhY2glMjB2aWV3fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60"]
+        },
+        description: "Shophouse cao cấp tại vị trí đắc địa nhất Quận 1. Mặt tiền rộng, thoáng, thiết kế hiện đại, phù hợp kinh doanh thời trang, nhà hàng, showroom. Giao thông thuận tiện, khu vực sầm uất.",
+        amenities: ["Điều hòa trung tâm", "Bãi đậu xe riêng", "Bảo vệ 24/7", "Hệ thống PCCC", "Lối đi riêng"]
+      },
+      {
+        id: 2,
+        title: "Nhà Phố Hiện Đại Khu An Phú",
+        type: "nhà ở",
+        location: "Khu An Phú, Quận 2, TP. HCM",
+        coordinates: [10.7956, 106.7396],
+        price: 45000000,
+        area: "100 m²",
+        bedrooms: 4,
+        bathrooms: 3,
+        rating: 4.5,
+        images: {
+          facade: ["https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bW9kZXJuJTIwaG91c2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60"],
+          interior: [
+            "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW9kZXJuJTIwaW50ZXJpb3J8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60",
+            "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bW9kZXJuJTIwaW50ZXJpb3J8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60"
+          ],
+          view: ["https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGxhbmRzY2FwZSUyMHZpZXd8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60"]
+        },
+        description: "Nhà phố mới xây, thiết kế hiện đại, nội thất cơ bản. Khu dân cư yên tĩnh, an ninh, gần trường học quốc tế và trung tâm thương mại. Thích hợp cho gia đình.",
+        amenities: ["Garage ô tô", "Sân vườn nhỏ", "Bếp hiện đại", "Phòng khách rộng"]
+      },
+      {
+        id: 3,
+        title: "Mặt Bằng Kinh Doanh Trung Tâm Quận 3",
+        type: "mặt bằng",
+        location: "Đường Nguyễn Thị Minh Khai, Quận 3, TP. HCM",
+        coordinates: [10.7800, 106.6900],
+        price: 80000000,
+        area: "200 m²",
+        bedrooms: null,
+        bathrooms: 1,
+        rating: 4.2,
+        images: {
+          facade: ["https://images.unsplash.com/photo-1529306664290-b8693820d15c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y29tbWVyY2lhbCUyMHNwYWNlfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60"],
+          interior: ["https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8b2ZmaWNlJTIwc3BhY2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60"],
+          view: []
+        },
+        description: "Mặt bằng kinh doanh tầng trệt, vị trí góc 2 mặt tiền. Khu vực đông dân cư, văn phòng, phù hợp mở cafe, nhà hàng, cửa hàng tiện lợi.",
+        amenities: ["Vỉa hè rộng", "Hệ thống điện 3 pha", "WC riêng"]
+      },
+      {
+        id: 4,
+        title: "Căn Hộ Cao Cấp View Sông Sài Gòn",
+        type: "căn hộ",
+        location: "Vinhomes Central Park, Quận Bình Thạnh, TP. HCM",
+        coordinates: [10.7890, 106.7220],
+        price: 35000000,
+        area: "90 m²",
+        bedrooms: 2,
+        bathrooms: 2,
+        rating: 4.9,
+        images: {
+            facade: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXBhcnRtZW50fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60"],
+            interior: [
+                "https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGFwYXJ0bWVudCUyMGludGVyaW9yfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
+                "https://images.unsplash.com/photo-1617104600140-60f763597567?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGFwYXJ0bWVudCUyMGJhbGNvbnl8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60"
+            ],
+            view: ["https://images.unsplash.com/photo-1506260408121-e353d10b87c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cml2ZXIlMjB2aWV3fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60"]
+        },
+        description: "Căn hộ sang trọng tại khu đô thị hiện đại bậc nhất. View trực diện sông Sài Gòn và công viên. Đầy đủ tiện ích: hồ bơi, gym, TTTM, trường học.",
+        amenities: ["Full nội thất cao cấp", "Ban công rộng", "Hồ bơi", "Gym & Spa", "An ninh thẻ từ"]
+      },
+      {
+        id: 5,
+        title: "Biệt Thự Sân Vườn Thảo Điền",
+        type: "nhà ở",
+        location: "Đường Nguyễn Văn Hưởng, Thảo Điền, Quận 2, TP. HCM",
+        coordinates: [10.8030, 106.7330],
+        price: 250000000,
+        area: "500 m²",
+        bedrooms: 5,
+        bathrooms: 6,
+        rating: 4.7,
+        images: {
+            facade: ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dmlsbGElMjBmYWNhZGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60"],
+            interior: [
+                "https://images.unsplash.com/photo-1600566753190-17f00a24638b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dmlsbGElMjBpbnRlcmlvcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8dmlsbGElMjBpbnRlcmlvcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"
+            ],
+            view: ["https://images.unsplash.com/photo-1470770841072-f978cf4d019e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2FyZGVuJTIwdmlld3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60"]
+        },
+        description: "Biệt thự sang trọng với sân vườn rộng và hồ bơi riêng. Khu vực Thảo Điền yên tĩnh, an ninh, tập trung cộng đồng người nước ngoài. Nội thất đẳng cấp, thiết kế tinh tế.",
+        amenities: ["Hồ bơi riêng", "Sân vườn lớn", "Garage 2 ô tô", "Phòng gym riêng", "Khu BBQ"]
+      }
+    ];
+
+    let currentProperties = [...mockProperties];
+    let map;
+    let markers = [];
+    let currentSort = 'default';
+    let currentRatingFilter = 0;
+    
+    const propertyListingsContainer = document.getElementById('propertyListings');
+    const propertyModal = document.getElementById('propertyModal');
+    const modalBody = document.getElementById('modalBody');
+    const noResultsDiv = document.getElementById('noResults');
+
+    function formatPrice(price) {
+        return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
+
+    function generateRatingStars(rating) {
+        let starsHtml = '';
+        const fullStars = Math.floor(rating);
+        const halfStar = rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+        for (let i = 0; i < fullStars; i++) {
+            starsHtml += '<i class="fas fa-star"></i>';
+        }
+        if (halfStar) {
+            starsHtml += '<i class="fas fa-star-half-alt"></i>';
+        }
+        for (let i = 0; i < emptyStars; i++) {
+            starsHtml += '<i class="far fa-star text-gray-300"></i>';
+        }
+        return `<div class="rating-stars flex items-center">${starsHtml} <span class="ml-1 text-sm text-gray-600">(${rating.toFixed(1)})</span></div>`;
+    }
+    
+    function displayProperties(propertiesToDisplay) {
+        propertyListingsContainer.innerHTML = '';
+        markers.forEach(marker => marker.remove());
+        markers = [];
+
+        if (propertiesToDisplay.length === 0) {
+            noResultsDiv.classList.remove('hidden');
+            propertyListingsContainer.classList.add('hidden');
+        } else {
+            noResultsDiv.classList.add('hidden');
+            propertyListingsContainer.classList.remove('hidden');
+        }
+
+        propertiesToDisplay.forEach(property => {
+            const card = document.createElement('div');
+            card.className = 'property-card bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer';
+            card.innerHTML = `
+                <img src="${property.images.facade[0] || 'https://via.placeholder.com/400x250.png?text=No+Image'}" alt="${property.title}" class="w-full h-56 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2 truncate">${property.title}</h3>
+                    <p class="text-sm text-gray-600 mb-1"><i class="fas fa-map-marker-alt mr-2 text-sky-500"></i>${property.location}</p>
+                    <p class="text-lg font-semibold text-sky-600 mb-2">${formatPrice(property.price)}</p>
+                    <div class="flex justify-between items-center text-sm text-gray-500 mb-3">
+                        <span><i class="fas fa-ruler-combined mr-1"></i>${property.area}</span>
+                        ${property.bedrooms ? `<span><i class="fas fa-bed mr-1"></i>${property.bedrooms} PN</span>` : ''}
+                        ${property.bathrooms ? `<span><i class="fas fa-bath mr-1"></i>${property.bathrooms} WC</span>` : ''}
+                    </div>
+                    ${generateRatingStars(property.rating)}
+                </div>
+            `;
+            card.addEventListener('click', () => openModal(property));
+            propertyListingsContainer.appendChild(card);
+
+            // Add marker to map
+            const marker = L.marker(property.coordinates, { title: property.title })
+                .addTo(map)
+                .on('click', () => openModal(property));
+            
+            marker.bindPopup(`
+                <h3 class="font-semibold">${property.title}</h3>
+                <p>${property.location}</p>
+                <p class="text-sky-600 font-bold">${formatPrice(property.price)}</p>
+                <button class="text-sm text-sky-500 hover:underline mt-1" onclick='openModalById(${property.id})'>Xem chi tiết</button>
+            `);
+            markers.push(marker);
+        });
+        if (propertiesToDisplay.length > 0) {
+             map.fitBounds(L.featureGroup(markers).getBounds().pad(0.3));
+        } else if (mockProperties.length > 0) { // If no filter results, fit to all properties
+            const allMarkers = mockProperties.map(p => L.marker(p.coordinates));
+            if(allMarkers.length > 0) map.fitBounds(L.featureGroup(allMarkers).getBounds().pad(0.1));
+        } else { // Default view if no properties at all
+            map.setView([10.7769, 106.7009], 12); // Default to HCMC center
+        }
+    }
+    
+    window.openModalById = function(id) { // Make it globally accessible for popup button
+        const property = mockProperties.find(p => p.id === id);
+        if (property) openModal(property);
+    }
+
+    function openModal(property) {
+        let imagesHtml = '<p class="text-sm text-gray-500 mb-2">Không có hình ảnh xem trước.</p>';
+        const allImages = [
+            ...(property.images.facade || []).map(url => ({ type: 'Mặt tiền', url })),
+            ...(property.images.interior || []).map(url => ({ type: 'Nội thất', url })),
+            ...(property.images.view || []).map(url => ({ type: 'View', url }))
+        ];
+
+        if (allImages.length > 0) {
+            imagesHtml = `
+                <img id="main-modal-image" src="${allImages[0].url}" alt="${property.title} - ${allImages[0].type}" class="mb-4 rounded-lg shadow">
+                <div class="gallery-container mb-4">
+                    ${allImages.map((img, index) => `
+                        <img src="${img.url}" alt="${property.title} - ${img.type} ${index + 1}" 
+                             class="gallery-image ${index === 0 ? 'active-thumbnail' : ''}" 
+                             onclick="setMainModalImage('${img.url}', this)">
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        modalBody.innerHTML = `
+            <h2 class="text-3xl font-bold text-gray-800 mb-3">${property.title}</h2>
+            ${imagesHtml}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 mb-4 text-gray-700">
+                <p><i class="fas fa-map-marker-alt mr-2 text-sky-500"></i><strong>Địa chỉ:</strong> ${property.location}</p>
+                <p><i class="fas fa-dollar-sign mr-2 text-sky-500"></i><strong>Giá:</strong> ${formatPrice(property.price)}</p>
+                <p><i class="fas fa-ruler-combined mr-2 text-sky-500"></i><strong>Diện tích:</strong> ${property.area}</p>
+                ${property.bedrooms ? `<p><i class="fas fa-bed mr-2 text-sky-500"></i><strong>Phòng ngủ:</strong> ${property.bedrooms}</p>` : ''}
+                ${property.bathrooms ? `<p><i class="fas fa-bath mr-2 text-sky-500"></i><strong>Phòng tắm:</strong> ${property.bathrooms}</p>` : ''}
+                <div class="col-span-1 md:col-span-2">${generateRatingStars(property.rating)}</div>
+            </div>
+            <div class="mb-4">
+                <h4 class="text-lg font-semibold text-gray-700 mb-2">Mô tả chi tiết:</h4>
+                <p class="text-gray-600 leading-relaxed">${property.description}</p>
+            </div>
+            ${property.amenities && property.amenities.length > 0 ? `
+            <div class="mb-4">
+                <h4 class="text-lg font-semibold text-gray-700 mb-2">Tiện nghi:</h4>
+                <ul class="list-disc list-inside grid grid-cols-2 gap-1 text-gray-600">
+                    ${property.amenities.map(amenity => `<li>${amenity}</li>`).join('')}
+                </ul>
+            </div>` : ''}
+            <button class="w-full bg-sky-600 text-white py-3 px-6 rounded-lg hover:bg-sky-700 transition duration-300 font-semibold text-lg">
+                <i class="fas fa-phone-alt mr-2"></i>Liên hệ tư vấn
+            </button>
+        `;
+        propertyModal.style.display = "block";
+    }
+
+    window.setMainModalImage = function(src, clickedThumbnail) {
+        document.getElementById('main-modal-image').src = src;
+        document.querySelectorAll('.gallery-image').forEach(img => img.classList.remove('active-thumbnail'));
+        clickedThumbnail.classList.add('active-thumbnail');
+    }
+
+    function closeModal() {
+        propertyModal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == propertyModal) {
+            closeModal();
+        }
+    }
+    
+    // Initialize map
+    function initMap() {
+        map = L.map('map').setView([10.7769, 106.7009], 12); // Default to HCMC center
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+    }
+
+    // Filtering and Sorting
+    function applyFiltersAndSort() {
+        let filtered = [...mockProperties];
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const propertyType = document.getElementById('propertyTypeFilter').value;
+        const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+        const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+
+        // Search term filter
+        if (searchTerm) {
+            filtered = filtered.filter(p => 
+                p.title.toLowerCase().includes(searchTerm) || 
+                p.location.toLowerCase().includes(searchTerm) ||
+                p.description.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        // Property type filter
+        if (propertyType !== 'all') {
+            filtered = filtered.filter(p => p.type === propertyType);
+        }
+
+        // Price range filter
+        filtered = filtered.filter(p => p.price >= minPrice && p.price <= maxPrice);
+        
+        // Rating filter
+        if (currentRatingFilter > 0) {
+             filtered = filtered.filter(p => p.rating >= currentRatingFilter);
+        }
+
+        // Sorting
+        currentSort = document.getElementById('sortProperties').value;
+        switch (currentSort) {
+            case 'price_asc':
+                filtered.sort((a, b) => a.price - b.price);
+                break;
+            case 'price_desc':
+                filtered.sort((a, b) => b.price - a.price);
+                break;
+            case 'rating_desc':
+                filtered.sort((a, b) => b.rating - a.rating);
+                break;
+        }
+        currentProperties = filtered;
+        displayProperties(currentProperties);
+    }
+
+    document.getElementById('searchButton').addEventListener('click', applyFiltersAndSort);
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            applyFiltersAndSort();
+        }
+    });
+    document.getElementById('applyFiltersButton').addEventListener('click', applyFiltersAndSort);
+    document.getElementById('sortProperties').addEventListener('change', applyFiltersAndSort);
+
+    document.querySelectorAll('#ratingFilter button').forEach(button => {
+        button.addEventListener('click', () => {
+            currentRatingFilter = parseInt(button.dataset.rating);
+            document.querySelectorAll('#ratingFilter button').forEach(btn => btn.classList.remove('filter-active', 'bg-sky-500', 'text-white'));
+            button.classList.add('filter-active', 'bg-sky-500', 'text-white');
+            applyFiltersAndSort();
+        });
+    });
+    
+    document.getElementById('resetFiltersButton').addEventListener('click', () => {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('propertyTypeFilter').value = 'all';
+        document.getElementById('minPrice').value = '';
+        document.getElementById('maxPrice').value = '';
+        currentRatingFilter = 0;
+        document.querySelectorAll('#ratingFilter button').forEach(btn => btn.classList.remove('filter-active', 'bg-sky-500', 'text-white'));
+        document.querySelector('#ratingFilter button[data-rating="0"]').classList.add('filter-active', 'bg-sky-500', 'text-white'); // Highlight "All"
+        document.getElementById('sortProperties').value = 'default';
+        applyFiltersAndSort();
+    });
+
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+        initMap();
+        displayProperties(currentProperties); // Display all properties initially
+        document.querySelector('#ratingFilter button[data-rating="0"]').classList.add('filter-active', 'bg-sky-500', 'text-white'); // Highlight "All" rating filter
+    });
+
+  </script>
+
+</body>
+</html>

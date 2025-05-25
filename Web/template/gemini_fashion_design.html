@@ -1,0 +1,582 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ÊLEVÉ - Thời Trang Sang Trọng</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f8f9fa; /* Light gray background for the whole page */
+            color: #333;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .text-gold {
+            color: #c0a062 !important;
+        }
+
+        .btn-gold {
+            background-color: #c0a062;
+            border-color: #c0a062;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            border-radius: 0; /* Sharp edges for sophistication */
+        }
+        .btn-gold:hover, .btn-gold:focus {
+            background-color: #b39154;
+            border-color: #b39154;
+            color: #fff;
+        }
+
+        .btn-outline-gold {
+            color: #c0a062;
+            border-color: #c0a062;
+            padding: 0.75rem 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            border-radius: 0;
+        }
+        .btn-outline-gold:hover, .btn-outline-gold:focus {
+            color: #fff;
+            background-color: #c0a062;
+            border-color: #c0a062;
+        }
+        
+        .btn-outline-light-custom {
+            color: #f8f9fa;
+            border-color: #f8f9fa;
+            padding: 0.75rem 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            border-radius: 0;
+        }
+        .btn-outline-light-custom:hover, .btn-outline-light-custom:focus {
+            color: #1a1a1a;
+            background-color: #f8f9fa;
+            border-color: #f8f9fa;
+        }
+
+
+        /* Navbar */
+        .navbar-custom {
+            transition: background-color 0.4s ease-in-out, padding 0.4s ease-in-out;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+        .navbar-custom .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        .navbar-custom .nav-link {
+            color: rgba(255,255,255,0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+        .navbar-custom .nav-link:hover, .navbar-custom .nav-link.active {
+            color: #fff;
+        }
+        .navbar-custom.scrolled {
+            background-color: rgba(20, 20, 20, 0.95) !important; /* Dark solid background on scroll */
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar-toggler {
+            border-color: rgba(255,255,255,0.5);
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+
+        /* Hero Section */
+        .hero-section {
+            background: url('https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80') no-repeat center center;
+            background-size: cover;
+            height: 100vh;
+            position: relative;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        .hero-content h1 {
+            font-size: 3rem; /* Default */
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+        .hero-content p {
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 768px) {
+            .hero-content h1 {
+                font-size: 4.5rem;
+            }
+            .hero-content p {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Collections Section */
+        .collection-card {
+            border: none; /* Cleaner look */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            overflow: hidden; /* For image zoom */
+            border-radius: 0;
+        }
+        .collection-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+        }
+        .collection-card .card-img-top {
+            transition: transform 0.4s ease-in-out;
+            height: 450px; /* Fixed height */
+            object-fit: cover;
+            border-radius: 0;
+        }
+        .collection-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        .collection-card .card-body {
+            background-color: #fff;
+        }
+        .collection-card .card-title {
+            font-weight: 700;
+        }
+
+        /* About Section */
+        .about-section {
+            background-color: #ffffff; 
+        }
+        .about-image {
+            object-fit: cover;
+            height: 100%;
+            min-height: 400px;
+            max-height: 600px; /* Cap height */
+        }
+
+        /* New Season Section */
+        .new-season-item {
+            background-size: cover;
+            background-position: center;
+            min-height: 550px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .new-season-item:hover {
+            transform: scale(1.03);
+        }
+        .new-season-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 60%); /* Darker overlay at bottom */
+            z-index: 0;
+            transition: background-color 0.3s ease;
+        }
+        .new-season-item:hover::before {
+            background-color: rgba(0,0,0,0.5);
+        }
+        .new-season-item-content {
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+        }
+        .new-season-item-content h3 {
+            font-weight: 700;
+        }
+
+        /* Recognized By Section */
+        .logo-placeholder {
+            font-size: 1.5rem;
+            font-weight: 700; /* Bold for logos */
+            color: #adb5bd; /* Muted gray */
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+        .logo-placeholder:hover {
+            color: #333; /* Darker on hover */
+        }
+
+        /* Newsletter Section */
+        .newsletter-section {
+            background: url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80') no-repeat center center;
+            background-size: cover;
+            background-attachment: fixed; /* Parallax effect */
+            position: relative;
+            padding: 6rem 0;
+        }
+        .newsletter-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.65);
+        }
+        .newsletter-content {
+            position: relative;
+            z-index: 1;
+        }
+        .newsletter-section .form-control {
+            border-radius: 0;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .newsletter-section .form-control::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Footer */
+        .footer-section {
+            background-color: #1a1a1a;
+            color: #adb5bd; /* Muted text color */
+        }
+        .footer-section h5 {
+            color: #f8f9fa; /* White headings */
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .footer-section a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-section a:hover {
+            color: #c0a062; /* Gold on hover */
+        }
+        .footer-section .list-unstyled li {
+            margin-bottom: 0.5rem;
+        }
+        .social-icons a {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #adb5bd;
+        }
+        .social-icons a:hover {
+            color: #c0a062;
+        }
+        .footer-bottom {
+            border-top: 1px solid #333; /* Separator line */
+        }
+
+        /* Section dividers (optional subtle touch) */
+        .section-divider {
+            width: 80px;
+            height: 3px;
+            background-color: #c0a062;
+            margin: 0 auto 2.5rem auto;
+        }
+    </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#mainNavbar" data-bs-offset="80">
+
+    <!-- Navbar -->
+    <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark fixed-top navbar-custom bg-transparent">
+        <div class="container">
+            <a class="navbar-brand text-gold" href="#">ÊLEVÉ</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#hero">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#collections">Bộ Sưu Tập</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#new-season">Mùa Mới</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Về Chúng Tôi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Liên Hệ</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#" aria-label="Tìm kiếm"><i class="bi bi-search"></i></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" aria-label="Tài khoản"><i class="bi bi-person"></i></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" aria-label="Giỏ hàng"><i class="bi bi-bag"></i> <span class="badge bg-gold rounded-pill ms-1">0</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section d-flex align-items-center justify-content-center text-center text-white">
+        <div class="hero-content">
+            <h1 class="display-3 font-serif mb-4" data-aos="fade-up">Vẻ Đẹp Vượt Thời Gian</h1>
+            <p class="lead mb-5" data-aos="fade-up" data-aos-delay="100">Khám phá những thiết kế độc quyền, nơi sự sang trọng hòa quyện cùng nghệ thuật thủ công tinh xảo.</p>
+            <a href="#collections" class="btn btn-outline-light-custom btn-lg" data-aos="fade-up" data-aos-delay="200">Khám Phá Ngay</a>
+        </div>
+    </section>
+
+    <!-- Collections Section -->
+    <section id="collections" class="py-5 bg-light">
+        <div class="container py-md-5">
+            <h2 class="text-center mb-3 font-serif display-5">Bộ Sưu Tập Nổi Bật</h2>
+            <div class="section-divider"></div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up">
+                    <div class="card collection-card shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1551803091-e2ab69241601?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=800&q=80" class="card-img-top" alt="Evening Gowns Collection">
+                        <div class="card-body text-center p-4">
+                            <h3 class="card-title font-serif h4">Dạ Hội Quyến Rũ</h3>
+                            <p class="card-text text-muted small">Thanh lịch và lộng lẫy cho những đêm tiệc đáng nhớ.</p>
+                            <a href="#" class="btn btn-outline-gold mt-2">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card collection-card shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1509319117193-57bab727e09d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=800&q=80" class="card-img-top" alt="Modern Chic Collection">
+                        <div class="card-body text-center p-4">
+                            <h3 class="card-title font-serif h4">Thanh Lịch Hiện Đại</h3>
+                            <p class="card-text text-muted small">Phong cách tinh tế cho quý cô thành thị năng động.</p>
+                            <a href="#" class="btn btn-outline-gold mt-2">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card collection-card shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=800&q=80" class="card-img-top" alt="Luxury Accessories Collection">
+                        <div class="card-body text-center p-4">
+                            <h3 class="card-title font-serif h4">Phụ Kiện Cao Cấp</h3>
+                            <p class="card-text text-muted small">Hoàn thiện vẻ ngoài đẳng cấp với những chi tiết tinh xảo.</p>
+                            <a href="#" class="btn btn-outline-gold mt-2">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- New Season Section -->
+    <section id="new-season" class="py-5 bg-white">
+        <div class="container py-md-5">
+            <h2 class="text-center mb-3 font-serif display-5">Điểm Nhấn Mùa Mới</h2>
+            <div class="section-divider"></div>
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="new-season-item d-flex align-items-end" style="background-image: url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=700&h=900&q=80');">
+                        <div class="new-season-item-content text-white w-100">
+                            <h3 class="mb-3">Sắc Xuân Rạng Rỡ</h3>
+                            <p class="mb-3">Khám phá những thiết kế tươi mới, ngập tràn cảm hứng mùa lễ hội.</p>
+                            <a href="#" class="btn btn-outline-light-custom">Mua Ngay</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="new-season-item d-flex align-items-end" style="background-image: url('https://images.unsplash.com/photo-1552874869-5c39906a8413?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=700&h=900&q=80');">
+                         <div class="new-season-item-content text-white w-100">
+                            <h3 class="mb-3">Lãng Mạn Thu Đông</h3>
+                            <p class="mb-3">Chất liệu ấm áp, kiểu dáng sang trọng cho mùa se lạnh.</p>
+                            <a href="#" class="btn btn-outline-light-custom">Khám Phá</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5 about-section bg-light">
+        <div class="container py-md-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <img src="https://images.unsplash.com/photo-1542777574-335959419913?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=700&q=80" alt="Our Philosophy" class="img-fluid about-image shadow">
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <h2 class="font-serif display-5 mb-3">Triết Lý Của <span class="text-gold">ÊLEVÉ</span></h2>
+                    <div class="section-divider ms-0" style="margin-bottom: 1.5rem;"></div>
+                    <p class="lead text-muted mb-4">Tại ÊLEVÉ, chúng tôi tin rằng thời trang không chỉ là trang phục, mà là tuyên ngôn về cá tính và sự tự tin. Mỗi thiết kế là sự kết tinh của niềm đam mê, sự tỉ mỉ và cam kết về chất lượng vượt trội.</p>
+                    <p class="text-muted">Chúng tôi theo đuổi sự hoàn hảo trong từng đường kim mũi chỉ, lựa chọn những chất liệu cao cấp nhất và không ngừng đổi mới để mang đến những tác phẩm nghệ thuật thực sự, tôn vinh vẻ đẹp và khí chất riêng của mỗi người phụ nữ.</p>
+                    <a href="#" class="btn btn-gold mt-3">Tìm Hiểu Thêm</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recognized By Section -->
+    <section id="recognized-by" class="py-5 bg-white">
+        <div class="container text-center py-md-4">
+            <h2 class="text-center mb-3 font-serif h3 text-muted">Được Công Nhận Bởi</h2>
+            <div class="section-divider"></div>
+            <div class="row justify-content-center align-items-center g-4 g-md-5 pt-3">
+                <div class="col-6 col-md-auto" data-aos="fade-up">
+                    <span class="logo-placeholder">VOGUE</span>
+                </div>
+                <div class="col-6 col-md-auto" data-aos="fade-up" data-aos-delay="50">
+                    <span class="logo-placeholder">ELLE</span>
+                </div>
+                <div class="col-6 col-md-auto" data-aos="fade-up" data-aos-delay="100">
+                    <span class="logo-placeholder">Harper's Bazaar</span>
+                </div>
+                <div class="col-6 col-md-auto" data-aos="fade-up" data-aos-delay="150">
+                    <span class="logo-placeholder">MARIE CLAIRE</span>
+                </div>
+                 <div class="col-6 col-md-auto" data-aos="fade-up" data-aos-delay="200">
+                    <span class="logo-placeholder">L'OFFICIEL</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section id="newsletter" class="newsletter-section text-white text-center">
+        <div class="container newsletter-content">
+            <h2 class="font-serif display-5 mb-3" data-aos="fade-up">Đón Đầu Xu Hướng</h2>
+            <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">Đăng ký nhận bản tin để không bỏ lỡ bộ sưu tập mới và ưu đãi độc quyền từ ÊLEVÉ.</p>
+            <form class="row justify-content-center g-2" data-aos="fade-up" data-aos-delay="200">
+                <div class="col-md-5 col-lg-4">
+                    <label for="emailInput" class="visually-hidden">Địa chỉ email</label>
+                    <input type="email" class="form-control form-control-lg" id="emailInput" placeholder="Nhập địa chỉ email của bạn">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-gold btn-lg">Đăng Ký</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer-section pt-5 pb-4">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="font-serif">ÊLEVÉ</h5>
+                    <p class="small">Nơi sự sang trọng và nghệ thuật thủ công hòa quyện, tạo nên những thiết kế thời trang đẳng cấp, tôn vinh vẻ đẹp độc bản.</p>
+                    <div class="social-icons mt-3">
+                        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="bi bi-pinterest"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="font-serif">Khám Phá</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#collections">Bộ Sưu Tập</a></li>
+                        <li><a href="#new-season">Mùa Mới</a></li>
+                        <li><a href="#">Sản Phẩm Bán Chạy</a></li>
+                        <li><a href="#">Ưu Đãi</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="font-serif">Về Chúng Tôi</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#about">Câu Chuyện Thương Hiệu</a></li>
+                        <li><a href="#">Triết Lý Thiết Kế</a></li>
+                        <li><a href="#">Cơ Hội Nghề Nghiệp</a></li>
+                        <li><a href="#">Báo Chí</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="font-serif">Chăm Sóc Khách Hàng</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Liên Hệ</a></li>
+                        <li><a href="#">Câu Hỏi Thường Gặp</a></li>
+                        <li><a href="#">Chính Sách Vận Chuyển</a></li>
+                        <li><a href="#">Chính Sách Đổi Trả</a></li>
+                        <li><a href="#">Điều Khoản Dịch Vụ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom text-center pt-4 mt-4">
+                <p class="small mb-0">© <span id="currentYear"></span> ÊLEVÉ. Bảo lưu mọi quyền.</p>
+                <p class="small"><a href="#">Chính Sách Bảo Mật</a> | <a href="#">Sơ Đồ Trang Web</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- AOS (Animate On Scroll) library for scroll animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Navbar scroll effect
+            const navbar = document.querySelector('.navbar-custom');
+            if (navbar) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        navbar.classList.add('scrolled');
+                        navbar.classList.remove('bg-transparent');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                        navbar.classList.add('bg-transparent');
+                    }
+                });
+            }
+
+            // Update current year in footer
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+            
+            // Initialize AOS
+            AOS.init({
+                duration: 800, // values from 0 to 3000, with step 50ms
+                once: true, // whether animation should happen only once - while scrolling down
+            });
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    if (this.getAttribute('href').length > 1 && document.querySelector(this.getAttribute('href'))) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

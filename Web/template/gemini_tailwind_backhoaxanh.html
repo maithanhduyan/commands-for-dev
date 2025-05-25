@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <title>Bách Hóa XANH - Mua Sắm Online</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa; /* Light gray background for overall page */
+    }
+
+    /* Custom Bách Hóa Xanh Colors - using Tailwind's JIT compiler for custom values */
+    .bg-bhx-green { background-color: #008848; } /* Example green, adjust to exact BHX green */
+    .text-bhx-green { color: #008848; }
+    .border-bhx-green { border-color: #008848; }
+    .hover\:bg-bhx-green-dark:hover { background-color: #006A3A; } /* Darker green for hover */
+
+    .bg-bhx-yellow { background-color: #FFC107; } /* Example yellow, adjust to exact BHX yellow */
+    .text-bhx-yellow { color: #FFC107; }
+    .border-bhx-yellow { border-color: #FFC107; }
+
+    /* Custom scrollbar for category menu (optional) */
+    .category-menu::-webkit-scrollbar {
+      width: 6px;
+    }
+    .category-menu::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    .category-menu::-webkit-scrollbar-thumb {
+      background: #008848; /* BHX Green */
+      border-radius: 10px;
+    }
+    .category-menu::-webkit-scrollbar-thumb:hover {
+      background: #006A3A; /* Darker BHX Green */
+    }
+
+    .product-card {
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    /* Mobile menu animation */
+    #mobileMenu.hidden {
+        transform: translateX(-100%);
+    }
+    #mobileMenu {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .active-category {
+        background-color: #e6f3ec; /* A light green for active category */
+        color: #008848;
+        font-weight: bold;
+    }
+    .active-category i {
+        color: #008848;
+    }
+  </style>
+</head>
+
+<body class="bg-white">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex justify-between items-center">
+        <!-- Mobile Menu Button -->
+        <button id="mobileMenuButton" class="lg:hidden text-bhx-green text-2xl">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Logo -->
+        <a href="#" class="flex items-center">
+          <img src="https://cdn.haitrieu.com/wp-content/uploads/2021/12/Logo-Bach-Hoa-XANH-Chuan.png" alt="Bách Hóa Xanh Logo" class="h-10 md:h-12 mr-2">
+          <span class="text-xl md:text-2xl font-bold text-bhx-green hidden sm:block">Bách Hóa XANH</span>
+        </a>
+
+        <!-- Search Bar -->
+        <div class="flex-grow mx-4 hidden lg:flex max-w-xl">
+          <input type="text" id="desktopSearchInput" placeholder="Tìm kiếm sản phẩm..."
+            class="w-full p-2 border border-gray-300 rounded-l-md focus:ring-2 focus:ring-bhx-green focus:border-transparent outline-none">
+          <button class="bg-bhx-green text-white px-4 py-2 rounded-r-md hover:bg-bhx-green-dark transition duration-300">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+
+        <!-- Icons -->
+        <div class="flex items-center space-x-4 md:space-x-6">
+          <a href="#" class="relative text-gray-700 hover:text-bhx-green transition duration-300">
+            <i class="fas fa-shopping-cart text-xl md:text-2xl"></i>
+            <span id="cartCount"
+              class="absolute -top-2 -right-2 bg-bhx-yellow text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+          </a>
+          <a href="#" class="text-gray-700 hover:text-bhx-green transition duration-300">
+            <i class="fas fa-user-circle text-xl md:text-2xl"></i>
+          </a>
+        </div>
+      </div>
+      <!-- Mobile Search Bar -->
+      <div class="mt-3 lg:hidden">
+          <div class="flex">
+            <input type="text" id="mobileSearchInput" placeholder="Tìm sản phẩm bạn cần..."
+              class="w-full p-2 border border-gray-300 rounded-l-md focus:ring-1 focus:ring-bhx-green focus:border-transparent outline-none">
+            <button class="bg-bhx-green text-white px-3 py-2 rounded-r-md hover:bg-bhx-green-dark transition duration-300">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Menu (Sidebar) -->
+  <div id="mobileMenu" class="lg:hidden fixed inset-0 flex z-40 hidden">
+      <!-- Overlay -->
+      <div id="mobileMenuOverlay" class="fixed inset-0 bg-black opacity-50"></div>
+      <!-- Menu Content -->
+      <div class="relative flex-1 flex flex-col max-w-xs w-full bg-white category-menu overflow-y-auto">
+          <div class="absolute top-0 right-0 -mr-12 pt-2">
+              <button id="closeMobileMenuButton" type="button" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                  <span class="sr-only">Close sidebar</span>
+                  <i class="fas fa-times text-white text-2xl"></i>
+              </button>
+          </div>
+          <div class="flex items-center justify-center h-16 bg-bhx-green text-white text-xl font-bold">
+             Danh Mục Sản Phẩm
+          </div>
+          <nav id="mobileCategoryNav" class="mt-2 flex-1 px-2 space-y-1">
+              <!-- Mobile categories will be populated here by JS -->
+          </nav>
+      </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="container mx-auto px-2 sm:px-4 py-6">
+    <div class="flex flex-col lg:flex-row gap-6">
+      <!-- Category Menu (Desktop) -->
+      <aside class="hidden lg:block w-full lg:w-1/4 xl:w-1/5 bg-white p-4 rounded-lg shadow">
+        <h2 class="text-xl font-semibold text-bhx-green mb-4 border-b-2 border-bhx-green pb-2">
+            <i class="fas fa-list-ul mr-2"></i>Danh Mục
+        </h2>
+        <nav id="desktopCategoryNav" class="space-y-2 category-menu max-h-[70vh] overflow-y-auto pr-2">
+          <!-- Categories will be populated here -->
+        </nav>
+      </aside>
+
+      <!-- Main Area: Banner + Products -->
+      <main class="w-full lg:w-3/4 xl:w-4/5">
+        <!-- Hero Banner -->
+        <section class="mb-8 rounded-lg overflow-hidden shadow-lg">
+          <div class="relative bg-bhx-yellow p-6 md:p-10 min-h-[200px] md:min-h-[250px] flex items-center">
+            <img src="https://cdn.tgdd.vn/Files/2021/07/16/1368631/bach-hoa-xanh-mo-lai-hon-100-sieu-thi-tren-toan-quoc-sau-lenh-gian-cach-xa-hoi-202107160855039616.jpg" 
+                 alt="Promotion Banner" 
+                 class="absolute inset-0 w-full h-full object-cover opacity-30">
+            <div class="relative z-10">
+              <h1 class="text-2xl md:text-4xl font-bold text-bhx-green mb-2">Ưu Đãi Ngập Tràn!</h1>
+              <p class="text-gray-700 md:text-lg mb-4">Mua sắm thả ga, không lo về giá. Khám phá ngay!</p>
+              <a href="#"
+                class="bg-bhx-green text-white font-semibold px-6 py-3 rounded-md hover:bg-bhx-green-dark transition duration-300 inline-block">
+                Xem Ngay Khuyến Mãi
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Product Listings -->
+        <section id="productSection">
+          <div class="flex justify-between items-center mb-6">
+            <h2 id="currentCategoryTitle" class="text-2xl font-bold text-gray-800">Tất Cả Sản Phẩm</h2>
+            <div>
+              <select id="sortProducts" class="p-2 border border-gray-300 rounded-md text-sm focus:ring-bhx-green focus:border-bhx-green">
+                <option value="default">Mới nhất</option>
+                <option value="price_asc">Giá: Thấp đến Cao</option>
+                <option value="price_desc">Giá: Cao đến Thấp</option>
+                <option value="name_asc">Tên: A-Z</option>
+              </select>
+            </div>
+          </div>
+          <div id="productListings" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+            <!-- Product cards will be injected here -->
+          </div>
+          <div id="noProductsMessage" class="text-center py-10 text-gray-500 hidden">
+            <i class="fas fa-box-open fa-3x mb-3"></i>
+            <p>Không tìm thấy sản phẩm nào.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 border-t mt-12">
+    <div class="container mx-auto px-4 py-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="text-lg font-semibold text-bhx-green mb-3">Về Bách Hóa XANH</h3>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li><a href="#" class="hover:text-bhx-green">Giới thiệu</a></li>
+            <li><a href="#" class="hover:text-bhx-green">Tuyển dụng</a></li>
+            <li><a href="#" class="hover:text-bhx-green">Điều khoản sử dụng</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-bhx-green mb-3">Chăm sóc khách hàng</h3>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li><a href="#" class="hover:text-bhx-green">Trung tâm trợ giúp</a></li>
+            <li><a href="#" class="hover:text-bhx-green">Hướng dẫn mua hàng</a></li>
+            <li><a href="#" class="hover:text-bhx-green">Chính sách đổi trả</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-bhx-green mb-3">Thanh toán</h3>
+          <div class="flex space-x-2">
+            <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-MoMo-Square.png" alt="MoMo" class="h-8">
+            <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-ZaloPay-Arc.png" alt="ZaloPay" class="h-8">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" alt="Mastercard" class="h-8">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Visa.svg/1200px-Visa.svg.png" alt="Visa" class="h-8">
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-bhx-green mb-3">Kết nối với chúng tôi</h3>
+          <div class="flex space-x-3">
+            <a href="#" class="text-gray-500 hover:text-bhx-green text-2xl"><i class="fab fa-facebook-square"></i></a>
+            <a href="#" class="text-gray-500 hover:text-bhx-green text-2xl"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="text-gray-500 hover:text-bhx-green text-2xl"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t pt-6 text-center text-sm text-gray-500">
+        <p>© 2023 Công Ty Cổ Phần Thương Mại Bách Hóa XANH.</p>
+        <p>Địa chỉ: Lô T2-1.2, Đường D1, Khu Công Nghệ Cao, Phường Tân Phú, Quận 9, TP. Hồ Chí Minh.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const mockProducts = [
+      { id: 1, name: "Cải Thìa VietGAP 500g", category: "Rau củ quả", price: 15000, oldPrice: 18000, image: "https://cdn.tgdd.vn/Products/Images/8788/208698/bhx/cai-thia-tui-500g-202212081722585839.jpg", unit: "túi", promo: "Giảm 15%" },
+      { id: 2, name: "Thịt Ba Rọi Heo CP Khay 500g", category: "Thịt, cá, trứng", price: 75000, image: "https://cdn.tgdd.vn/Products/Images/8790/214824/bhx/thit-ba-roi-heo-cp-khay-500g-202308011514165787.jpg", unit: "khay" },
+      { id: 3, name: "Nước Giải Khát Coca-Cola Lon 320ml", category: "Đồ uống", price: 9000, image: "https://cdn.tgdd.vn/Products/Images/2443/76396/bhx/nuoc-ngot-coca-cola-lon-320ml-202302131031574945.jpg", unit: "lon" },
+      { id: 4, name: "Sữa Tươi Tiệt Trùng Vinamilk Có Đường Hộp 1L", category: "Sữa các loại", price: 32000, image: "https://cdn.tgdd.vn/Products/Images/2790/80099/bhx/sua-tuoi-tiet-trung-vinamilk-co-duong-hop-1-lit-202303011030371369.jpg", unit: "hộp", promo: "Mua 2 tặng 1" },
+      { id: 5, name: "Táo Gala Nhập Khẩu New Zealand 1kg", category: "Rau củ quả", price: 89000, image: "https://cdn.tgdd.vn/Products/Images/8789/238184/bhx/tao-gala-new-zealand-hop-1kg-8-10-trai-202308121416518527.jpg", unit: "kg" },
+      { id: 6, name: "Cá Diêu Hồng Làm Sạch Nguyên Con", category: "Thịt, cá, trứng", price: 65000, image: "https://cdn.tgdd.vn/Products/Images/2566/243911/bhx/ca-dieu-hong-lam-sach-nguyen-con-con-tu-08-1kg-202304241525072162.jpg", unit: "con", promo: "Giá tốt" },
+      { id: 7, name: "Nước Suối Aquafina Chai 500ml", category: "Đồ uống", price: 4000, image: "https://cdn.tgdd.vn/Products/Images/2443/76105/bhx/nuoc-suoi-aquafina-chai-500ml-202302131035175925.jpg", unit: "chai" },
+      { id: 8, name: "Bánh Mì Sandwich Tươi Otto Gói 300g", category: "Bánh kẹo", price: 22000, image: "https://cdn.tgdd.vn/Products/Images/2450/211960/bhx/banh-mi-sandwich-tuoi-khong-nhan-otto-goi-300g-202302281558274767.jpg", unit: "gói" },
+      { id: 9, name: "Dầu Ăn Simply Đậu Nành Chai 1L", category: "Gia vị", price: 58000, image: "https://cdn.tgdd.vn/Products/Images/2565/76121/bhx/dau-an-simply-dau-nanh-chai-1-lit-202303011040319281.jpg", unit: "chai" },
+      { id: 10, name: "Trứng Gà Ta Hộp 10 Quả", category: "Thịt, cá, trứng", price: 35000, image: "https://cdn.tgdd.vn/Products/Images/2568/210254/bhx/trung-ga-ta-sofood-hop-10-qua-202302281552105224.jpg", unit: "hộp" },
+    ];
+
+    const categories = [
+      { name: "Tất cả", icon: "fas fa-store" },
+      { name: "Rau củ quả", icon: "fas fa-carrot" },
+      { name: "Thịt, cá, trứng", icon: "fas fa-drumstick-bite" },
+      { name: "Đồ uống", icon: "fas fa-wine-bottle" },
+      { name: "Sữa các loại", icon: "fas fa-prescription-bottle" },
+      { name: "Bánh kẹo", icon: "fas fa-cookie-bite" },
+      { name: "Gia vị", icon: "fas fa-pepper-hot" },
+      { name: "Chăm sóc cá nhân", icon: "fas fa-pump-soap" },
+      { name: "Vệ sinh nhà cửa", icon: "fas fa-broom" },
+    ];
+
+    const productListingsContainer = document.getElementById('productListings');
+    const desktopCategoryNav = document.getElementById('desktopCategoryNav');
+    const mobileCategoryNav = document.getElementById('mobileCategoryNav');
+    const currentCategoryTitle = document.getElementById('currentCategoryTitle');
+    const noProductsMessage = document.getElementById('noProductsMessage');
+    const cartCountElement = document.getElementById('cartCount');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const closeMobileMenuButton = document.getElementById('closeMobileMenuButton');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const sortSelect = document.getElementById('sortProducts');
+    const desktopSearchInput = document.getElementById('desktopSearchInput');
+    const mobileSearchInput = document.getElementById('mobileSearchInput');
+
+    let currentProducts = [...mockProducts];
+    let activeCategory = "Tất cả";
+    let cartItems = 0;
+
+    function formatPrice(price) {
+      return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
+
+    function renderProducts(productsToRender) {
+      productListingsContainer.innerHTML = '';
+      if (productsToRender.length === 0) {
+        noProductsMessage.classList.remove('hidden');
+        return;
+      }
+      noProductsMessage.classList.add('hidden');
+
+      productsToRender.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col';
+        card.innerHTML = `
+          <div class="relative">
+            <img src="${product.image}" alt="${product.name}" class="w-full h-40 sm:h-48 object-contain p-2">
+            ${product.promo ? `<span class="absolute top-2 left-2 bg-bhx-yellow text-black text-xs font-semibold px-2 py-1 rounded">${product.promo}</span>` : ''}
+          </div>
+          <div class="p-3 md:p-4 flex flex-col flex-grow">
+            <h3 class="text-sm md:text-base font-semibold text-gray-800 mb-1 h-10 leading-tight overflow-hidden">${product.name}</h3>
+            <p class="text-xs text-gray-500 mb-2">ĐVT: ${product.unit}</p>
+            <div class="mt-auto">
+              <div class="flex items-baseline mb-2">
+                <p class="text-base md:text-lg font-bold text-bhx-green mr-2">${formatPrice(product.price)}</p>
+                ${product.oldPrice ? `<p class="text-xs text-gray-400 line-through">${formatPrice(product.oldPrice)}</p>` : ''}
+              </div>
+              <button data-product-id="${product.id}" class="add-to-cart-btn w-full bg-bhx-green text-white py-2 px-3 rounded-md hover:bg-bhx-green-dark transition duration-300 text-sm font-medium">
+                <i class="fas fa-cart-plus mr-1"></i> Thêm vào giỏ
+              </button>
+            </div>
+          </div>
+        `;
+        productListingsContainer.appendChild(card);
+      });
+
+      // Add event listeners to new "Add to Cart" buttons
+      document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          cartItems++;
+          cartCountElement.textContent = cartItems;
+          // Could add animation or notification here
+        });
+      });
+    }
+
+    function renderCategories() {
+        const renderNav = (navElement) => {
+            navElement.innerHTML = ''; // Clear existing categories
+            categories.forEach(category => {
+                const categoryLink = document.createElement('a');
+                categoryLink.href = "#";
+                categoryLink.className = `flex items-center px-3 py-2.5 text-sm font-medium rounded-md hover:bg-gray-100 hover:text-bhx-green transition duration-150 ${category.name === activeCategory ? 'active-category' : 'text-gray-700'}`;
+                categoryLink.innerHTML = `<i class="${category.icon} mr-3 w-5 text-center text-gray-500"></i> ${category.name}`;
+                categoryLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    activeCategory = category.name;
+                    currentCategoryTitle.textContent = category.name;
+                    filterAndSortProducts();
+                    renderCategories(); // Re-render to update active state
+                    if (mobileMenu.classList.contains('hidden') === false) {
+                        toggleMobileMenu(); // Close mobile menu on category selection
+                    }
+                });
+                navElement.appendChild(categoryLink);
+            });
+        }
+        renderNav(desktopCategoryNav);
+        renderNav(mobileCategoryNav);
+    }
+
+    function filterAndSortProducts() {
+        let filtered = [...mockProducts];
+
+        // Category filter
+        if (activeCategory !== "Tất cả") {
+            filtered = filtered.filter(p => p.category === activeCategory);
+        }
+
+        // Search filter
+        const searchTermDesktop = desktopSearchInput.value.toLowerCase();
+        const searchTermMobile = mobileSearchInput.value.toLowerCase();
+        const searchTerm = searchTermDesktop || searchTermMobile; // Use whichever has input
+
+        if (searchTerm) {
+            filtered = filtered.filter(p => 
+                p.name.toLowerCase().includes(searchTerm) ||
+                (p.category && p.category.toLowerCase().includes(searchTerm))
+            );
+        }
+        
+        // Sorting
+        const sortValue = sortSelect.value;
+        switch(sortValue) {
+            case 'price_asc':
+                filtered.sort((a,b) => a.price - b.price);
+                break;
+            case 'price_desc':
+                filtered.sort((a,b) => b.price - a.price);
+                break;
+            case 'name_asc':
+                filtered.sort((a,b) => a.name.localeCompare(b.name));
+                break;
+            // default (newest) - no specific sort as mock data isn't time-based
+        }
+        currentProducts = filtered;
+        renderProducts(currentProducts);
+    }
+    
+    function toggleMobileMenu() {
+        mobileMenu.classList.toggle('hidden');
+    }
+
+    // Event Listeners
+    sortSelect.addEventListener('change', filterAndSortProducts);
+    desktopSearchInput.addEventListener('input', filterAndSortProducts);
+    mobileSearchInput.addEventListener('input', filterAndSortProducts);
+
+    mobileMenuButton.addEventListener('click', toggleMobileMenu);
+    closeMobileMenuButton.addEventListener('click', toggleMobileMenu);
+    mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+
+
+    // Initial Load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCategories();
+      renderProducts(currentProducts);
+    });
+
+  </script>
+
+</body>
+</html>

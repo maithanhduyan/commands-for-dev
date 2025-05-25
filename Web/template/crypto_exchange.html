@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Exchange | Modern Binance Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        
+        /* Custom animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* Custom chart container */
+        .chart-container {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+        
+        /* Price change colors */
+        .price-up {
+            color: #0ecb81;
+        }
+        .price-down {
+            color: #f6465d;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-200 font-sans overflow-hidden">
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-8">
+            <div class="flex items-center">
+                <i class="fab fa-bitcoin text-yellow-500 text-2xl mr-2"></i>
+                <span class="text-xl font-bold">CryptoExchange</span>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#" class="text-blue-400 hover:text-blue-300">Markets</a>
+                <a href="#" class="hover:text-gray-300">Trade</a>
+                <a href="#" class="hover:text-gray-300">Futures</a>
+                <a href="#" class="hover:text-gray-300">Earn</a>
+                <a href="#" class="hover:text-gray-300">NFT</a>
+            </nav>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="hidden md:flex items-center bg-slate-700 rounded-lg px-3 py-1">
+                <i class="fas fa-search text-gray-400 mr-2"></i>
+                <input type="text" placeholder="Search..." class="bg-transparent border-none outline-none w-40 text-sm">
+            </div>
+            <button class="bg-blue-600 hover:bg-blue-700 px-4 py-1 rounded-md text-sm font-medium">
+                Log In
+            </button>
+            <button class="bg-yellow-500 hover:bg-yellow-600 px-4 py-1 rounded-md text-sm font-medium text-gray-900">
+                Register
+            </button>
+            <button class="md:hidden text-gray-400">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex flex-col md:flex-row h-screen">
+        <!-- Left Sidebar -->
+        <div class="w-full md:w-64 bg-slate-800 border-r border-slate-700 overflow-y-auto">
+            <div class="p-4 border-b border-slate-700">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-medium">Markets</h3>
+                    <button class="text-gray-400 hover:text-gray-200">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+                <div class="flex border-b border-slate-700">
+                    <button class="flex-1 py-2 text-sm font-medium border-b-2 border-blue-500">Spot</button>
+                    <button class="flex-1 py-2 text-sm text-gray-400 hover:text-gray-200">Futures</button>
+                </div>
+                <div class="mt-3">
+                    <div class="flex justify-between text-xs text-gray-400 mb-1">
+                        <span>Pair</span>
+                        <span>Price</span>
+                        <span>24h Chg%</span>
+                    </div>
+                    <div class="space-y-2 max-h-96 overflow-y-auto">
+                        <!-- Market pairs list -->
+                        <div class="market-pair flex justify-between items-center p-1 hover:bg-slate-700 rounded cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center mr-2">
+                                    <i class="fab fa-bitcoin text-white text-xs"></i>
+                                </div>
+                                <span class="font-medium">BTC/USDT</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-medium">$30,245.12</div>
+                                <div class="text-xs price-up">+2.34%</div>
+                            </div>
+                        </div>
+                        <div class="market-pair flex justify-between items-center p-1 hover:bg-slate-700 rounded cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center mr-2">
+                                    <i class="fab fa-ethereum text-white text-xs"></i>
+                                </div>
+                                <span class="font-medium">ETH/USDT</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-medium">$1,845.67</div>
+                                <div class="text-xs price-down">-1.23%</div>
+                            </div>
+                        </div>
+                        <div class="market-pair flex justify-between items-center p-1 hover:bg-slate-700 rounded cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-yellow-500 flex items-center justify-center mr-2">
+                                    <i class="fas fa-dollar-sign text-white text-xs"></i>
+                                </div>
+                                <span class="font-medium">SOL/USDT</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-medium">$42.18</div>
+                                <div class="text-xs price-up">+5.67%</div>
+                            </div>
+                        </div>
+                        <div class="market-pair flex justify-between items-center p-1 hover:bg-slate-700 rounded cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center mr-2">
+                                    <i class="fas fa-bolt text-white text-xs"></i>
+                                </div>
+                                <span class="font-medium">BNB/USDT</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-medium">$245.32</div>
+                                <div class="text-xs price-up">+0.87%</div>
+                            </div>
+                        </div>
+                        <div class="market-pair flex justify-between items-center p-1 hover:bg-slate-700 rounded cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center mr-2">
+                                    <i class="fas fa-coins text-white text-xs"></i>
+                                </div>
+                                <span class="font-medium">ADA/USDT</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-medium">$0.32</div>
+                                <div class="text-xs price-down">-2.15%</div>
+                            </div>
+                        </div>
+                        <div class="market-pair flex justify-between items-center p-1 hover:bg-slate-700 rounded cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center mr-2">
+                                    <i class="fas fa-fire text-white text-xs"></i>
+                                </div>
+                                <span class="font-medium">DOT/USDT</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-medium">$5.67</div>
+                                <div class="text-xs price-up">+3.42%</div>
+                            </div>
+                        </div>
+                        <div class="market-pair flex justify-between items-center p-1 hover:bg-slate-700 rounded cursor-pointer">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center mr-2">
+                                    <i class="fas fa-link text-white text-xs"></i>
+                                </div>
+                                <span class="font-medium">LINK/USDT</span>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-medium">$7.89</div>
+                                <div class="text-xs price-down">-0.56%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4">
+                <h3 class="font-medium mb-3">Favorites</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-slate-700 px-2 py-1 rounded text-sm">BTC</span>
+                    <span class="bg-slate-700 px-2 py-1 rounded text-sm">ETH</span>
+                    <span class="bg-slate-700 px-2 py-1 rounded text-sm">BNB</span>
+                    <span class="bg-slate-700 px-2 py-1 rounded text-sm">SOL</span>
+                    <span class="bg-slate-700 px-2 py-1 rounded text-sm">XRP</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Trading Area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Trading Pair Info -->
+            <div class="bg-slate-800 border-b border-slate-700 p-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center mr-2">
+                                <i class="fab fa-bitcoin text-white text-sm"></i>
+                            </div>
+                            <span class="font-bold text-lg">BTC/USDT</span>
+                        </div>
+                        <span class="text-lg font-bold">$30,245.12</span>
+                        <span class="text-sm price-up">+2.34%</span>
+                        <div class="text-xs text-gray-400">
+                            <span>24h High: <span class="text-gray-200">$30,789.23</span></span>
+                            <span class="mx-2">|</span>
+                            <span>24h Low: <span class="text-gray-200">$29,456.78</span></span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button class="text-gray-400 hover:text-gray-200">
+                            <i class="fas fa-star"></i>
+                        </button>
+                        <button class="text-gray-400 hover:text-gray-200">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                        <button class="text-gray-400 hover:text-gray-200">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart and Trading Components -->
+            <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+                <!-- Chart Area -->
+                <div class="flex-1 flex flex-col border-r border-slate-700">
+                    <!-- Chart Tabs -->
+                    <div class="bg-slate-800 border-b border-slate-700 flex">
+                        <button class="px-4 py-2 text-sm font-medium border-b-2 border-blue-500">Price</button>
+                        <button class="px-4 py-2 text-sm text-gray-400 hover:text-gray-200">Depth</button>
+                        <button class="px-4 py-2 text-sm text-gray-400 hover:text-gray-200">TV</button>
+                        <div class="flex-1 flex justify-end pr-4">
+                            <div class="flex space-x-1">
+                                <button class="px-2 py-1 text-xs bg-slate-700 rounded hover:bg-slate-600">1m</button>
+                                <button class="px-2 py-1 text-xs bg-slate-700 rounded hover:bg-slate-600">5m</button>
+                                <button class="px-2 py-1 text-xs bg-blue-600 rounded">15m</button>
+                                <button class="px-2 py-1 text-xs bg-slate-700 rounded hover:bg-slate-600">1h</button>
+                                <button class="px-2 py-1 text-xs bg-slate-700 rounded hover:bg-slate-600">4h</button>
+                                <button class="px-2 py-1 text-xs bg-slate-700 rounded hover:bg-slate-600">1d</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart Canvas -->
+                    <div class="chart-container p-4">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                    
+                    <!-- Order Form -->
+                    <div class="bg-slate-800 border-t border-slate-700 p-4">
+                        <div class="grid grid-cols-3 gap-2 mb-3">
+                            <button class="bg-slate-700 hover:bg-slate-600 py-1 rounded text-sm">Limit</button>
+                            <button class="bg-slate-700 hover:bg-slate-600 py-1 rounded text-sm">Market</button>
+                            <button class="bg-slate-700 hover:bg-slate-600 py-1 rounded text-sm">Stop-Limit</button>
+                        </div>
+                        
+                        <!-- Buy Form -->
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm text-green-400">Buy BTC</span>
+                                <span class="text-xs text-gray-400">Balance: 5,000.00 USDT</span>
+                            </div>
+                            <div class="relative mb-2">
+                                <input type="text" class="w-full bg-slate-700 border border-slate-600 rounded pl-2 pr-12 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Price">
+                                <span class="absolute right-2 top-2 text-gray-400 text-sm">USDT</span>
+                            </div>
+                            <div class="relative mb-2">
+                                <input type="text" class="w-full bg-slate-700 border border-slate-600 rounded pl-2 pr-12 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Amount">
+                                <span class="absolute right-2 top-2 text-gray-400 text-sm">BTC</span>
+                            </div>
+                            <div class="grid grid-cols-5 gap-1 mb-2">
+                                <button class="bg-slate-700 hover:bg-slate-600 py-1 text-xs rounded">25%</button>
+                                <button class="bg-slate-700 hover:bg-slate-600 py-1 text-xs rounded">50%</button>
+                                <button class="bg-slate-700 hover:bg-slate-600 py-1 text-xs rounded">75%</button>
+                                <button class="bg-slate-700 hover:bg-slate-600 py-1 text-xs rounded">100%</button>
+                                <button class="bg-slate-700 hover:bg-slate-600 py-1 text-xs rounded">
+                                    <i class="fas fa-broom"></i>
+                                </button>
+                            </div>
+                            <button class="w-full bg-green-600 hover:bg-green-700 py-2 rounded-md font-medium">Buy BTC</button>
+                        </div>
+                        
+                        <!-- Sell Form -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm text-red-400">Sell BTC</span>
+                                <span class="text-xs text-gray-400">Balance: 0.5 BTC</span>
+                            </div>
+                            <div class="relative mb-2">
+                                <input type="text" class="w-full bg-slate-700 border border-slate-600 rounded pl-2 pr-12 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Price">
+                                <span class="absolute right-2 top-2 text-gray-400 text-sm">USDT</span>
+                            </div>
+                            <div class="relative mb-2">
+                                <input type="text" class="w-full bg-slate-700 border border-slate-600 rounded pl-2 pr-12 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Amount">
+                                <span class="absolute right-2 top-2 text-gray-400 text-sm">BTC</span>
+                            </div>
+                            <div class="grid grid-cols-5 gap-1 mb-2">
+                                <button class="bg-slate-700 hover:bg-slate-600 py-1 text-xs rounded">25%</button>
+                                <button class="bg-slate-700 hover:bg-slate-600 py-1 text-xs rounded">50%</button>
+                                <button class="bg-slate-700 hover:bg-slate-600 py-1 text-xs rounded">75%</button>
+                                <button class="bg-slate-700 hover:bg-slate-600 py-1 text-xs rounded">100%</button>
+                                <button class="bg-slate-700 hover:bg-slate-600 py-1 text-xs rounded">
+                                    <i class="fas fa-broom"></i>
+                                </button>
+                            </div>
+                            <button class="w-full bg-red-600 hover:bg-red-700 py-2 rounded-md font-medium">Sell BTC</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Book and Recent Trades -->
+                <div class="w-full md:w-80 bg-slate-800 flex flex-col overflow-hidden">
+                    <!-- Order Book -->
+                    <div class="flex-1 border-b border-slate-700 overflow-hidden">
+                        <div class="p-3 border-b border-slate-700 flex justify-between">
+                            <h3 class="font-medium">Order Book</h3>
+                            <div class="flex items-center text-xs text-gray-400">
+                                <span class="mr-2">0.01</span>
+                                <i class="fas fa-cog"></i>
+                            </div>
+                        </div>
+                        <div class="h-1/2 overflow-y-auto">
+                            <div class="px-3 py-1 text-xs text-gray-400 flex justify-between">
+                                <span>Price (USDT)</span>
+                                <span>Amount (BTC)</span>
+                                <span>Total</span>
+                            </div>
+                            <div class="space-y-1 px-3">
+                                <!-- Sell orders (red) -->
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-down">30,250.12</span>
+                                    <span>0.452</span>
+                                    <span>13,673.15</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-down">30,248.76</span>
+                                    <span>1.234</span>
+                                    <span>37,327.37</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-down">30,246.89</span>
+                                    <span>0.765</span>
+                                    <span>23,138.87</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-down">30,245.34</span>
+                                    <span>2.109</span>
+                                    <span>63,787.02</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-down">30,243.21</span>
+                                    <span>0.876</span>
+                                    <span>26,493.05</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 text-center">
+                            <span class="font-bold">30,245.12</span>
+                            <span class="text-xs text-gray-400 ml-2">$30,245.12</span>
+                        </div>
+                        <div class="h-1/2 overflow-y-auto">
+                            <div class="space-y-1 px-3">
+                                <!-- Buy orders (green) -->
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-up">30,240.05</span>
+                                    <span>1.543</span>
+                                    <span>46,660.40</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-up">30,238.92</span>
+                                    <span>0.654</span>
+                                    <span>19,776.25</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-up">30,237.45</span>
+                                    <span>2.876</span>
+                                    <span>86,962.90</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-up">30,235.67</span>
+                                    <span>1.234</span>
+                                    <span>37,310.82</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-up">30,234.12</span>
+                                    <span>0.543</span>
+                                    <span>16,417.13</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Trades -->
+                    <div class="flex-1 overflow-hidden">
+                        <div class="p-3 border-b border-slate-700">
+                            <h3 class="font-medium">Recent Trades</h3>
+                        </div>
+                        <div class="px-3 py-1 text-xs text-gray-400 flex justify-between">
+                            <span>Price (USDT)</span>
+                            <span>Amount (BTC)</span>
+                            <span>Time</span>
+                        </div>
+                        <div class="h-full overflow-y-auto">
+                            <div class="space-y-1 px-3">
+                                <!-- Recent trades -->
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-up">30,245.12</span>
+                                    <span>0.045</span>
+                                    <span class="text-gray-400">12:45:23</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-down">30,244.87</span>
+                                    <span>1.234</span>
+                                    <span class="text-gray-400">12:45:21</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-up">30,245.01</span>
+                                    <span>0.543</span>
+                                    <span class="text-gray-400">12:45:18</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-down">30,243.76</span>
+                                    <span>2.109</span>
+                                    <span class="text-gray-400">12:45:15</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-up">30,244.32</span>
+                                    <span>0.876</span>
+                                    <span class="text-gray-400">12:45:12</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-up">30,244.56</span>
+                                    <span>0.654</span>
+                                    <span class="text-gray-400">12:45:09</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-down">30,243.89</span>
+                                    <span>1.543</span>
+                                    <span class="text-gray-400">12:45:05</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="price-up">30,244.23</span>
+                                    <span>0.321</span>
+                                    <span class="text-gray-400">12:45:02</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize price chart
+        const ctx = document.getElementById('priceChart').getContext('2d');
+        const priceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 30}, (_, i) => i + 1),
+                datasets: [{
+                    label: 'BTC/USDT',
+                    data: [30000, 30120, 30250, 30180, 30200, 30230, 30280, 30320, 30290, 30250, 
+                           30230, 30200, 30170, 30150, 30180, 30200, 30230, 30250, 30270, 30290, 
+                           30320, 30290, 30260, 30240, 30220, 30200, 30180, 30200, 30230, 30245],
+                    borderColor: '#0ecb81',
+                    backgroundColor: 'rgba(14, 203, 129, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(71, 85, 105, 0.3)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#9ca3af'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(71, 85, 105, 0.3)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#9ca3af'
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                elements: {
+                    point: {
+                        radius: 0
+                    }
+                }
+            }
+        });
+
+        // Simulate price updates
+        setInterval(() => {
+            const lastPrice = priceChart.data.datasets[0].data[priceChart.data.datasets[0].data.length - 1];
+            const change = (Math.random() - 0.5) * 50;
+            const newPrice = lastPrice + change;
+            
+            // Update chart
+            priceChart.data.datasets[0].data.shift();
+            priceChart.data.datasets[0].data.push(newPrice);
+            priceChart.update();
+            
+            // Update price display
+            const priceElement = document.querySelector('.trading-pair-info span:nth-child(2)');
+            const changeElement = document.querySelector('.trading-pair-info span:nth-child(3)');
+            
+            if (priceElement) {
+                priceElement.textContent = `$${newPrice.toFixed(2)}`;
+            }
+            
+            if (changeElement) {
+                const percentChange = ((newPrice - 30000) / 30000 * 100).toFixed(2);
+                changeElement.textContent = `${percentChange >= 0 ? '+' : ''}${percentChange}%`;
+                changeElement.className = percentChange >= 0 ? 'text-sm price-up' : 'text-sm price-down';
+            }
+            
+            // Update order book (simplified)
+            const orderBookPrices = document.querySelectorAll('.order-book span:first-child');
+            orderBookPrices.forEach(priceEl => {
+                const currentPrice = parseFloat(priceEl.textContent.replace(/,/g, ''));
+                const updatedPrice = currentPrice + (Math.random() - 0.5) * 5;
+                priceEl.textContent = updatedPrice.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            });
+            
+            // Add new trade to recent trades
+            const recentTradesContainer = document.querySelector('.recent-trades .space-y-1');
+            if (recentTradesContainer) {
+                const now = new Date();
+                const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+                
+                const isUp = Math.random() > 0.5;
+                const newTrade = document.createElement('div');
+                newTrade.className = 'flex justify-between text-xs';
+                newTrade.innerHTML = `
+                    <span class="${isUp ? 'price-up' : 'price-down'}">${newPrice.toFixed(2)}</span>
+                    <span>${(Math.random() * 3).toFixed(3)}</span>
+                    <span class="text-gray-400">${timeString}</span>
+                `;
+                
+                recentTradesContainer.insertBefore(newTrade, recentTradesContainer.firstChild);
+                
+                // Limit to 8 trades
+                if (recentTradesContainer.children.length > 8) {
+                    recentTradesContainer.removeChild(recentTradesContainer.lastChild);
+                }
+            }
+        }, 3000);
+
+        // Market pair selection
+        document.querySelectorAll('.market-pair').forEach(pair => {
+            pair.addEventListener('click', function() {
+                // Remove active class from all pairs
+                document.querySelectorAll('.market-pair').forEach(p => {
+                    p.classList.remove('bg-blue-900', 'bg-opacity-30');
+                });
+                
+                // Add active class to clicked pair
+                this.classList.add('bg-blue-900', 'bg-opacity-30');
+                
+                // Update trading pair info
+                const pairName = this.querySelector('span:first-child').textContent;
+                const priceInfo = this.querySelector('div:last-child');
+                const price = priceInfo.querySelector('div:first-child').textContent;
+                const change = priceInfo.querySelector('div:last-child').textContent;
+                const isUp = priceInfo.querySelector('div:last-child').classList.contains('price-up');
+                
+                document.querySelector('.trading-pair-info div:first-child span:last-child').textContent = pairName;
+                document.querySelector('.trading-pair-info span:nth-child(2)').textContent = price;
+                const changeElement = document.querySelector('.trading-pair-info span:nth-child(3)');
+                changeElement.textContent = change;
+                changeElement.className = isUp ? 'text-sm price-up' : 'text-sm price-down';
+                
+                // Update chart with new data (simplified)
+                const baseValue = parseFloat(price.replace(/[^0-9.]/g, ''));
+                const newData = Array.from({length: 30}, (_, i) => {
+                    return baseValue + (Math.random() - 0.5) * baseValue * 0.02;
+                });
+                
+                priceChart.data.datasets[0].data = newData;
+                priceChart.update();
+            });
+        });
+    </script>
+</body>
+</html>
