@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Hệ thống POS Siêu thị</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8">
+<!-- TailwindCSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- TailwindCSS Configuration for custom colors -->
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+'pos-green': '#28a745', // Primary success color
+'pos-dark-green': '#218838', // Darker green for hover
+'pos-blue': '#007bff', // Primary info/action color
+'pos-dark-blue': '#0056b3', // Darker blue for hover
+'pos-red': '#dc3545', // Danger/error color
+'pos-dark-red': '#c82333', // Darker red for hover
+'pos-gray': '#f8f9fa', // Light background gray
+'pos-dark-gray': '#e9ecef', // Slightly darker background gray
+}
+}
+}
+}
+</script>
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+/* Base body styling for centering the POS system */
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, clean font */
+background-color: #e0e0e0; /* Soft gray background for contrast */
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh; /* Full viewport height */
+margin: 0;
+overflow: hidden; /* Prevent body scroll if content overflows */
+}
+
+/* Custom scrollbar for better aesthetics and touch interaction */
+  .product-list-container::-webkit-scrollbar {
+    width: 12px;
+  }
+  .product-list-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  .product-list-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+  .product-list-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  /* Ensure buttons retain their full height/width on touch for better usability */
+  button {
+      -webkit-tap-highlight-color: transparent;
+  }
+</style>
+
+</head>
+<body>
+<!-- Main POS Container - designed for large touchscreens -->
+<div class="flex w-full h-[95vh] max-w-full bg-white shadow-2xl rounded-lg overflow-hidden">
+
+<!-- Left Panel: Product Categories & Quick Access Items -->
+  <div class="w-1/4 bg-pos-dark-gray p-4 flex flex-col border-r border-gray-300">
+    <h2 class="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+        <i class="fas fa-cubes mr-3 text-pos-blue"></i>Danh mục sản phẩm
+    </h2>
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <button class="category-btn bg-pos-blue text-white py-4 rounded-lg text-xl font-semibold hover:bg-pos-dark-blue transition-colors shadow-md">
+        <i class="fas fa-apple-alt mr-2"></i>Rau Củ
+      </button>
+      <button class="category-btn bg-pos-blue text-white py-4 rounded-lg text-xl font-semibold hover:bg-pos-dark-blue transition-colors shadow-md">
+        <i class="fas fa-bread-slice mr-2"></i>Bánh Mì
+      </button>
+      <button class="category-btn bg-pos-blue text-white py-4 rounded-lg text-xl font-semibold hover:bg-pos-dark-blue transition-colors shadow-md">
+        <i class="fas fa-fish mr-2"></i>Thịt Cá
+      </button>
+      <button class="category-btn bg-pos-blue text-white py-4 rounded-lg text-xl font-semibold hover:bg-pos-dark-blue transition-colors shadow-md">
+        <i class="fas fa-wine-glass mr-2"></i>Đồ Uống
+      </button>
+      <button class="category-btn bg-pos-blue text-white py-4 rounded-lg text-xl font-semibold hover:bg-pos-dark-blue transition-colors shadow-md">
+        <i class="fas fa-cookie-bite mr-2"></i>Đồ Ăn Vặt
+      </button>
+      <button class="category-btn bg-pos-blue text-white py-4 rounded-lg text-xl font-semibold hover:bg-pos-dark-blue transition-colors shadow-md">
+        <i class="fas fa-box-open mr-2"></i>Khác
+      </button>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-4 text-gray-800 flex items-center">
+        <i class="fas fa-star mr-3 text-yellow-500"></i>Sản phẩm nhanh
+    </h2>
+    <div class="grid grid-cols-2 gap-3 flex-grow overflow-y-auto pr-2">
+      <!-- Quick item buttons for frequently purchased items -->
+      <button class="quick-item-btn bg-gray-200 text-gray-800 py-4 rounded-lg text-xl font-semibold hover:bg-gray-300 transition-colors shadow-sm" data-id="PROD001" data-name="Sữa tươi Vinamilk" data-price="25000">Sữa tươi</button>
+      <button class="quick-item-btn bg-gray-200 text-gray-800 py-4 rounded-lg text-xl font-semibold hover:bg-gray-300 transition-colors shadow-sm" data-id="PROD008" data-name="Trứng gà (10 quả)" data-price="35000">Trứng gà</button>
+      <button class="quick-item-btn bg-gray-200 text-gray-800 py-4 rounded-lg text-xl font-semibold hover:bg-gray-300 transition-colors shadow-sm" data-id="PROD011" data-name="Gạo Thơm Jasmine 5kg" data-price="80000">Gạo (5kg)</button>
+      <button class="quick-item-btn bg-gray-200 text-gray-800 py-4 rounded-lg text-xl font-semibold hover:bg-gray-300 transition-colors shadow-sm" data-id="PROD003" data-name="Nước ngọt Coca Cola" data-price="15000">Coca Cola</button>
+      <button class="quick-item-btn bg-gray-200 text-gray-800 py-4 rounded-lg text-xl font-semibold hover:bg-gray-300 transition-colors shadow-sm" data-id="PROD012" data-name="Bánh mì sandwich" data-price="20000">Bánh mì</button>
+      <button class="quick-item-btn bg-gray-200 text-gray-800 py-4 rounded-lg text-xl font-semibold hover:bg-gray-300 transition-colors shadow-sm" data-id="PROD013" data-name="Táo Mỹ (quả)" data-price="10000">Táo Mỹ</button>
+      <button class="quick-item-btn bg-gray-200 text-gray-800 py-4 rounded-lg text-xl font-semibold hover:bg-gray-300 transition-colors shadow-sm" data-id="PROD014" data-name="Thịt bò loại 1kg" data-price="250000">Thịt bò</button>
+      <button class="quick-item-btn bg-gray-200 text-gray-800 py-4 rounded-lg text-xl font-semibold hover:bg-gray-300 transition-colors shadow-sm" data-id="PROD006" data-name="Dầu ăn Tường An 1L" data-price="45000">Dầu ăn</button>
+    </div>
+  </div>
+
+  <!-- Center Panel: Product List, Search & Total Display -->
+  <div class="w-2/4 p-4 flex flex-col bg-white">
+    <div class="flex items-center mb-4 border border-gray-300 rounded-xl overflow-hidden shadow-sm">
+      <input type="text" id="barcode-input" placeholder="Nhập mã vạch hoặc tên sản phẩm..." class="flex-grow p-4 text-2xl outline-none focus:ring-4 focus:ring-pos-blue transition-all rounded-l-xl" />
+      <button class="bg-pos-green text-white p-4 text-2xl hover:bg-pos-dark-green transition-colors h-full rounded-r-xl">
+        <i class="fas fa-barcode mr-2"></i>Scan
+      </button>
+    </div>
+
+    <div class="flex items-center justify-between bg-gray-100 p-4 rounded-lg mb-3 text-xl font-bold text-gray-700 shadow-sm">
+      <span class="w-[8%] text-center">STT</span>
+      <span class="w-[35%]">Sản phẩm</span>
+      <span class="w-[15%] text-center">SL</span>
+      <span class="w-[20%] text-right">Đơn giá</span>
+      <span class="w-[18%] text-right">Thành tiền</span>
+      <span class="w-[4%] text-center"></span>
+    </div>
+
+    <div id="product-list-container" class="flex-grow overflow-y-auto product-list-container bg-white border border-gray-200 rounded-lg shadow-inner">
+      <ul id="cart-items" class="divide-y divide-gray-100">
+        <!-- Product items will be dynamically added here by JavaScript -->
+      </ul>
+    </div>
+
+    <div class="mt-4 p-5 bg-gray-100 rounded-lg text-right shadow-lg">
+      <p class="text-2xl font-semibold mb-3 text-gray-700">Tổng phụ: <span id="subtotal-display" class="ml-4 text-3xl font-bold text-gray-900">0đ</span></p>
+      <p class="text-2xl font-semibold mb-3 text-gray-700">Giảm giá: <span id="discount-display" class="ml-4 text-3xl font-bold text-pos-red">0đ</span></p>
+      <p class="text-4xl font-extrabold text-pos-green">TỔNG CỘNG: <span id="total-display" class="ml-4 text-5xl font-extrabold">0đ</span></p>
+    </div>
+  </div>
+
+  <!-- Right Panel: Keypad & Payment Options -->
+  <div class="w-1/4 bg-pos-dark-gray p-4 flex flex-col border-l border-gray-300">
+    <div class="mb-4">
+      <input type="text" id="num-input-display" class="w-full p-5 bg-gray-800 text-white text-4xl text-right rounded-lg font-mono tracking-wider focus:outline-none shadow-inner" value="0" readonly />
+    </div>
+
+    <div class="grid grid-cols-3 gap-3 mb-4 flex-grow">
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="7">7</button>
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="8">8</button>
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="9">9</button>
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="4">4</button>
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="5">5</button>
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="6">6</button>
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="1">1</button>
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="2">2</button>
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="3">3</button>
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="00">00</button>
+      <button class="keypad-btn bg-gray-700 text-white py-6 rounded-lg text-4xl font-bold hover:bg-gray-600 transition-colors shadow-md" data-value="0">0</button>
+      <button class="keypad-btn bg-red-600 text-white py-6 rounded-lg text-4xl font-bold hover:bg-red-700 transition-colors shadow-md" data-action="clear">C</button>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <button class="action-btn bg-yellow-500 text-white py-5 rounded-lg text-2xl font-bold hover:bg-yellow-600 transition-colors shadow-md" data-action="discount"><i class="fas fa-tags mr-2"></i>Giảm giá</button>
+      <button class="action-btn bg-purple-500 text-white py-5 rounded-lg text-2xl font-bold hover:bg-purple-600 transition-colors shadow-md" data-action="quantity"><i class="fas fa-boxes mr-2"></i>SL</button>
+      <button class="action-btn bg-orange-500 text-white py-5 rounded-lg text-2xl font-bold hover:bg-orange-600 transition-colors shadow-md" data-action="void"><i class="fas fa-times mr-2"></i>Hủy SP</button>
+      <button class="action-btn bg-red-500 text-white py-5 rounded-lg text-2xl font-bold hover:bg-red-600 transition-colors shadow-md" data-action="cancel-transaction"><i class="fas fa-ban mr-2"></i>Hủy ĐH</button>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <button class="payment-btn bg-pos-green text-white py-6 rounded-lg text-4xl font-extrabold hover:bg-pos-dark-green transition-colors shadow-lg" data-type="cash">
+        <i class="fas fa-money-bill-wave mr-3"></i>TIỀN MẶT
+      </button>
+      <button class="payment-btn bg-blue-600 text-white py-6 rounded-lg text-4xl font-extrabold hover:bg-blue-700 transition-colors shadow-lg" data-type="card">
+        <i class="fas fa-credit-card mr-3"></i>THẺ
+      </button>
+      <button class="payment-btn bg-indigo-600 text-white py-6 rounded-lg text-4xl font-extrabold hover:bg-indigo-700 transition-colors shadow-lg" data-type="momo">
+        <i class="fas fa-mobile-alt mr-3"></i>MOMO
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cartItemsElement = document.getElementById('cart-items');
+    const barcodeInput = document.getElementById('barcode-input');
+    const numInputDisplay = document.getElementById('num-input-display');
+    const subtotalDisplay = document.getElementById('subtotal-display');
+    const discountDisplay = document.getElementById('discount-display');
+    const totalDisplay = document.getElementById('total-display');
+
+    let cart = []; // Array to store items in the current transaction
+    let currentNumInput = '0'; // Stores input from the numerical keypad
+    let selectedCartItem = null; // Stores the ID of the currently selected item in the cart for actions
+
+    // Sample product database (in a real system, this would be fetched from a backend API)
+    const products = [
+      { id: 'PROD001', name: 'Sữa tươi Vinamilk 1L', price: 25000 },
+      { id: 'PROD002', name: 'Mì gói Hảo Hảo', price: 4000 },
+      { id: 'PROD003', name: 'Coca Cola lon 330ml', price: 10000 },
+      { id: 'PROD004', name: 'Bánh gạo Orion', price: 22000 },
+      { id: 'PROD005', name: 'Nước suối Aquafina 500ml', price: 7000 },
+      { id: 'PROD006', name: 'Dầu ăn Tường An 1L', price: 45000 },
+      { id: 'PROD007', name: 'Đường Biên Hòa 1kg', price: 20000 },
+      { id: 'PROD008', name: 'Trứng gà (10 quả)', price: 35000 },
+      { id: 'PROD009', name: 'Xà phòng Omo 800g', price: 60000 },
+      { id: 'PROD010', name: 'Nước rửa chén Sunlight 750ml', price: 30000 },
+      { id: 'PROD011', name: 'Gạo Thơm Jasmine 5kg', price: 80000 },
+      { id: 'PROD012', name: 'Bánh mì sandwich loại lớn', price: 20000 },
+      { id: 'PROD013', name: 'Táo Mỹ Fuji (quả)', price: 10000 },
+      { id: 'PROD014', name: 'Thịt bò tươi 1kg', price: 250000 },
+    ];
+
+    // Helper function to format currency (Vietnamese Dong)
+    const formatCurrency = (amount) => {
+      return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    };
+
+    // Renders or re-renders the shopping cart display
+    const renderCart = () => {
+      cartItemsElement.innerHTML = ''; // Clear existing items
+      let subtotal = 0;
+      let discountTotal = 0; // Placeholder for discount, can be implemented later
+
+      // Sort cart items by their original addition order or sequence number
+      cart.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = `flex items-center p-3 hover:bg-gray-50 transition-colors text-xl cursor-pointer 
+                        ${selectedCartItem === item.id ? 'bg-blue-100 border-l-4 border-pos-blue' : ''}`;
+        li.dataset.id = item.id;
+        li.dataset.index = index;
+
+        // Event listener for selecting an item in the cart
+        li.addEventListener('click', () => {
+            selectCartItem(item.id);
+        });
+
+        const itemSubtotal = item.price * item.quantity;
+        subtotal += itemSubtotal;
+
+        li.innerHTML = `
+          <span class="w-[8%] text-center">${index + 1}</span>
+          <span class="w-[35%] font-medium">${item.name}</span>
+          <div class="w-[15%] flex justify-center items-center">
+            <button class="quantity-btn bg-gray-200 hover:bg-gray-300 w-10 h-10 rounded-full text-2xl flex items-center justify-center font-bold" data-action="decrement" data-id="${item.id}">-</button>
+            <span class="mx-3 font-semibold">${item.quantity}</span>
+            <button class="quantity-btn bg-gray-200 hover:bg-gray-300 w-10 h-10 rounded-full text-2xl flex items-center justify-center font-bold" data-action="increment" data-id="${item.id}">+</button>
+          </div>
+          <span class="w-[20%] text-right">${formatCurrency(item.price)}</span>
+          <span class="w-[18%] text-right font-bold text-pos-green">${formatCurrency(itemSubtotal)}</span>
+          <div class="w-[4%] flex justify-center">
+            <button class="remove-item-btn text-pos-red hover:text-pos-dark-red text-3xl transition-colors" data-id="${item.id}">
+              <i class="fas fa-times-circle"></i>
+            </button>
+          </div>
+        `;
+        cartItemsElement.appendChild(li);
+      });
+
+      // Update total displays
+      subtotalDisplay.textContent = formatCurrency(subtotal);
+      discountDisplay.textContent = formatCurrency(discountTotal); // In a real app, this would be calculated
+      totalDisplay.textContent = formatCurrency(subtotal - discountTotal);
+    };
+
+    // Selects an item in the cart to apply specific actions (e.g., change quantity, void)
+    const selectCartItem = (id) => {
+        selectedCartItem = id;
+        renderCart(); // Re-render to visually highlight the selected item
+    };
+
+    // Adds a product to the cart or updates its quantity if already present
+    const addProductToCart = (product, quantity = 1) => {
+        const existingItemIndex = cart.findIndex(item => item.id === product.id);
+
+        if (existingItemIndex > -1) {
+            cart[existingItemIndex].quantity += quantity;
+        } else {
+            cart.push({ ...product, quantity });
+        }
+        renderCart();
+    };
+
+    // Removes a product from the cart
+    const removeProductFromCart = (id) => {
+        cart = cart.filter(item => item.id !== id);
+        if (selectedCartItem === id) {
+            selectedCartItem = null; // Deselect if the removed item was selected
+        }
+        renderCart();
+    };
+
+    // Event listener for barcode input (simulates scanning)
+    barcodeInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const searchTerm = barcodeInput.value.trim();
+        // Try to find by ID first, then by name (case-insensitive, includes)
+        const product = products.find(p => p.id === searchTerm || p.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        if (product) {
+          addProductToCart(product);
+          barcodeInput.value = ''; // Clear input after adding
+        } else {
+          alert('Sản phẩm không tìm thấy. Vui lòng thử lại!');
+        }
+        barcodeInput.focus(); // Keep focus for next scan
+      }
+    });
+
+    // Event listener for quick item buttons
+    document.querySelectorAll('.quick-item-btn').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const id = e.currentTarget.dataset.id;
+        const name = e.currentTarget.dataset.name;
+        const price = parseFloat(e.currentTarget.dataset.price);
+        addProductToCart({ id, name, price });
+      });
+    });
+
+    // Event delegation for quantity adjustment and item removal buttons within the cart
+    cartItemsElement.addEventListener('click', (e) => {
+        if (e.target.closest('.quantity-btn')) {
+            const button = e.target.closest('.quantity-btn');
+            const id = button.dataset.id;
+            const action = button.dataset.action;
+            const itemIndex = cart.findIndex(item => item.id === id);
+
+            if (itemIndex > -1) {
+                if (action === 'increment') {
+                    cart[itemIndex].quantity++;
+                } else if (action === 'decrement') {
+                    if (cart[itemIndex].quantity > 1) {
+                        cart[itemIndex].quantity--;
+                    } else {
+                        // If quantity drops to 0 or less, remove the item
+                        removeProductFromCart(id);
+                    }
+                }
+                renderCart();
+            }
+        } else if (e.target.closest('.remove-item-btn')) {
+            const button = e.target.closest('.remove-item-btn');
+            const id = button.dataset.id;
+            if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+                removeProductFromCart(id);
+            }
+        }
+    });
+
+    // Numerical Keypad Logic
+    document.querySelectorAll('.keypad-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const value = button.dataset.value;
+            const action = button.dataset.action;
+
+            if (action === 'clear') {
+                currentNumInput = '0';
+            } else {
+                if (currentNumInput === '0' && value !== '.') { // Prevent leading zeros, allow decimal
+                    currentNumInput = value;
+                } else {
+                    currentNumInput += value;
+                }
+            }
+            numInputDisplay.value = currentNumInput;
+        });
+    });
+
+    // Action Buttons (Quantity, Discount, Void Item, Cancel Transaction)
+    document.querySelectorAll('.action-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const action = button.dataset.action;
+            const inputVal = parseFloat(currentNumInput);
+
+            if (action === 'quantity') {
+                if (selectedCartItem) {
+                    const itemIndex = cart.findIndex(item => item.id === selectedCartItem);
+                    if (itemIndex > -1) {
+                        if (!isNaN(inputVal) && inputVal > 0) {
+                            cart[itemIndex].quantity = inputVal;
+                            alert(`Đã cập nhật số lượng sản phẩm "${cart[itemIndex].name}" thành ${inputVal}.`);
+                            renderCart();
+                        } else {
+                            alert('Số lượng không hợp lệ. Vui lòng nhập số dương.');
+                        }
+                    }
+                } else {
+                    alert('Vui lòng chọn một sản phẩm trong giỏ hàng để thay đổi số lượng.');
+                }
+            } else if (action === 'void') {
+                if (selectedCartItem) {
+                    if (confirm(`Bạn có chắc muốn hủy sản phẩm đã chọn "${cart.find(item => item.id === selectedCartItem)?.name}"?`)) {
+                        removeProductFromCart(selectedCartItem);
+                        alert('Sản phẩm đã được hủy.');
+                    }
+                } else {
+                    alert('Vui lòng chọn một sản phẩm trong giỏ hàng để hủy.');
+                }
+            } else if (action === 'discount') {
+                // This is a simplified placeholder. Real discount logic is more complex.
+                alert(`Chức năng Giảm giá: Áp dụng ${formatCurrency(inputVal)} cho ${selectedCartItem ? 'sản phẩm đã chọn' : 'tổng đơn hàng'}. (Chưa triển khai chi tiết)`);
+                // In a real system, you'd apply this to an item or the total and re-calculate.
+            } else if (action === 'cancel-transaction') {
+                if (confirm('Bạn có chắc muốn hủy toàn bộ đơn hàng này không?')) {
+                    cart = [];
+                    selectedCartItem = null;
+                    renderCart();
+                    alert('Đơn hàng đã được hủy thành công.');
+                }
+            }
+            
+            // Reset keypad input after action
+            currentNumInput = '0';
+            numInputDisplay.value = currentNumInput;
+            selectedCartItem = null; // Deselect item after performing an action
+        });
+    });
+
+    // Payment Buttons
+    document.querySelectorAll('.payment-btn').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const paymentType = e.currentTarget.dataset.type;
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        if (total === 0) {
+          alert('Giỏ hàng trống. Vui lòng thêm sản phẩm trước khi thanh toán.');
+          return;
+        }
+
+        const paymentAmount = parseFloat(currentNumInput);
+        if (isNaN(paymentAmount) || paymentAmount === 0) {
+             alert(`Tổng cộng: ${formatCurrency(total)}. Vui lòng nhập số tiền khách đưa hoặc bấm trực tiếp nút thanh toán.`);
+             numInputDisplay.value = total; // Suggest total for quick payment
+             currentNumInput = total.toString();
+             return;
+        }
+
+        if (paymentAmount < total) {
+            alert(`Số tiền khách đưa (${formatCurrency(paymentAmount)}) không đủ. Tổng cộng là ${formatCurrency(total)}.`);
+            return;
+        }
+
+        const change = paymentAmount - total;
+        alert(`Thanh toán ${formatCurrency(total)} bằng ${paymentType.toUpperCase()} thành công!\nTiền thừa trả lại khách: ${formatCurrency(change)}.`);
+        
+        // Clear cart and reset display after successful payment
+        cart = [];
+        currentNumInput = '0';
+        numInputDisplay.value = currentNumInput;
+        selectedCartItem = null;
+        renderCart();
+        barcodeInput.focus(); // Focus barcode input for the next customer
+      });
+    });
+
+    // Initial render of the cart when the page loads
+    renderCart();
+  });
+</script>
+</body>
+</html>

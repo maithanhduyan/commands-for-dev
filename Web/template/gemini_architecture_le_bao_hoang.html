@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kiến trúc sư Lê Bảo Hoàng - Kiến Tạo Không Gian Sống Đẳng Cấp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Playfair Display for headings, Raleway for body text -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <style>
+      /* Custom CSS for base styles and specific elements not easily achievable with Tailwind */
+      body {
+        font-family: 'Raleway', sans-serif;
+        color: #333; /* Dark gray for general text */
+        background-color: #f8f8f8; /* Light background */
+        line-height: 1.6;
+        overflow-x: hidden; /* Prevents horizontal scroll issues from animations */
+      }
+      h1, h2, h3 {
+        font-family: 'Playfair Display', serif;
+        color: #1a1a1a; /* Darker color for headings */
+      }
+
+      /* Custom underline effect for section headings */
+      .section-heading {
+        position: relative;
+        padding-bottom: 15px; /* Space for the underline */
+        margin-bottom: 40px; /* Space below the heading */
+        display: inline-block; /* Allows auto-width and centering of ::after */
+      }
+      .section-heading::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 60px; /* Width of the underline */
+        height: 3px; /* Thickness of the underline */
+        background-color: #d4af37; /* Gold accent color */
+      }
+
+      /* Project card hover effects */
+      .project-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      }
+      .project-card:hover {
+        transform: translateY(-10px); /* Lifts the card slightly */
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+      }
+      .project-card img {
+        object-fit: cover; /* Ensures images cover their area without distortion */
+        width: 100%;
+        height: 300px; /* Consistent height for project images */
+      }
+
+      /* Scroll reveal animation styles */
+      .scroll-reveal {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      }
+      .scroll-reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Specific styles for the John Wick inspired section */
+      .john-wick-section {
+        background-color: #1a1a1a; /* Very dark background */
+        color: #e0e0e0; /* Lighter text for contrast */
+        /* Placeholder dark background image with a subtle overlay for mood */
+        background-image: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url('https://via.placeholder.com/1920x1080/333333/dddddd?text=John+Wick+House+Concept');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; /* Creates a subtle parallax effect */
+      }
+      .john-wick-section .section-heading::after {
+        background-color: #d4af37; /* Gold accent for underline */
+      }
+      .john-wick-section h2, .john-wick-section p {
+        color: #f5f5f5; /* Ensures text is visible on dark background */
+      }
+      .john-wick-project-card {
+        background-color: rgba(30, 30, 30, 0.9); /* Slightly transparent dark card background */
+        color: #e0e0e0;
+        border: 1px solid rgba(212, 175, 55, 0.3); /* Subtle gold border */
+      }
+      .john-wick-project-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2); /* Goldish shadow on hover */
+      }
+
+      /* Navigation link active state and transition */
+      .nav-link.active {
+        color: #d4af37; /* Gold color for active link */
+        font-weight: 700; /* Bold for active link */
+      }
+      .nav-link {
+        transition: color 0.3s ease; /* Smooth transition for hover/active */
+      }
+      .nav-link:hover {
+        color: #d4af37;
+      }      /* Hero Title Animation */
+      .hero-title {
+        animation: fadeInUp 1.2s ease-out;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+      }
+      
+      .hero-title .highlight {
+        background: linear-gradient(45deg, #d4af37, #ffd700, #d4af37);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 3s ease-in-out infinite;
+        text-shadow: none;
+      }
+      
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(60px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      @keyframes gradientShift {
+        0%, 100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+      
+      .hero-subtitle {
+        animation: fadeInUp 1.5s ease-out 0.3s both;
+      }
+      
+      .hero-cta {
+        animation: fadeInUp 1.8s ease-out 0.6s both;
+      }
+
+      /* Scroll to top button */
+      #scroll-top-btn {
+        display: none; /* Hidden by default */
+        position: fixed; /* Fixed position on the screen */
+        bottom: 30px;
+        right: 30px;
+        z-index: 99; /* High z-index to be above other content */
+        border: none;
+        outline: none;
+        background-color: rgba(212, 175, 55, 0.8); /* Semi-transparent gold */
+        color: white;
+        cursor: pointer;
+        padding: 15px;
+        border-radius: 50%; /* Makes it circular */
+        font-size: 18px;
+        transition: background-color 0.3s, transform 0.3s;
+      }
+      #scroll-top-btn:hover {
+        background-color: #c0a030; /* Darker gold on hover */
+        transform: translateY(-5px); /* Lifts slightly on hover */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-4">
+      <div class="container mx-auto px-6 flex justify-between items-center">
+        <!-- Logo/Brand Name -->
+        <a href="#hero" class="text-2xl font-bold text-gray-800 hover:text-d4af37">
+          ThS. <span class="text-d4af37">Lê Bảo Hoàng</span>
+        </a>
+        <!-- Desktop Navigation Links -->
+        <div class="hidden md:flex space-x-8">
+          <a href="#hero" class="nav-link text-gray-600 hover:text-d4af37">Trang chủ</a>
+          <a href="#about" class="nav-link text-gray-600 hover:text-d4af37">Về tôi</a>
+          <a href="#projects" class="nav-link text-gray-600 hover:text-d4af37">Dự án</a>
+          <a href="#contact" class="nav-link text-gray-600 hover:text-d4af37">Liên hệ</a>
+        </div>
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobile-menu-button" class="md:hidden text-gray-800 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+      <!-- Mobile Menu (hidden by default) -->
+      <div id="mobile-menu" class="hidden md:hidden bg-white mt-2 py-2 shadow-lg">
+        <a href="#hero" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 nav-link">Trang chủ</a>
+        <a href="#about" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 nav-link">Về tôi</a>
+        <a href="#projects" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 nav-link">Dự án</a>
+        <a href="#contact" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 nav-link">Liên hệ</a>
+      </div>
+    </nav>    <!-- Hero Section -->
+    <section id="hero" class="relative bg-cover bg-center h-screen flex items-center justify-center text-white"
+      style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2053&q=80');">      <div class="text-center px-4 scroll-reveal">
+        <h1 class="hero-title text-5xl md:text-7xl font-bold mb-4 leading-tight">
+          Kiến Tạo Không Gian Sống <br> 
+          <span class="highlight">Độc Bản & Đẳng Cấp</span>
+        </h1>
+        <p class="hero-subtitle text-lg md:text-xl max-w-2xl mx-auto mb-8">
+          Thạc sĩ Lê Bảo Hoàng - Nơi những giấc mơ kiến trúc trở thành hiện thực, với sự sáng tạo không ngừng và tầm nhìn vượt trội.
+        </p>
+        <a href="#projects" class="hero-cta inline-block bg-d4af37 hover:bg-c0a030 text-white font-semibold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105">
+          Khám phá Dự án
+        </a>
+      </div>
+      <!-- Scroll indicator icon -->
+      <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 md:py-32 bg-white container mx-auto px-6 scroll-reveal">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-4xl md:text-5xl font-bold mb-10 section-heading mx-auto">Về Thạc sĩ Lê Bảo Hoàng</h2>
+        <div class="grid md:grid-cols-2 gap-12 items-center">          <div>
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Thạc sĩ Lê Bảo Hoàng" class="rounded-lg shadow-lg mx-auto">
+          </div>
+          <div class="text-left">
+            <p class="text-lg text-gray-700 mb-6">
+              Với hơn 15 năm kinh nghiệm trong lĩnh vực kiến trúc và thiết kế nội thất, Thạc sĩ Lê Bảo Hoàng đã khẳng định tên tuổi mình qua hàng loạt dự án cao cấp, mang đậm dấu ấn cá nhân và sự tinh tế. Châm ngôn của anh là "Mỗi công trình là một tác phẩm nghệ thuật, kể một câu chuyện độc đáo về chủ nhân của nó."
+            </p>
+            <p class="text-lg text-gray-700">
+              Hoàng luôn đặt tâm huyết vào từng chi tiết, từ khâu lên ý tưởng, phác thảo đến hoàn thiện, đảm bảo mỗi không gian không chỉ đẹp về mặt thẩm mỹ mà còn tối ưu về công năng và mang lại trải nghiệm sống vượt trội.
+            </p>
+            <ul class="list-disc list-inside text-gray-700 mt-6 space-y-2">
+              <li>Chuyên gia về kiến trúc nghỉ dưỡng, biệt thự cao cấp.</li>
+              <li>Thiết kế nội thất độc đáo, phản ánh cá tính gia chủ.</li>
+              <li>Tầm nhìn sáng tạo, kết hợp hài hòa giữa truyền thống và hiện đại.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 md:py-32 bg-gray-100 scroll-reveal">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-4xl md:text-5xl font-bold mb-10 section-heading mx-auto">Dự án Triệu Đô</h2>
+        <p class="text-lg text-gray-700 max-w-3xl mx-auto mb-16">
+          Khám phá những công trình kiến trúc biểu tượng, nơi sự sang trọng và tinh tế được thể hiện qua từng đường nét, mang đến trải nghiệm sống đẳng cấp vượt thời gian.
+        </p>
+
+        <!-- Project Category: MAISAI - Malago Florida Resort Style -->
+        <div class="mb-20 scroll-reveal">
+          <h3 class="text-3xl md:text-4xl font-bold mb-8 text-center text-d4af37">MAISAI: Phong cách nghỉ dưỡng Malago, Florida</h3>
+          <p class="text-lg text-gray-700 max-w-4xl mx-auto mb-10">
+            Dự án MAISAI lấy cảm hứng từ vẻ đẹp phóng khoáng và sự sang trọng của những khu nghỉ dưỡng ven biển Malago, Florida. Không gian mở, hòa mình vào thiên nhiên, với những đường nét kiến trúc hiện đại, vật liệu cao cấp và tầm nhìn tuyệt đẹp.
+          </p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="MAISAI Exterior" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Biệt thự ven biển</h4>
+                <p class="text-gray-600 text-sm">Thiết kế mở, hồ bơi vô cực, tầm nhìn hướng biển.</p>
+              </div>
+            </div>            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1958&q=80" alt="MAISAI Interior Living" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Không gian phòng khách</h4>
+                <p class="text-gray-600 text-sm">Nội thất tinh tế, ánh sáng tự nhiên, vật liệu sang trọng.</p>
+              </div>
+            </div>            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="MAISAI Landscape" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Cảnh quan xanh</h4>
+                <p class="text-gray-600 text-sm">Sân vườn nhiệt đới, khu vực thư giãn ngoài trời.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Category: Penthouse - Asian Tropical Style -->
+        <div class="mb-20 scroll-reveal">
+          <h3 class="text-3xl md:text-4xl font-bold mb-8 text-center text-d4af37">Penthouse: Phong cách Nhiệt đới Châu Á</h3>
+          <p class="text-lg text-gray-700 max-w-4xl mx-auto mb-10">
+            Penthouse này là sự kết hợp hoàn hảo giữa vẻ đẹp thanh bình của thiên nhiên nhiệt đới Châu Á và sự sang trọng hiện đại. Sử dụng vật liệu tự nhiên như gỗ, đá, kết hợp với cây xanh nội thất, tạo nên một không gian sống thư thái, gần gũi với thiên nhiên ngay giữa lòng đô thị.
+          </p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Penthouse Interior Garden" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Vườn cây trong nhà</h4>
+                <p class="text-gray-600 text-sm">Không gian xanh mát, tạo sự kết nối với thiên nhiên.</p>
+              </div>
+            </div>            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80" alt="Penthouse Terrace" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Sân thượng mở</h4>
+                <p class="text-gray-600 text-sm">Khu vực giải trí ngoài trời với tầm nhìn panorama.</p>
+              </div>
+            </div>            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1958&q=80" alt="Penthouse Bedroom" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Phòng ngủ chính</h4>
+                <p class="text-gray-600 text-sm">Ấm cúng, tiện nghi, vật liệu gỗ tự nhiên.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Category: John Wick House Style - Unique Dark Theme -->
+    <section class="py-20 md:py-32 john-wick-section scroll-reveal">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-4xl md:text-5xl font-bold mb-10 section-heading mx-auto">Phong cách nhà của John Wick</h2>
+        <p class="text-lg max-w-3xl mx-auto mb-16 text-gray-300">
+          Lấy cảm hứng từ sự tối giản, mạnh mẽ và đầy quyền lực của không gian sống John Wick. Thiết kế này tập trung vào đường nét sắc sảo, vật liệu thô mộc (bê tông, kim loại), ánh sáng kịch tính và sự riêng tư tuyệt đối, tạo nên một không gian vừa đẳng cấp vừa bí ẩn.
+        </p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">          <div class="rounded-lg shadow-lg overflow-hidden john-wick-project-card project-card">
+            <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2053&q=80" alt="John Wick House Exterior" class="w-full h-72 object-cover">
+            <div class="p-6">
+              <h4 class="text-xl font-semibold mb-2">Kiến trúc ngoại thất</h4>
+              <p class="text-sm text-gray-400">Đường nét góc cạnh, vật liệu thô, vững chãi.</p>
+            </div>
+          </div>          <div class="rounded-lg shadow-lg overflow-hidden john-wick-project-card project-card">
+            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1958&q=80" alt="John Wick Living Area" class="w-full h-72 object-cover">
+            <div class="p-6">
+              <h4 class="text-xl font-semibold mb-2">Không gian phòng khách</h4>
+              <p class="text-sm text-gray-400">Tối giản, ánh sáng tương phản, đồ nội thất độc đáo.</p>
+            </div>
+          </div>
+          <div class="rounded-lg shadow-lg overflow-hidden john-wick-project-card project-card">          <div class="rounded-lg shadow-lg overflow-hidden john-wick-project-card project-card">
+            <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="John Wick Library" class="w-full h-72 object-cover">
+            <div class="p-6">
+              <h4 class="text-xl font-semibold mb-2">Phòng làm việc/Thư viện</h4>
+              <p class="text-sm text-gray-400">Sang trọng, bí ẩn, tập trung vào chức năng.</p>
+            </div>
+          </div>
+        </div>
+      </div>    </section>
+
+    <!-- High-Rise Buildings Section -->
+    <section class="py-20 md:py-32 bg-white scroll-reveal">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-4xl md:text-5xl font-bold mb-10 section-heading mx-auto">Dự án Tòa nhà Cao tầng</h2>
+        <p class="text-lg text-gray-700 max-w-4xl mx-auto mb-16">
+          Khẳng định vị thế với những tòa nhà cao tầng đẳng cấp thế giới. Từ trung tâm thương mại đến chung cư cao cấp, mỗi dự án đều thể hiện tầm nhìn kiến trúc hiện đại, bền vững và tối ưu hóa không gian sống đô thị.
+        </p>
+
+        <!-- Commercial Tower Project -->
+        <div class="mb-20 scroll-reveal">
+          <h3 class="text-3xl md:text-4xl font-bold mb-8 text-center text-d4af37">Tháp Thương mại Millennium</h3>
+          <p class="text-lg text-gray-700 max-w-4xl mx-auto mb-10">
+            Tòa tháp 45 tầng với thiết kế mặt tiền kính cường lực hiện đại, kết hợp hệ thống chiếu sáng LED động. Không gian làm việc thông minh với công nghệ IoT tích hợp, sân vườn trên cao và hệ thống năng lượng xanh.
+          </p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Commercial Tower Exterior" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Mặt tiền hiện đại</h4>
+                <p class="text-gray-600 text-sm">Kính cường lực phản quang, khung thép cao cấp.</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80" alt="Office Interior" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Văn phòng thông minh</h4>
+                <p class="text-gray-600 text-sm">Không gian mở, công nghệ hiện đại, ánh sáng tự nhiên.</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Sky Garden" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Sân vườn trên cao</h4>
+                <p class="text-gray-600 text-sm">Không gian xanh, thư giãn giữa lòng đô thị.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Luxury Residential Tower -->
+        <div class="mb-20 scroll-reveal">
+          <h3 class="text-3xl md:text-4xl font-bold mb-8 text-center text-d4af37">Chung cư Cao cấp Emerald Tower</h3>
+          <p class="text-lg text-gray-700 max-w-4xl mx-auto mb-10">
+            Tòa chung cư 38 tầng với thiết kế kiến trúc xanh bền vững. Mỗi căn hộ đều có ban công riêng với tầm nhìn toàn cảnh thành phố. Tiện ích đầy đủ từ hồ bơi vô cực đến phòng gym, spa và khu vui chơi trẻ em.
+          </p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Residential Tower" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Kiến trúc xanh</h4>
+                <p class="text-gray-600 text-sm">Thiết kế bền vững, tiết kiệm năng lượng.</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Luxury Apartment" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Căn hộ cao cấp</h4>
+                <p class="text-gray-600 text-sm">Nội thất sang trọng, tầm nhìn panorama.</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80" alt="Rooftop Pool" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Hồ bơi vô cực</h4>
+                <p class="text-gray-600 text-sm">Tiện ích đẳng cấp trên tầng thượng.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mixed-Use Development -->
+        <div class="mb-20 scroll-reveal">
+          <h3 class="text-3xl md:text-4xl font-bold mb-8 text-center text-d4af37">Khu phức hợp Landmark Plaza</h3>
+          <p class="text-lg text-gray-700 max-w-4xl mx-auto mb-10">
+            Dự án khu phức hợp đa chức năng với 3 tòa tháp cao 52 tầng. Kết hợp harmoniously văn phòng, trung tâm thương mại, khách sạn 5 sao và căn hộ cao cấp. Thiết kế iconic với skybridge kết nối các tòa tháp.
+          </p>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80" alt="Iconic Architecture Complex" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Kiến trúc iconic</h4>
+                <p class="text-gray-600 text-sm">Ba tòa tháp kết nối, thiết kế độc đáo.</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Shopping Mall" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Trung tâm thương mại</h4>
+                <p class="text-gray-600 text-sm">Không gian mua sắm, giải trí đẳng cấp.</p>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden project-card">
+              <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Hotel Lobby" class="w-full h-72 object-cover">
+              <div class="p-6">
+                <h4 class="text-xl font-semibold mb-2">Khách sạn 5 sao</h4>
+                <p class="text-gray-600 text-sm">Lobby sang trọng, dịch vụ world-class.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 md:py-32 bg-white container mx-auto px-6 scroll-reveal">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-4xl md:text-5xl font-bold mb-10 section-heading mx-auto">Liên Hệ</h2>
+        <p class="text-lg text-gray-700 mb-8">
+          Bạn có một ý tưởng kiến trúc độc đáo? Hãy liên hệ với Thạc sĩ Lê Bảo Hoàng để biến nó thành hiện thực. Chúng tôi sẵn sàng lắng nghe và tư vấn.
+        </p>
+        <div class="flex flex-col md:flex-row justify-center items-center md:space-x-8 space-y-8 md:space-y-0 mb-10">
+          <div class="text-center">
+            <p class="text-xl font-semibold text-gray-800">Email:</p>
+            <p class="text-lg text-gray-600">contact@lebaohoangarch.com</p>
+          </div>
+          <div class="text-center">
+            <p class="text-xl font-semibold text-gray-800">Điện thoại:</p>
+            <p class="text-lg text-gray-600">+84 901 234 567</p>
+          </div>
+          <div class="text-center">
+            <p class="text-xl font-semibold text-gray-800">Địa chỉ:</p>
+            <p class="text-lg text-gray-600">TP. Hồ Chí Minh, Việt Nam</p>
+          </div>
+        </div>
+        <a href="mailto:contact@lebaohoangarch.com" class="inline-block bg-d4af37 hover:bg-c0a030 text-white font-semibold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105">
+          Gửi Email
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+      <div class="container mx-auto text-center px-6">
+        <p class="text-sm mb-2">© 2023 ThS. Lê Bảo Hoàng. Mọi bản quyền được bảo lưu.</p>
+        <p class="text-sm">Thiết kế bởi Lê Bảo Hoàng.</p>
+      </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-top-btn" title="Go to top">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+      </svg>
+    </button>
+
+    <script>
+      // Configure Tailwind CSS custom colors (must be defined before Tailwind processes classes)
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              d4af37: '#d4af37', // Custom Gold color
+              c0a030: '#c0a030', // Custom Darker Gold color
+            },
+          },
+        },
+      };
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // --- Mobile Menu Toggle ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuButton && mobileMenu) {
+          mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+          });
+
+          // Close mobile menu when a link is clicked inside it
+          mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+              mobileMenu.classList.add('hidden');
+            });
+          });
+        }
+
+        // --- Smooth Scrolling for Navigation Links ---
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+          anchor.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent default anchor jump
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+              behavior: 'smooth' // Smooth scroll effect
+            });
+            // Immediately update the active link state on click
+            updateActiveNavLink();
+          });
+        });
+
+        // --- Scroll Reveal Animation ---
+        const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+        const observerOptions = {
+          root: null, // Relative to the viewport
+          rootMargin: '0px',
+          threshold: 0.1 // Trigger when 10% of the element is visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible'); // Add 'visible' class to trigger animation
+              observer.unobserve(entry.target); // Stop observing once animated
+            }
+          });
+        }, observerOptions);
+
+        // Observe all elements with 'scroll-reveal' class
+        scrollRevealElements.forEach(el => {
+          observer.observe(el);
+        });
+
+        // --- Navbar Active State and Scroll to Top Button Logic ---
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section');
+        const scrollTopBtn = document.getElementById('scroll-top-btn');
+
+        // Function to update active navigation link based on scroll position
+        const updateActiveNavLink = () => {
+          let currentSectionId = '';
+          sections.forEach(section => {
+            // Adjust offset to account for fixed navbar height
+            const sectionTop = section.offsetTop - (document.querySelector('nav').offsetHeight + 20);
+            if (window.scrollY >= sectionTop) {
+              currentSectionId = section.getAttribute('id');
+            }
+          });
+
+          navLinks.forEach(link => {
+            link.classList.remove('active'); // Remove active from all
+            // Add active class if link's href matches the current section ID
+            if (link.getAttribute('href').includes(currentSectionId)) {
+              link.classList.add('active');
+            }
+          });
+        };
+
+        // Function to show/hide scroll to top button
+        const toggleScrollTopButton = () => {
+          if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            scrollTopBtn.style.display = "block";
+          } else {
+            scrollTopBtn.style.display = "none";
+          }
+        };
+
+        // Add scroll event listener to update both on scroll
+        window.addEventListener('scroll', () => {
+          updateActiveNavLink();
+          toggleScrollTopButton();
+        });
+
+        // Initialize active link and button state on page load
+        updateActiveNavLink();
+        toggleScrollTopButton();
+
+        // --- Scroll to top button functionality ---
+        if (scrollTopBtn) {
+          scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
