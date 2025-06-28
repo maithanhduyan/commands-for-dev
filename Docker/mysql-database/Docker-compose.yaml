@@ -5,6 +5,8 @@ services:
     image: mysql:8.0
     container_name: mysql_db
     restart: always
+    ports:
+      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: examplepassword
       MYSQL_DATABASE: exampledb
@@ -24,8 +26,8 @@ services:
       MYSQL_ROOT_PASSWORD: admin@2024
     ports:
       - 8080:80
-    # volumes:
-    #   - ./phpmyadmin:/etc/phpmyadmin
+    volumes:
+      - ./phpmyadmin:/etc/phpmyadmin
     networks:
       - mynetwork
 

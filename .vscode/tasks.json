@@ -159,6 +159,18 @@
         ],
         "dependsOrder": "sequence",
         "problemMatcher": []
+      },
+      {
+        "label": "Analyze Code Tasks",
+        "type": "shell",
+        "command": "python",
+        "args": [
+          "${workspaceFolder}/.tools/editor/analyze_project.py",
+          "${file}"
+        ],
+        "dependsOn": [],
+        "dependsOrder": "sequence",
+        "problemMatcher": []
       }
     ]
   }

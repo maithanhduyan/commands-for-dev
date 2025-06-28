@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  workflow:
+    image: nginx:latest
+    container_name: workflow
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.workflow.rule=Host(`workflow.dotcon.vn`)"
+      - "traefik.http.routers.workflow.entrypoints=web,websecure"
+      - "traefik.http.routers.workflow.tls.certresolver=letsencrypt"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d # configuration in default.conf
+      - ./nginx/html:/var/www/html # static html web for example
+      - ./nginx/log:/var/log/nginx/ # log data
+    networks:
+      - web
+
+networks:
+  web:
+    external: true

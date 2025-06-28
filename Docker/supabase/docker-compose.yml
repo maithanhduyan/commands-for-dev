@@ -1,0 +1,224 @@
+version: '3.8'
+
+services:
+  # ---------- Database ----------
+  db:
+    image: supabase/postgres:15.3.0.7
+    container_name: supabase-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      # Tối ưu hóa cho workload lớn
+      MAX_CONNECTIONS: 1000
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./volumes/db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+          memory: 32G
+
+  # ---------- Connection Pooler ----------
+  supavisor:
+    image: supabase/supavisor:0.13.1
+    container_name: supabase-supavisor
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PG_HOST: db
+      PG_PORT: 5432
+      PG_USER: ${POSTGRES_USER}
+      PG_PASSWORD: ${POSTGRES_PASSWORD}
+      PG_DATABASE: ${POSTGRES_DB}
+      SUPAVISOR_LISTEN_ADDR: '0.0.0.0:6543'
+    ports:
+      - "6543:6543"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  # ---------- API Gateway (Kong) ----------
+  kong:
+    image: kong:3.2
+    container_name: supabase-kong
+    restart: unless-stopped
+    depends_on:
+      - rest
+      - auth
+      - storage
+      - realtime
+      - functions
+    environment:
+      KONG_DATABASE: off
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    ports:
+      - "8000:8000"   # proxy
+      - "8443:8443"   # proxy TLS
+      - "8001:8001"   # admin API
+    volumes:
+      - ./volumes/kong/kong.yml:/usr/local/kong/declarative/kong.yml
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  # ---------- Auth (GoTrue) ----------
+  auth:
+    image: supabase/gotrue:latest
+    container_name: supabase-auth
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      GOTRUE_SITE_URL: ${SITE_URL}                      # Ví dụ: https://supabase.company.com
+      GOTRUE_JWT_SECRET: ${GOTRUE_JWT_SECRET}
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_SMTP_HOST: ${SMTP_HOST}
+      GOTRUE_SMTP_PORT: ${SMTP_PORT}
+      GOTRUE_SMTP_USER: ${SMTP_USER}
+      GOTRUE_SMTP_PASS: ${SMTP_PASSWORD}
+      GOTRUE_SMTP_ADMIN_EMAIL: ${ADMIN_EMAIL}            # địa chỉ gửi mail admin
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  # ---------- REST API (PostgREST) ----------
+  rest:
+    image: supabase/postgrest:11.0.0
+    container_name: supabase-rest
+    restart: unless-stopped
+    depends_on:
+      - supavisor
+    environment:
+      PGRST_DB_URI: >-
+        postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@supavisor:6543/${POSTGRES_DB}
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: web_anon
+      PGRST_SERVER_PORT: 3000
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  # ---------- Realtime ----------
+  realtime:
+    image: supabase/realtime:0.23.0
+    container_name: supabase-realtime
+    restart: unless-stopped
+    depends_on:
+      - supavisor
+    environment:
+      DB_HOST: db
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_PORT: 5432
+      PORT: 4000
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  # ---------- Storage ----------
+  storage:
+    image: supabase/storage:latest
+    container_name: supabase-storage
+    restart: unless-stopped
+    depends_on:
+      - supavisor
+    environment:
+      ANON_KEY: ${STORAGE_ANON_KEY}
+      SERVICE_KEY: ${STORAGE_SERVICE_KEY}
+      POSTGREST_URL: http://rest:3000
+      STORAGE_BACKEND: file
+      STORAGE_BLOCK_BUCKET: supabase-storage
+      STORAGE_LOCAL_ROOT: /var/storage
+    volumes:
+      - storage_data:/var/storage
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  # ---------- Edge Functions ----------
+  functions:
+    image: supabase/functions-runtime:latest
+    container_name: supabase-functions
+    restart: unless-stopped
+    depends_on:
+      - supavisor
+    environment:
+      FUNCTIONS_PORT: 9000
+      SUPABASE_URL: ${SITE_URL}
+      SUPABASE_ANON_KEY: ${JWT_SECRET}
+    volumes:
+      - ./functions:/var/task
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  # ---------- Analytics & Logging ----------
+  logflare:
+    image: supabase/logflare:1.4.0
+    container_name: supabase-logflare
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      LOGFLARE_SINGLE_TENANT: "true"
+      LOGFLARE_SUPABASE_MODE: "true"
+      POSTGRES_BACKEND_URL: >-
+        postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      POSTGRES_BACKEND_SCHEMA: logflare
+    ports:
+      - "3001:3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+  vector:
+    image: timberio/vector:0.23.0-debian
+    container_name: supabase-vector
+    restart: unless-stopped
+    depends_on:
+      - logflare
+    volumes:
+      - ./vector/vector.toml:/etc/vector/vector.toml
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+volumes:
+  db_data:
+  storage_data:

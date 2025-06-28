@@ -1,0 +1,75 @@
+# OpenWRT Configuration Template
+# Cấu hình mục tiêu cho x86_64
+CONFIG_TARGET_x86=y
+CONFIG_TARGET_x86_64=y
+CONFIG_TARGET_x86_64_DEVICE_generic=y
+
+# Tùy chọn image
+CONFIG_VMDK_IMAGES=y
+CONFIG_VHDX_IMAGES=y
+CONFIG_VDI_IMAGES=y
+CONFIG_TARGET_ROOTFS_EXT4FS=y
+CONFIG_TARGET_ROOTFS_SQUASHFS=y
+
+# Cấu hình kernel
+CONFIG_KERNEL_KALLSYMS=y
+
+# Giao diện web LuCI
+CONFIG_PACKAGE_luci=y
+CONFIG_PACKAGE_luci-ssl=y
+CONFIG_PACKAGE_luci-ssl-openssl=y
+CONFIG_PACKAGE_luci-app-firewall=y
+CONFIG_PACKAGE_luci-app-opkg=y
+
+# Networking packages
+CONFIG_PACKAGE_wpad-basic-mbedtls=y
+CONFIG_PACKAGE_hostapd-common=y
+CONFIG_PACKAGE_iw=y
+CONFIG_PACKAGE_iwinfo=y
+
+# Network utilities
+CONFIG_PACKAGE_curl=y
+CONFIG_PACKAGE_wget-ssl=y
+CONFIG_PACKAGE_iperf3=y
+CONFIG_PACKAGE_tcpdump=y
+CONFIG_PACKAGE_ethtool=y
+CONFIG_PACKAGE_bridge-utils=y
+
+# VPN support
+CONFIG_PACKAGE_openvpn-openssl=y
+CONFIG_PACKAGE_luci-app-openvpn=y
+CONFIG_PACKAGE_wireguard-tools=y
+CONFIG_PACKAGE_luci-app-wireguard=y
+
+# QoS and Traffic Control
+CONFIG_PACKAGE_luci-app-sqm=y
+CONFIG_PACKAGE_sqm-scripts=y
+
+# File sharing
+CONFIG_PACKAGE_samba4-server=y
+CONFIG_PACKAGE_luci-app-samba4=y
+
+# System utilities
+CONFIG_PACKAGE_htop=y
+CONFIG_PACKAGE_nano=y
+CONFIG_PACKAGE_vim=y
+CONFIG_PACKAGE_tree=y
+CONFIG_PACKAGE_file=y
+CONFIG_PACKAGE_lsof=y
+
+# Network monitoring
+CONFIG_PACKAGE_luci-app-statistics=y
+CONFIG_PACKAGE_collectd=y
+
+# USB support
+CONFIG_PACKAGE_kmod-usb-storage=y
+CONFIG_PACKAGE_kmod-fs-ext4=y
+CONFIG_PACKAGE_kmod-fs-ntfs=y
+
+# Development tools (optional)
+CONFIG_PACKAGE_python3=y
+CONFIG_PACKAGE_python3-pip=y
+CONFIG_PACKAGE_git=y
+
+# Tăng kích thước rootfs
+CONFIG_TARGET_ROOTFS_PARTSIZE=1024

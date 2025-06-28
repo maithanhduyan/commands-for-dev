@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  openwrt-light:
+    build:
+      context: .
+      dockerfile: Dockerfile.lightweight
+    container_name: openwrt-lightweight-lab
+    privileged: true    # cần thiết để chạy QEMU và cấu hình networking
+    network_mode: "bridge"
+    ports:
+      - "2222:2222"     # SSH
+      - "8080:8080"     # LuCI Web Interface
+      - "8443:8443"     # HTTPS LuCI
+    volumes:
+      - openwrt_light_data:/opt/openwrt
+      - /dev/kvm:/dev/kvm  # KVM acceleration (nếu có)
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+    environment:
+      - DISPLAY=:0      # Nếu cần GUI
+    devices:
+      - /dev/net/tun    # TUN/TAP interface
+
+volumes:
+  openwrt_light_data:

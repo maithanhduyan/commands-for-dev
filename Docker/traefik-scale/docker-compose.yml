@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v3.4.0
+    container_name: traefik
+    # command:
+      # - --api.insecure=true  # Dashboard, nên disable ở production
+      # - --providers.docker=true
+      # - --providers.docker.exposedbydefault=false
+      # - --entrypoints.web.address=:80
+      # - --entrypoints.websecure.address=:443
+      # - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      # - --certificatesresolvers.letsencrypt.acme.email=admin@dotcon.vn
+      # - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.dotcon.vn`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.entrypoints=web,websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$2b$12$Ce10/4Zwky/2.y4gBcWdQeMVMFDlOVSJaPAogegzC6fpFJVZb/zeC"
+      - "traefik.http.routers.traefik.middlewares=auth"
+    ports:
+      - "80:80"
+      - "443:443" # https
+      - "8080:8080" # dashboard
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+      # So that Traefik can access the configuration file
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik/acme.json:/letsencrypt/acme.json
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
